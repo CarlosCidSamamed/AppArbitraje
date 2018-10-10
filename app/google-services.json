@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1034148343559",
+    "firebase_url": "https://apparbitraje.firebaseio.com",
+    "project_id": "apparbitraje",
+    "storage_bucket": "apparbitraje.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034148343559:android:5c014cd99c473e6a",
+        "android_client_info": {
+          "package_name": "com.fervenzagames.apparbitraje"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1034148343559-t2aueko8gr7uumvg9bpt29saksr06p1b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fervenzagames.apparbitraje",
+            "certificate_hash": "84a90d52222e0a7da6784277af75d67ed2d9d641"
+          }
+        },
+        {
+          "client_id": "1034148343559-68e331hkha03h4fm96cdma9hfuludqje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZImlPHXOLrgoIQf-orYWz96k6cOXYaKk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1034148343559-68e331hkha03h4fm96cdma9hfuludqje.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
