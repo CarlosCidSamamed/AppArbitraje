@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AppArbitraje</string>
+    <string name="MensajeBienvenida">Bienvenido a AppAbitraje</string>
 </resources>
