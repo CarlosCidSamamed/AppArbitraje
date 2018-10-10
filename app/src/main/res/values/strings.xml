@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">AppArbitraje</string>
     <string name="MensajeBienvenida">Bienvenido a AppAbitraje</string>
+    <string name="RegistrarNuevaCuenta">Registrar Nueva Cuenta</string>
+    <string name="SuNombre">Nombre</string>
+    <string name="SuEmail">Email</string>
+    <string name="SuPassword">Contraseña</string>
+    <string name="crear_cuenta">Crear Cuenta</string>
 </resources>

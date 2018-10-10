@@ -28,11 +28,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Si el usuario no ha iniciado sesión deberemos abrir la pantalla de LOGIN
         if(currentUser == null){
-            // Se crea un Intent para la página de LOGIN
+            /* Se crea un Intent para la página de LOGIN */
             Intent startIntent = new Intent(MainActivity.this, StartActivity.class);
-            // Se inicia ese Intent
+            /* Se inicia ese Intent */
             startActivity(startIntent);
-            // Con esta línea evitamos que al pulsar el botón para retroceder se vuelva a esta actividad.
+            /* Con esta línea evitamos que al pulsar el botón para retroceder se vuelva a esta actividad. */
             finish();
         }
     }
