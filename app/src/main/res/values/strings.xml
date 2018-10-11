@@ -6,4 +6,9 @@
     <string name="SuEmail">Email</string>
     <string name="SuPassword">Contraseña</string>
     <string name="crear_cuenta">Crear Cuenta</string>
+    <string name="cerrar_sesion">Cerrar Sesión</string>
+    <string name="opciones">Opciones</string>
+    <string name="crear_una_nueva_cuenta">Crear una nueva Cuenta</string>
+    <string name="iniciar_sesion">INICIAR SESIÓN</string>
+    <string name="iniciar_sesion1">Iniciar Sesión</string>
 </resources>
