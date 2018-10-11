@@ -89,6 +89,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                             mRegProgress.dismiss();
                             Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+                            /* Para asegurarnos de que no se puede volver a la StartActivity al pulsar el botón BACK (flecha atrás) de la barra de botones en el fondo de la pantalla (ANDROID)*/
+                            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(mainIntent);
                             finish();
 

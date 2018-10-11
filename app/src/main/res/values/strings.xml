@@ -11,4 +11,12 @@
     <string name="crear_una_nueva_cuenta">Crear una nueva Cuenta</string>
     <string name="iniciar_sesion">INICIAR SESIÓN</string>
     <string name="iniciar_sesion1">Iniciar Sesión</string>
+    <string name="tipo_de_app">Tipo de App</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sanda">Sanda</string>
+    <string name="qingda">Qingda</string>
+    <string name="kungfu_combat">KungFu Combat</string>
+    <string name="shuai_jiao">Shuai Jiao</string>
 </resources>

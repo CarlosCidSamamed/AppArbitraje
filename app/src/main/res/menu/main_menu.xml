@@ -6,6 +6,9 @@
         android:id="@+id/main_settings_btn"
         android:title="@string/opciones" />
     <item
+        android:id="@+id/main_app_type"
+        android:title="@string/tipo_de_app" />
+    <item
         android:id="@+id/main_logout_btn"
         android:title="@string/cerrar_sesion" />
 </menu>
