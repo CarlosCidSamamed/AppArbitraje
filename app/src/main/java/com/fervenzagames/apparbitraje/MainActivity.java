@@ -94,6 +94,18 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Ha pulsado el botón Opciones", Toast.LENGTH_SHORT).show();
                 break;
             }
+            case R.id.main_account_settings:{
+                Toast.makeText(MainActivity.this, "Ha pulsado el botón de Cuenta de Usuario", Toast.LENGTH_SHORT).show();
+                // Crear el Intent de la página de Settings
+                Intent sett_intent = new Intent(MainActivity.this, SettingsActivity.class);
+                // E iniciarlo
+                startActivity(sett_intent);
+                break;
+            }
+            case R.id.main_app_type:{
+                Toast.makeText(MainActivity.this, "Ha pulsado el botón de Tipo de App", Toast.LENGTH_SHORT).show();
+                break;
+            }
         }
 
         return true;

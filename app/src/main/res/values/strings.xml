@@ -19,4 +19,9 @@
     <string name="qingda">Qingda</string>
     <string name="kungfu_combat">KungFu Combat</string>
     <string name="shuai_jiao">Shuai Jiao</string>
+    <string name="cuenta_de_usuario">Cuenta de Usuario</string>
+    <string name="nombre_y_apellidos">Nombre y Apellidos</string>
+    <string name="cargo">Cargo</string>
+    <string name="cambiar_datos">Cambiar Datos</string>
+    <string name="cambiar_imagen">Cambiar Imagen</string>
 </resources>
