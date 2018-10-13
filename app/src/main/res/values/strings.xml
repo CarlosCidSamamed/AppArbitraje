@@ -24,4 +24,6 @@
     <string name="cargo">Cargo</string>
     <string name="cambiar_datos">Cambiar Datos</string>
     <string name="cambiar_imagen">Cambiar Imagen</string>
+    <string name="nivel">Nivel</string>
+    <string name="guardar_cambios">Guardar Cambios</string>
 </resources>

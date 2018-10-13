@@ -29,8 +29,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity"
-            ></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".CargoNivelActivity"></activity>
     </application>
 
 </manifest>
