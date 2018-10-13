@@ -50,9 +50,16 @@ public class CargoNivelActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Cargo y Nivel del Árbitro");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        String nivel_actual = getIntent().getStringExtra("nivel_val");
+        String cargo_actual = getIntent().getStringExtra("cargo_val");
+
         mCargo = (TextInputEditText) findViewById(R.id.cargo_input1);
         mNivel = (TextInputEditText) findViewById(R.id.nivel_input1);
         mGuardarBtn = (Button) findViewById(R.id.guardar_btn);
+
+        mNivel.setText(nivel_actual);
+        mCargo.setText(cargo_actual);
+
 
         mGuardarBtn.setOnClickListener(new View.OnClickListener() {
             @Override

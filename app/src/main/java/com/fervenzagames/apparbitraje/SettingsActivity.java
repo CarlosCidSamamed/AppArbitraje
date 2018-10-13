@@ -84,7 +84,13 @@ public class SettingsActivity extends AppCompatActivity {
         mDatosBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Vamos a obtener los datos de nivel y cargo para poder mostrar los valores actuales en el formulario de modificación
+                String nivel_val = mNivel.getText().toString();
+                String cargo_val = mCargo.getText().toString();
+
                 Intent datosIntent = new Intent(SettingsActivity.this, CargoNivelActivity.class);
+                datosIntent.putExtra("nivel_val", nivel_val);
+                datosIntent.putExtra("cargo_val", cargo_val);
                 startActivity(datosIntent);
             }
         });
