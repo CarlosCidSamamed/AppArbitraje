@@ -30,7 +30,9 @@
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".CargoNivelActivity"></activity>
+        <activity
+            android:name=".CargoNivelActivity"
+            android:parentActivityName=".SettingsActivity"></activity>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.fervenzagames.apparbitraje;
 
 import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,8 +24,8 @@ import java.util.HashMap;
 public class CargoNivelActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
-    private TextInputLayout mCargo;
-    private TextInputLayout mNivel;
+    private TextInputEditText mCargo;
+    private TextInputEditText mNivel;
     private Button mGuardarBtn;
 
     //Firebase
@@ -49,19 +50,19 @@ public class CargoNivelActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Cargo y Nivel del Árbitro");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mCargo = (TextInputLayout) findViewById(R.id.cargo_input);
-        mNivel = (TextInputLayout) findViewById(R.id.nivel_input);
+        mCargo = (TextInputEditText) findViewById(R.id.cargo_input1);
+        mNivel = (TextInputEditText) findViewById(R.id.nivel_input1);
         mGuardarBtn = (Button) findViewById(R.id.guardar_btn);
 
         mGuardarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String cargo = mCargo.getEditText().getText().toString();
-                String nivel = mNivel.getEditText().getText().toString();
+                String cargo = mCargo.getText().toString();
+                String nivel = mNivel.getText().toString();
 
                 // Progress
-                mProgress = new ProgressDialog(getApplicationContext());
+                mProgress = new ProgressDialog(CargoNivelActivity.this);
                 mProgress.setTitle("Guardando los cambios");
                 mProgress.setMessage("Espere mientras se guardan los cambios...");
                 mProgress.show();
@@ -69,25 +70,36 @@ public class CargoNivelActivity extends AppCompatActivity {
                 // Si el usuario quiere modificar el Cargo y el Nivel
                 if(!TextUtils.isEmpty(cargo) && (!TextUtils.isEmpty(nivel)))
                 {
-                    cargo = mCargo.getEditText().getText().toString();
-                    nivel = mNivel.getEditText().getText().toString();
+                    cargo = mCargo.getText().toString();
+                    nivel = mNivel.getText().toString();
 
-                    HashMap<String, String> cambios = new HashMap<>();
-                    cambios.put("cargo", cargo);
-                    cambios.put("nivel", nivel);
-                    mCargoNivelDatabase.setValue(cambios).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    mCargoNivelDatabase.child("nivel").setValue(nivel).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful())
+                            if(task.isSuccessful()){
+                                mProgress.dismiss();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "¡Se ha producido un error al guardar los cambios!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
+                    mCargoNivelDatabase.child("cargo").setValue(cargo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful())
                             {
                                 mProgress.dismiss();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "¡Se ha producido un error al guardar los cambios!", Toast.LENGTH_LONG).show();
+
                             }
                         }
                     });
 
                 } else if (!TextUtils.isEmpty(cargo)) { // Solo el Cargo
 
-                    cargo = mCargo.getEditText().getText().toString();
+                    cargo = mCargo.getText().toString();
                     mCargoNivelDatabase.child("cargo").setValue(cargo).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -100,7 +112,7 @@ public class CargoNivelActivity extends AppCompatActivity {
                     });
 
                 } else if (!TextUtils.isEmpty(nivel)) { // Solo el Nivel
-                    nivel = mNivel.getEditText().getText().toString();
+                    nivel = mNivel.getText().toString();
                     mCargoNivelDatabase.child("nivel").setValue(nivel).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

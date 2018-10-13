@@ -1,9 +1,11 @@
 package com.fervenzagames.apparbitraje;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -69,6 +71,21 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+        // Al pulsar el botón para cambiar IMAGEN
+        mImagenBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        // Al pulsar el botón para cambiar DATOS
+        mDatosBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent datosIntent = new Intent(SettingsActivity.this, CargoNivelActivity.class);
+                startActivity(datosIntent);
             }
         });
     }
