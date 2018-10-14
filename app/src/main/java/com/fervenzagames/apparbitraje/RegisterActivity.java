@@ -18,6 +18,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -124,7 +127,27 @@ public class RegisterActivity extends AppCompatActivity {
 
                         } else {
                             mRegProgress.hide();
-                            Toast.makeText(RegisterActivity.this, "Error al registrar la nueva cuenta...", Toast.LENGTH_LONG).show();
+                            // Toast.makeText(RegisterActivity.this, "Error al registrar la nueva cuenta...", Toast.LENGTH_LONG).show();
+                            // Comprobación y gestión de errores en el formulario
+                            String error = "";
+                            try {
+                                throw task.getException();
+                            } catch (FirebaseAuthWeakPasswordException e)
+                            {
+                                error = "Contraseña Débil";
+                            } catch (FirebaseAuthInvalidCredentialsException e)
+                            {
+                                error = "Email incorrecto";
+                            } catch (FirebaseAuthUserCollisionException e)
+                            {
+                                error = "La cuenta ya existe";
+                            } catch (Exception e)
+                            {
+                                error = "Error desconocido";
+                                e.printStackTrace();
+                            }
+
+                            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
                         }
 
                     }

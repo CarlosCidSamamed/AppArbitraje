@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -81,6 +83,10 @@ public class SettingsActivity extends AppCompatActivity {
                 mNombre.setText(nombre);
                 mNivel.setText(nivel);
                 mCargo.setText(cargo);
+
+                //Imagen
+                Picasso.get().load(imagen).into(mImagen);
+
             }
 
             @Override
@@ -131,22 +137,51 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
             if (resultCode == RESULT_OK) {
 
-                Uri resultUri = result.getUri();
+                mProgressDialog = new ProgressDialog(SettingsActivity.this);
+                mProgressDialog.setTitle("Subiendo Imagen...");
+                mProgressDialog.setMessage("Espere mientras se sube la imagen...");
+                mProgressDialog.setCanceledOnTouchOutside(false);
+                mProgressDialog.show();
+
+                final Uri resultUri = result.getUri();
                 // Para que el nombre del archivo de la foto de perfil coincida con el current_user uid debemos obtenerlo a partir de FirebaseAuth.
                 mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
-                String uid = mCurrentUser.getUid();
-                StorageReference filepath = mImageStorage.child("profileImages").child(uid + ".jpg");
+                final String uid = mCurrentUser.getUid();
+                final StorageReference filepath = mImageStorage.child("profileImages").child(uid + ".jpg");
 
                 filepath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(SettingsActivity.this, "Subiendo Imagen...", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(SettingsActivity.this, "Subiendo Imagen...", Toast.LENGTH_SHORT).show();
+                            mImageStorage.child("profileImages").child(uid + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String download_Url = uri.toString();
+
+                                    mUserDatabase.child("imagen").setValue(download_Url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()){
+                                                mProgressDialog.dismiss();
+                                                Toast.makeText(SettingsActivity.this, "Éxito al subir la imagen.", Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toast.makeText(SettingsActivity.this, "ERROR al subir la imagen.", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
+
                         } else {
                             Toast.makeText(SettingsActivity.this, "¡¡Error al subir la Imagen!!", Toast.LENGTH_SHORT).show();
+                            mProgressDialog.dismiss();
                         }
                     }
                 });
