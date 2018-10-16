@@ -26,4 +26,7 @@
     <string name="cambiar_imagen">Cambiar Imagen</string>
     <string name="nivel">Nivel</string>
     <string name="guardar_cambios">Guardar Cambios</string>
+    <string name="ver_campeonatos">Ver Campeonatos</string>
+    <string name="lugar">Lugar</string>
+    <string name="fecha">Fecha</string>
 </resources>

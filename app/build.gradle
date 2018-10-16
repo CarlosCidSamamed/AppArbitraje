@@ -5,7 +5,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.fervenzagames.apparbitraje"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -34,4 +34,5 @@ dependencies {
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
     implementation 'com.google.firebase:firebase-storage:16.0.3'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.firebaseui:firebase-ui-database:4.2.0'
 }

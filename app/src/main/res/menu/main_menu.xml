@@ -3,6 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/main_ver_campeonatos"
+        android:title="@string/ver_campeonatos" />
+    <item
         android:id="@+id/main_account_settings"
         android:title="@string/cuenta_de_usuario" />
     <item

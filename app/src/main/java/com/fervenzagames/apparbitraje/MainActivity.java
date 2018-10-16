@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.time.chrono.MinguoChronology;
+
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -104,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
             }
             case R.id.main_app_type:{
                 Toast.makeText(MainActivity.this, "Ha pulsado el botón de Tipo de App", Toast.LENGTH_SHORT).show();
+                break;
+            }
+            case R.id.main_ver_campeonatos:{
+                Toast.makeText(MainActivity.this, "Ver los Campeonatos de la BD", Toast.LENGTH_SHORT).show();
+                Intent campIntent = new Intent(MainActivity.this, CampeonatosActivity.class);
+                startActivity(campIntent);
                 break;
             }
         }
