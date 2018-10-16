@@ -29,4 +29,5 @@
     <string name="ver_campeonatos">Ver Campeonatos</string>
     <string name="lugar">Lugar</string>
     <string name="fecha">Fecha</string>
+    <string name="tipo">Tipo</string>
 </resources>

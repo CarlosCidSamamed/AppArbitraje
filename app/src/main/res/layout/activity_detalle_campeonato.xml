@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <include layout="@layout/app_bar_layout" android:id="@+id/det_camp_bar"/>
+
+    <TextView
+        android:id="@+id/camp_detalle_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="31dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="45dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginRight="56dp"
+        android:text="@string/SuNombre" />
+
+    <TextView
+        android:id="@+id/camp_detalle_lugar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/camp_detalle_nombre"
+        android:layout_alignLeft="@+id/camp_detalle_nombre"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="123dp"
+        android:text="@string/lugar" />
+
+    <TextView
+        android:id="@+id/camp_detalle_fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/camp_detalle_lugar"
+        android:layout_alignEnd="@+id/camp_detalle_nombre"
+        android:layout_alignRight="@+id/camp_detalle_nombre"
+        android:text="@string/fecha" />
+
+    <TextView
+        android:id="@+id/camp_detalle_tipo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="177dp"
+        android:text="@string/tipo" />
+
+    <ListView
+        android:id="@+id/camp_detalle_listaArbitros"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="307dp" />
+
+</RelativeLayout>

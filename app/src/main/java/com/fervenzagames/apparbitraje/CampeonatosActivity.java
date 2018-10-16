@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,6 +56,18 @@ public class CampeonatosActivity extends AppCompatActivity {
         /*mCampList = (RecyclerView) findViewById(R.id.camp_list);
         mCampList.setHasFixedSize(true);
         mCampList.setLayoutManager(new LinearLayoutManager(this));*/
+
+        // Qué ocurre si se pulsa sobre uno de los elementos de la lista de campeonatos
+
+        campListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Campeonatos camp = campList.get(position);
+                Intent detalleCamp = new Intent(CampeonatosActivity.this, DetalleCampeonatoActivity.class);
+                detalleCamp.putExtra("nombre", camp.nombre);
+                startActivity(detalleCamp);
+            }
+        });
     }
 
     @Override

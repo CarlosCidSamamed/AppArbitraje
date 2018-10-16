@@ -41,7 +41,10 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".CampeonatosActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".DetalleCampeonatoActivity"
+            android:parentActivityName=".CampeonatosActivity" />
     </application>
 
 </manifest>
