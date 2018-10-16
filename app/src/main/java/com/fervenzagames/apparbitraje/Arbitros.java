@@ -1,5 +1,7 @@
 package com.fervenzagames.apparbitraje;
 
+import java.util.List;
+
 public class Arbitros {
 
     private String nombre;
@@ -11,6 +13,12 @@ public class Arbitros {
 
     private String nivel;
     private String cargo;
+
+    private int zonaCombate;
+    /* En el caso de que en un campeonato haya distintas zonas de combate o competición debermos identificar la zona
+     * a la que pertenece tanto el árbitro de Mesa como los de Silla. */
+
+    public List<Combates> listaCombates;
 
     public Arbitros(String nombre, String dni, String email, String password, String foto, String nivel, String cargo) {
         this.nombre = nombre;
@@ -79,6 +87,22 @@ public class Arbitros {
 
     public void setCargo(String cargo) {
         this.cargo = cargo;
+    }
+
+    public int getZonaCombate() {
+        return zonaCombate;
+    }
+
+    public void setZonaCombate(int zonaCombate) {
+        this.zonaCombate = zonaCombate;
+    }
+
+    public List<Combates> getListaCombates() {
+        return listaCombates;
+    }
+
+    public void setListaCombates(List<Combates> listaCombates) {
+        this.listaCombates = listaCombates;
     }
 }
 
