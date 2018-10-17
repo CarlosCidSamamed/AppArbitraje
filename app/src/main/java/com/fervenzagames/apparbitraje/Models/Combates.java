@@ -1,4 +1,6 @@
-package com.fervenzagames.apparbitraje;
+package com.fervenzagames.apparbitraje.Models;
+
+import com.fervenzagames.apparbitraje.Models.Asaltos;
 
 import java.util.List;
 
@@ -12,11 +14,16 @@ public class Combates {
     private String idRojo;
     private String idAzul;
     private List<Asaltos> listaAsaltos;
+    private String modalidad;
+    private String categoria;
+    private String campeonato;
 
     public Combates() {
     }
 
-    public Combates(String id, int numCombate, String ganador, String motivo, String enlaceVideo, String idRojo, String idAzul, List<Asaltos> listaAsaltos) {
+    public Combates(String id, int numCombate, String ganador, String motivo, String enlaceVideo,
+                    String idRojo, String idAzul, List<Asaltos> listaAsaltos,
+                    String modalidad, String categoria, String campeonato) {
         this.id = id;
         this.numCombate = numCombate;
         this.ganador = ganador;
@@ -25,6 +32,9 @@ public class Combates {
         this.idRojo = idRojo;
         this.idAzul = idAzul;
         this.listaAsaltos = listaAsaltos;
+        this.modalidad = modalidad;
+        this.categoria = categoria;
+        this.campeonato = campeonato;
     }
 
     public String getId() {
@@ -89,5 +99,29 @@ public class Combates {
 
     public void setListaAsaltos(List<Asaltos> listaAsaltos) {
         this.listaAsaltos = listaAsaltos;
+    }
+
+    public String getModalidad() {
+        return modalidad;
+    }
+
+    public void setModalidad(String modalidad) {
+        this.modalidad = modalidad;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getCampeonato() {
+        return campeonato;
+    }
+
+    public void setCampeonato(String campeonato) {
+        this.campeonato = campeonato;
     }
 }

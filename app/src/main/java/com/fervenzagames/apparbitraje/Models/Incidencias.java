@@ -1,4 +1,4 @@
-package com.fervenzagames.apparbitraje;
+package com.fervenzagames.apparbitraje.Models;
 
 public class Incidencias {
 

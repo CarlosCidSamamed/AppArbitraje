@@ -1,13 +1,11 @@
-package com.fervenzagames.apparbitraje;
+package com.fervenzagames.apparbitraje.Models;
 
 import java.util.List;
-
-import javax.security.auth.Destroyable;
 
 public class Asaltos {
 
     private String id;
-    private int numCombate;
+    private int numAsalto;
     private String ganador;
     private String motivo;
     private String descripcion;
@@ -24,9 +22,9 @@ public class Asaltos {
     public Asaltos() {
     }
 
-    public Asaltos(String id, int numCombate, String ganador, String motivo, String descripcion, int puntuacionRojo, int puntuacionAzul, String duracion, List<Puntuaciones> listaPuntuaciones, List<Incidencias> listaIncidencias) {
+    public Asaltos(String id, int numAsalto, String ganador, String motivo, String descripcion, int puntuacionRojo, int puntuacionAzul, String duracion, List<Puntuaciones> listaPuntuaciones, List<Incidencias> listaIncidencias) {
         this.id = id;
-        this.numCombate = numCombate;
+        this.numAsalto = numAsalto;
         this.ganador = ganador;
         this.motivo = motivo;
         this.descripcion = descripcion;
@@ -45,12 +43,12 @@ public class Asaltos {
         this.id = id;
     }
 
-    public int getNumCombate() {
-        return numCombate;
+    public int getNumAsalto() {
+        return numAsalto;
     }
 
-    public void setNumCombate(int numCombate) {
-        this.numCombate = numCombate;
+    public void setNumAsalto(int numAsalto) {
+        this.numAsalto = numAsalto;
     }
 
     public String getGanador() {
