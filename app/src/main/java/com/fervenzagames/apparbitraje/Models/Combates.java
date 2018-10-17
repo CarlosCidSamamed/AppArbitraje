@@ -7,7 +7,7 @@ import java.util.List;
 public class Combates {
 
     private String id;
-    private int numCombate;
+    private int numCombate; // Número de ese combate dentro de un Campeonato.
     private String ganador;
     private String motivo;
     private String enlaceVideo;

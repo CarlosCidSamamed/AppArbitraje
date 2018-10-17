@@ -45,6 +45,9 @@
         <activity
             android:name=".DetalleCampeonatoActivity"
             android:parentActivityName=".CampeonatosActivity" />
+        <activity
+            android:name=".AddCampeonatoActivity"
+            android:parentActivityName=".CampeonatosActivity" />
     </application>
 
 </manifest>

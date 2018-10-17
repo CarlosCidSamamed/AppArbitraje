@@ -41,8 +41,8 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         mFecha = (TextView) findViewById(R.id.camp_detalle_fecha);
         mTipo = (TextView) findViewById(R.id.camp_detalle_tipo);
 
-        String nombreCamp = getIntent().getStringExtra("nombre");
-        campDB = FirebaseDatabase.getInstance().getReference().child("Arbitraje").child("Campeonatos").child(nombreCamp);
+        String idCamp = getIntent().getStringExtra("idCamp");
+        campDB = FirebaseDatabase.getInstance().getReference().child("Arbitraje").child("Campeonatos").child(idCamp);
 
         campDB.addValueEventListener(new ValueEventListener() {
             @Override

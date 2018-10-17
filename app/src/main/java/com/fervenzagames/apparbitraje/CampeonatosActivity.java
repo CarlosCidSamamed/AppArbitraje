@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,6 +33,8 @@ public class CampeonatosActivity extends AppCompatActivity {
 
     private List<Campeonatos> campList;
 
+    private Button addCampBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,8 @@ public class CampeonatosActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Todos los Campeonatos");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        addCampBtn = (Button) findViewById(R.id.camp_add_btn);
 
         campListView = (ListView) findViewById(R.id.camp_listView);
         campList = new ArrayList<>();
@@ -58,8 +63,16 @@ public class CampeonatosActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Campeonatos camp = campList.get(position);
                 Intent detalleCamp = new Intent(CampeonatosActivity.this, DetalleCampeonatoActivity.class);
-                detalleCamp.putExtra("nombre", camp.nombre);
+                detalleCamp.putExtra("idCamp", camp.idCamp);
                 startActivity(detalleCamp);
+            }
+        });
+
+        addCampBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addIntent = new Intent(CampeonatosActivity.this, AddCampeonatoActivity.class);
+                startActivity(addIntent);
             }
         });
     }

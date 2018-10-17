@@ -15,7 +15,7 @@ public class Arbitros {
     private String cargo;
 
     private int zonaCombate;
-    /* En el caso de que en un campeonato haya distintas zonas de combate o competición debermos identificar la zona
+    /* En el caso de que en un campeonato haya distintas zonas de combate o competición deberemos identificar la zona
      * a la que pertenece tanto el árbitro de Mesa como los de Silla. */
 
     public List<Combates> listaCombates;

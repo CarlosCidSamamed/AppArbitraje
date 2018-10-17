@@ -59,4 +59,17 @@
         android:layout_marginLeft="0dp"
         android:layout_marginTop="307dp" />
 
+    <Button
+        android:id="@+id/camp_detalle_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="240dp"
+        android:background="@color/colorAccent2"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/editar_datos"
+        android:textColor="@android:color/white" />
+
 </RelativeLayout>

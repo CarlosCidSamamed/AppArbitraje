@@ -30,4 +30,18 @@
     <string name="lugar">Lugar</string>
     <string name="fecha">Fecha</string>
     <string name="tipo">Tipo</string>
+    <string name="editar_datos">Editar Datos</string>
+    <string name="anadir_campeonato">Añadir Campeonato</string>
+    <string name="guardar_datos">Guardar Datos</string>
+    <string name="anadir_modalidades">Añadir Modalidades</string>
+
+    <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
+    <array name="tiposCampeonato">
+        <item>Abierto</item>
+        <item>Por invitación</item>
+        <item>Autonómico</item>
+        <item>Nacional</item>
+        <item>Internacional</item>
+
+    </array>
 </resources>
