@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje;
 
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -61,12 +64,14 @@ public class AddCampeonatoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //addCampeonato();
+                addModalidades();
             }
         });
 
     }
 
     private void addCampeonato(){
+
         String nombre = mNombre.getEditText().getText().toString();
         String fecha = mFecha.getEditText().getText().toString();
         String lugar = mLugar.getEditText().getText().toString();
@@ -85,6 +90,24 @@ public class AddCampeonatoActivity extends AppCompatActivity {
 
         } else {
             Toast.makeText(AddCampeonatoActivity.this, "Debe rellenar el formulario en su totalidad antes de pulsar el botón de Guardar", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void addModalidades() {
+
+        String nombre = mNombre.getEditText().getText().toString();
+        String fecha = mFecha.getEditText().getText().toString();
+        String lugar = mLugar.getEditText().getText().toString();
+        String tipo = mTipo.getSelectedItem().toString();
+
+        if (!TextUtils.isEmpty(nombre) && !TextUtils.isEmpty(fecha) && !TextUtils.isEmpty(lugar)) {
+
+            Intent addModIntent = new Intent(this, AddModalidadActivity.class);
+            addModIntent.putExtra("NombreCampeonato", nombre);
+            startActivity(addModIntent);
+
+        } else {
+            Toast.makeText(AddCampeonatoActivity.this, "Debe rellenar el formulario en su totalidad antes de pulsar el botón de Añadir Modalidades", Toast.LENGTH_LONG).show();
         }
     }
 }

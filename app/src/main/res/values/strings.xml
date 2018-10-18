@@ -34,6 +34,11 @@
     <string name="anadir_campeonato">Añadir Campeonato</string>
     <string name="guardar_datos">Guardar Datos</string>
     <string name="anadir_modalidades">Añadir Modalidades</string>
+    <string name="descripcion">Descripción</string>
+    <string name="edad">Edad</string>
+    <string name="peso">Peso</string>
+    <string name="sexo">Sexo</string>
+    <string name="anadir_categorias">Añadir Categorías</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">
@@ -43,5 +48,19 @@
         <item>Nacional</item>
         <item>Internacional</item>
 
+    </array>
+
+    <array name="modalidadesCombate">
+        <item>Sanda SD</item>
+        <item>Qingda QD</item>
+        <item>Shuai Jiao SJ</item>
+        <item>Kungfu Combat KFC</item>
+    </array>
+
+    <array name="descripcionesModalidadesCombate">
+        <item>Sanda : Combate a pleno contacto.</item>
+        <item>Qingda: Combate con contacto reducido y controlado.</item>
+        <item>Shuai Jiao : Lucha China</item>
+        <item>Kungfu Combat : Combate a pleno contacto de cuello hacia abajo.</item>
     </array>
 </resources>
