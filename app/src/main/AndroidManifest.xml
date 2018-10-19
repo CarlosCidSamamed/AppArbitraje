@@ -44,7 +44,8 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".DetalleCampeonatoActivity"
-            android:parentActivityName=".CampeonatosActivity" />
+            android:parentActivityName=".CampeonatosActivity"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".AddCampeonatoActivity"
             android:parentActivityName=".CampeonatosActivity" />

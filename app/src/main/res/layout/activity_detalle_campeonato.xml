@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <include layout="@layout/app_bar_layout" android:id="@+id/det_camp_bar"/>
@@ -7,18 +9,22 @@
     <TextView
         android:id="@+id/camp_detalle_nombre"
         android:layout_width="wrap_content"
-        android:layout_height="31dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="45dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="56dp"
-        android:layout_marginRight="56dp"
-        android:text="@string/SuNombre" />
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/SuNombre"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/det_camp_bar" />
 
     <TextView
         android:id="@+id/camp_detalle_lugar"
@@ -27,8 +33,16 @@
         android:layout_alignStart="@+id/camp_detalle_nombre"
         android:layout_alignLeft="@+id/camp_detalle_nombre"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="123dp"
-        android:text="@string/lugar" />
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/lugar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.069"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/camp_detalle_nombre" />
 
     <TextView
         android:id="@+id/camp_detalle_fecha"
@@ -37,7 +51,16 @@
         android:layout_alignTop="@+id/camp_detalle_lugar"
         android:layout_alignEnd="@+id/camp_detalle_nombre"
         android:layout_alignRight="@+id/camp_detalle_nombre"
-        android:text="@string/fecha" />
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/fecha"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.069"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/camp_detalle_lugar" />
 
     <TextView
         android:id="@+id/camp_detalle_tipo"
@@ -45,19 +68,39 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="177dp"
-        android:text="@string/tipo" />
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/tipo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.067"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/camp_detalle_fecha" />
 
     <ListView
         android:id="@+id/camp_detalle_listaArbitros"
-        android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_width="183dp"
+        android:layout_height="178dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="307dp" />
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listaArbitros" />
+
+    <ListView
+        android:id="@+id/camp_detalle_listaModalidades"
+        android:layout_width="174dp"
+        android:layout_height="184dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listaModalidades" />
 
     <Button
         android:id="@+id/camp_detalle_edit"
@@ -65,11 +108,68 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="240dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:background="@color/colorAccent2"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:text="@string/editar_datos"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.982"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/listaArbitros"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/listadoArbitros"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/listaModalidades"
+        app:layout_constraintHorizontal_bias="0.118"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/listaModalidades" />
+
+    <TextView
+        android:id="@+id/listaModalidades"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/listadoModalidades"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/camp_detalle_edit" />
+
+    <Button
+        android:id="@+id/camp_detalle_add_arb"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/anadir"
+        app:layout_constraintStart_toEndOf="@+id/camp_detalle_listaArbitros"
+        app:layout_constraintTop_toBottomOf="@+id/listaArbitros" />
+
+    <Button
+        android:id="@+id/camp_detalle_add_mod"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/anadir"
+        app:layout_constraintEnd_toStartOf="@+id/camp_detalle_listaModalidades"
+        app:layout_constraintTop_toBottomOf="@+id/listaModalidades" />
+
+</android.support.constraint.ConstraintLayout>

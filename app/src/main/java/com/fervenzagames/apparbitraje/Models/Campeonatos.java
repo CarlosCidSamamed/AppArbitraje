@@ -21,13 +21,14 @@ public class Campeonatos {
     public Campeonatos() {
     }
 
-    public Campeonatos(String idCamp, String nombre, String fecha, String lugar, String tipo, List<Arbitros> listaArbitros) {
+    public Campeonatos(String idCamp, String nombre, String fecha, String lugar, String tipo, List<Arbitros> listaArbitros, List<Modalidades> listaModalidades) {
         this.idCamp = idCamp;
         this.nombre = nombre;
         this.fecha = fecha;
         this.lugar = lugar;
         this.tipo = tipo;
         this.listaArbitros = listaArbitros;
+        this.listaModalidades = listaModalidades;
     }
 
     public String getIdCamp() {
@@ -73,7 +74,16 @@ public class Campeonatos {
     public List<Arbitros> getListaArbitros() {
         return listaArbitros;
     }
+
     public void setListaArbitros(List<Arbitros> listaArbitros) {
        this.listaArbitros = listaArbitros;
+    }
+
+    public List<Modalidades> getListaModalidades() {
+        return listaModalidades;
+    }
+
+    public void setListaModalidades(List<Modalidades> listaModalidades) {
+        this.listaModalidades = listaModalidades;
     }
 }

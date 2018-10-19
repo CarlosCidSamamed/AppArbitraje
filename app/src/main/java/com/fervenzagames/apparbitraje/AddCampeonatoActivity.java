@@ -14,14 +14,13 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
+import com.fervenzagames.apparbitraje.Models.Modalidades;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class AddCampeonatoActivity extends AppCompatActivity {
     private TextInputLayout mFecha;
     private TextInputLayout mLugar;
     private Spinner mTipo;
-    private Button mAddCategoriasBtn;
+    private Button mAddModalidadesBtn;
     private Button mGuardarBtn;
 
     private DatabaseReference campsDB;
@@ -55,7 +54,7 @@ public class AddCampeonatoActivity extends AppCompatActivity {
         mLugar = (TextInputLayout) findViewById(R.id.add_camp_lugar);
         mTipo = (Spinner) findViewById(R.id.add_camp_tipo);
 
-        mAddCategoriasBtn = (Button) findViewById(R.id.add_camp_modalidades_btn);
+        mAddModalidadesBtn = (Button) findViewById(R.id.add_camp_modalidades_btn);
         mGuardarBtn = (Button) findViewById(R.id.add_camp_guardar_btn);
 
         mGuardarBtn.setOnClickListener(new View.OnClickListener() {
@@ -65,11 +64,11 @@ public class AddCampeonatoActivity extends AppCompatActivity {
             }
         });
 
-        mAddCategoriasBtn.setOnClickListener(new View.OnClickListener() {
+        mAddModalidadesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //addCampeonato();
-                addModalidades();
+                addModalidad();
             }
         });
 
@@ -86,8 +85,9 @@ public class AddCampeonatoActivity extends AppCompatActivity {
 
             final String id = campsDB.push().getKey();
             List<Arbitros> listaArbitros = null;
+            List<Modalidades> listaModalidades = null;
 
-            final Campeonatos camp = new Campeonatos(id, nombre, fecha, lugar, tipo, listaArbitros);
+            final Campeonatos camp = new Campeonatos(id, nombre, fecha, lugar, tipo, listaArbitros, listaModalidades);
 
             // Comprobar si existe este campeonato en la BD
             // Creamos la consulta que nos devuelve el primer campeonato que encuentre con ese nombre.
@@ -124,7 +124,7 @@ public class AddCampeonatoActivity extends AppCompatActivity {
         }
     }
 
-    public void addModalidades() {
+    public void addModalidad() {
 
         String nombre = mNombre.getEditText().getText().toString();
         String fecha = mFecha.getEditText().getText().toString();
@@ -142,38 +142,4 @@ public class AddCampeonatoActivity extends AppCompatActivity {
         }
     }
 
-    // Para añadir un campeonato a la BD deberé asegurarme de que existe otro campeonato con el mismo nombre en la BD. Así evitaremos duplicados.
-    private boolean comprobarDuplicados(Campeonatos camp)
-    {
-        // Obtenemos el nombre del campeonato que queremos guardar en la BD
-        String nombre = mNombre.getEditText().getText().toString(); // Nombre a buscar en los campeonatos de la BD.
-
-        // Creamos la consulta que nos devuelve el primer campeonato que encuentre con ese nombre.
-        Query consulta = campsDB
-                .orderByChild("nombre")
-                .equalTo(nombre)
-                .limitToFirst(1);
-
-        // Comprobamos si la consulta ha encontrado algún campeonato con ese nombre o no.
-        boolean existe;
-        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                boolean e;
-                if(dataSnapshot.exists()){ // Existe un campeonato en la BD con ese nombre
-                    e = true;
-                } else {
-                    e = false;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-        return false;
-    }
 }
