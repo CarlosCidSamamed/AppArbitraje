@@ -2,6 +2,7 @@ package com.fervenzagames.apparbitraje;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,8 +16,12 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Models.Categorias;
 import com.fervenzagames.apparbitraje.Models.Modalidades;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -105,26 +110,51 @@ public class AddModalidadActivity extends AppCompatActivity {
         // Usar el idCamp para añadir una rama correspondiente a este campeonato a la rama de Modalidades.
         // Obtener el ID del Intent que viene de la actividad anterior (AddCampeonatosActivity)
         Intent intent = getIntent();
-        String idCamp = intent.getStringExtra("IdCamp");    // El ID alfanumérico que genera Firebase RT DB al añadir un campeonato a la BD.
+        final String idCamp = intent.getStringExtra("IdCamp");    // El ID alfanumérico que genera Firebase RT DB al añadir un campeonato a la BD.
 
-        String nombreMod = mNombreMod.getSelectedItem().toString();
+        final String nombreMod = mNombreMod.getSelectedItem().toString();
         String descMod = mDescripcionMod.getText().toString();
 
         // Lista vacía de Categorías
         List<Categorias> catList = null;
         // Crear objeto de tipo Modalidad
-        Modalidades mod = new Modalidades(idCamp, nombreMod, descMod, catList);
+        final Modalidades mod = new Modalidades(idCamp, nombreMod, descMod, catList);
 
         // Insertar la Modalidad en la BD.
         // Para poder añadir varias Modalidades a un Campeonato debo hacer un push para generar un ID único para cada Modalidad dentro de ese Campeonato.
-        String idMod = modsDB.child(idCamp).push().getKey();
+        final String idMod = modsDB.child(idCamp).push().getKey();
 
-        // Comprobar si ya existe en este campeonato la Modalidad que queremos insertar.
-        // Mensaje de Aviso en pantalla.
-        // En caso contrario, añadir la Modalidad en la rama que le corresponde.
-        modsDB.child(idCamp).child(idMod).setValue(mod);
+        // Comprobación de Duplicados
+        // Consulta
+        Query consulta = modsDB.child(idCamp);
+        Query consulta2 = consulta
+                .orderByChild("nombre")
+                .equalTo(nombreMod)
+                .limitToFirst(1);
 
-        Toast.makeText(AddModalidadActivity.this, "Se ha añadido la Modalidad de " + nombreMod + " a la BD." , Toast.LENGTH_LONG).show();
+        consulta2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){ // Comprobar si ya existe en este campeonato la Modalidad que queremos insertar.
+                    // Mensaje de Aviso en pantalla.
+                    Toast.makeText(AddModalidadActivity.this, "Ya existe esa Modalidad para este Campeonato en la BD. Compruebe el formulario...", Toast.LENGTH_LONG).show();
+                } else { // Si no existe esa modalidad se almacena en la BD donde le corresponde.
+
+                    // En caso contrario, añadir la Modalidad en la rama que le corresponde.
+                    modsDB.child(idCamp).child(idMod).setValue(mod);
+
+                    // Actualizar la lista de Modalidades para este campeonato.
+
+                    Toast.makeText(AddModalidadActivity.this, "Se ha añadido la Modalidad de " + nombreMod + " a la BD." , Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
 }
