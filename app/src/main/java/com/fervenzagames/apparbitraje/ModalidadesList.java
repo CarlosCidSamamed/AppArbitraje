@@ -33,10 +33,10 @@ public class ModalidadesList extends ArrayAdapter<Modalidades> {
         convertView = LayoutInflater.from(context).inflate(R.layout.mod_single_layout, null);
 
         TextView nombre = convertView.findViewById(R.id.mod_nombre);
-        TextView desc = convertView.findViewById(R.id.mod_descripcion);
+        //TextView desc = convertView.findViewById(R.id.mod_descripcion);
 
         nombre.setText(mod.getNombre());
-        desc.setText(mod.getDescripcion());
+        //desc.setText(mod.getDescripcion());
 
         return convertView;
     }

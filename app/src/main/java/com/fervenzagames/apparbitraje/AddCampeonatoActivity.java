@@ -32,7 +32,7 @@ public class AddCampeonatoActivity extends AppCompatActivity {
     private TextInputLayout mFecha;
     private TextInputLayout mLugar;
     private Spinner mTipo;
-    private Button mAddModalidadesBtn;
+    // private Button mAddModalidadesBtn;
     private Button mGuardarBtn;
 
     private DatabaseReference campsDB;
@@ -54,7 +54,7 @@ public class AddCampeonatoActivity extends AppCompatActivity {
         mLugar = (TextInputLayout) findViewById(R.id.add_camp_lugar);
         mTipo = (Spinner) findViewById(R.id.add_camp_tipo);
 
-        mAddModalidadesBtn = (Button) findViewById(R.id.add_camp_modalidades_btn);
+        // mAddModalidadesBtn = (Button) findViewById(R.id.add_camp_modalidades_btn);
         mGuardarBtn = (Button) findViewById(R.id.add_camp_guardar_btn);
 
         mGuardarBtn.setOnClickListener(new View.OnClickListener() {
@@ -64,13 +64,13 @@ public class AddCampeonatoActivity extends AppCompatActivity {
             }
         });
 
-        mAddModalidadesBtn.setOnClickListener(new View.OnClickListener() {
+        /*mAddModalidadesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //addCampeonato();
                 addModalidad();
             }
-        });
+        });*/
 
     }
 
@@ -124,7 +124,7 @@ public class AddCampeonatoActivity extends AppCompatActivity {
         }
     }
 
-    public void addModalidad() {
+    /*public void addModalidad() {
 
         String nombre = mNombre.getEditText().getText().toString();
         String fecha = mFecha.getEditText().getText().toString();
@@ -140,6 +140,6 @@ public class AddCampeonatoActivity extends AppCompatActivity {
         } else {
             Toast.makeText(AddCampeonatoActivity.this, "Debe rellenar el formulario en su totalidad antes de pulsar el botón de Añadir Modalidades", Toast.LENGTH_LONG).show();
         }
-    }
+    }*/
 
 }

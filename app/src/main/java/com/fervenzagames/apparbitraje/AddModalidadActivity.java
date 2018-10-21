@@ -117,12 +117,14 @@ public class AddModalidadActivity extends AppCompatActivity {
 
         // Lista vacía de Categorías
         List<Categorias> catList = null;
-        // Crear objeto de tipo Modalidad
-        final Modalidades mod = new Modalidades(idCamp, nombreMod, descMod, catList);
+
 
         // Insertar la Modalidad en la BD.
         // Para poder añadir varias Modalidades a un Campeonato debo hacer un push para generar un ID único para cada Modalidad dentro de ese Campeonato.
         final String idMod = modsDB.child(idCamp).push().getKey();
+
+        // Crear objeto de tipo Modalidad
+        final Modalidades mod = new Modalidades(idMod, nombreMod, descMod, catList);
 
         // Comprobación de Duplicados
         // Consulta

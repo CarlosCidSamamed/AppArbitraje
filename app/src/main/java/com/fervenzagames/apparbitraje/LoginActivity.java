@@ -91,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     mLoginProgress.hide();
                     Toast.makeText(LoginActivity.this, "Error al iniciar sesión. Compruebe sus credenciales...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, task.getException().toString(), Toast.LENGTH_LONG).show();
                 }
 
             }

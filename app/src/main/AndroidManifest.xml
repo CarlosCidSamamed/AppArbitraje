@@ -41,17 +41,24 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".CampeonatosActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".DetalleCampeonatoActivity"
             android:parentActivityName=".CampeonatosActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".AddCampeonatoActivity"
-            android:parentActivityName=".CampeonatosActivity" />
+            android:parentActivityName=".CampeonatosActivity"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".AddModalidadActivity"
-            android:parentActivityName=".AddCampeonatoActivity" />
+            android:parentActivityName=".AddCampeonatoActivity"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".DetalleModalidadActivity"
+
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
