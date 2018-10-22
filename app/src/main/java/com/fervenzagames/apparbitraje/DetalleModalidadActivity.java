@@ -27,10 +27,13 @@ public class DetalleModalidadActivity extends AppCompatActivity {
     private String idCamp;
     private String idMod;
     private DatabaseReference modDB;
+    private DatabaseReference campDB;
     private TextView modNombre;
     private TextView modDesc;
     private ListView mListaCatView;
     private Button mAddCatBtn;
+
+    private String nombreCamp;
 
 
 
@@ -39,9 +42,11 @@ public class DetalleModalidadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_modalidad);
 
+        nombreCamp = "";
+
         mToolbar = (Toolbar) findViewById(R.id.mod_detalle_bar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Detalle Modalidad");
+        getSupportActionBar().setTitle("Detalle Modalidad ( " + nombreCamp + " )");
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Deshabilitar la flecha atrás en la barra de título.
 
         modNombre = (TextView) findViewById(R.id.mod_detalle_nombre);
@@ -62,8 +67,23 @@ public class DetalleModalidadActivity extends AppCompatActivity {
         Toast.makeText(DetalleModalidadActivity.this, "PUT EXTRA idMod --> " + idMod, Toast.LENGTH_LONG).show();
 
         modDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idCamp).child(idMod); // Referencia a esta Modalidad.
+        campDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
 
-       /* modDB.addValueEventListener(new ValueEventListener() {
+        campDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                nombreCamp = dataSnapshot.child("nombre").getValue().toString();
+                mToolbar.setTitle("Detalle Modalidad ( " + nombreCamp + " )");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        modDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String nombre = dataSnapshot.child("nombre").getValue().toString();
@@ -77,8 +97,7 @@ public class DetalleModalidadActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });*/
-
+        });
 
     }
 }
