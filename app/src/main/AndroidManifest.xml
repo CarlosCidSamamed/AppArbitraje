@@ -21,21 +21,23 @@
         </activity>
         <activity
             android:name=".StartActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".StartActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".LoginActivity"
             android:parentActivityName=".StartActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".CargoNivelActivity"
-            android:parentActivityName=".SettingsActivity" />
+            android:parentActivityName=".SettingsActivity"
+            android:screenOrientation="landscape"/>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,12 +16,16 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="107dp"
-        android:layout_marginLeft="107dp"
-        android:layout_marginTop="61dp"
-        android:layout_marginEnd="107dp"
-        android:layout_marginRight="107dp"
-        android:src="@drawable/default_avatar" />
+        android:layout_marginStart="452dp"
+        android:layout_marginLeft="452dp"
+        android:layout_marginTop="152dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/settings_nombre"
@@ -29,9 +33,17 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/settings_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:text="@string/nombre_y_apellidos"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_image" />
 
     <TextView
         android:id="@+id/settings_cargo"
@@ -43,40 +55,17 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="247dp"
-        android:layout_marginLeft="247dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="77dp"
-        android:layout_marginRight="76dp"
-        android:layout_marginBottom="218dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:text="@string/cargo"
-        android:textColor="@android:color/white" />
-
-    <Button
-        android:id="@+id/settings_change_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="97dp"
-        android:background="@color/colorPrimary"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:text="@string/cambiar_imagen"
-        android:textColor="@android:color/white" />
-
-    <Button
-        android:id="@+id/settings_change_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
-        android:background="@color/colorAccent2"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:text="@string/cambiar_datos"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toEndOf="@+id/settings_nivel"
+        app:layout_constraintTop_toBottomOf="@+id/settings_nombre" />
 
     <TextView
         android:id="@+id/settings_nivel"
@@ -88,13 +77,54 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="87dp"
-        android:layout_marginLeft="87dp"
-        android:layout_marginTop="33dp"
-        android:layout_marginEnd="244dp"
-        android:layout_marginRight="244dp"
-        android:layout_marginBottom="220dp"
+        android:layout_marginStart="336dp"
+        android:layout_marginLeft="336dp"
+        android:layout_marginTop="36dp"
         android:text="@string/nivel"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_nombre" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/settings_change_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="116dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/cambiar_imagen"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.335"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_nombre" />
+
+    <Button
+        android:id="@+id/settings_change_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="116dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@color/colorAccent2"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/cambiar_datos"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.739"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_nombre" />
+
+</android.support.constraint.ConstraintLayout>
