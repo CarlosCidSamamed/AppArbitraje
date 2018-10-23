@@ -48,6 +48,7 @@
     <array name="tiposCampeonato">
         <item>Abierto</item>
         <item>Por invitación</item>
+        <item>Provincial</item>
         <item>Autonómico</item>
         <item>Nacional</item>
         <item>Internacional</item>
@@ -58,7 +59,7 @@
         <item>Sanda SD</item>
         <item>Qingda QD</item>
         <item>Shuai Jiao SJ</item>
-        <item>Kungfu Combat KFC</item>
+        <item>Kungfu Combat KC</item>
     </array>
 
     <array name="descripcionesModalidadesCombate">
@@ -67,4 +68,73 @@
         <item>Shuai Jiao : Lucha China</item>
         <item>Kungfu Combat : Combate a pleno contacto de cuello hacia abajo.</item>
     </array>
+
+    <array name="categoriasSexo">
+        <item>Femenino</item>
+        <item>Masculino</item>
+        <item>Mixto</item>
+    </array>
+
+    <array name="categoriasEdad">
+        <item>PreInfantil</item>
+        <item>Infantil</item>
+        <item>Cadete</item>
+        <item>Junior</item>
+        <item>Absoluto</item>
+        <item>Sénior A (+40)</item>
+        <item>Sénior B (+50)</item>
+        <item>Sénior C (+60)</item>
+        <item>Sénior D (+70)</item>
+    </array>
+
+    <array name="descripcionCatEdad">
+        <item>Hasta 8 años</item>
+        <item>Entre 9 y 11 años</item>
+        <item>Entre 12 y 14 años</item>
+        <item>Entre 15 y 17 años</item>
+        <item>Entre 18 y 40 años</item>
+        <item>Entre 41 y 50 años</item>
+        <item>Entre 51 y 60 años</item>
+        <item>Entre 61 y 70 años</item>
+        <item>Entre 71 y 80 años</item>
+    </array>
+
+    <array name="categoriasPeso">
+        <item>48</item>
+        <item>52</item>
+        <item>56</item>
+        <item>60</item>
+        <item>65</item>
+        <item>70</item>
+        <item>75</item>
+        <item>80</item>
+        <item>85</item>
+        <item>90</item>
+        <item>90+</item>
+    </array>
+
+    <array name="nivelesJueces">
+        <item>Nivel 1</item>
+        <item>Nivel 2</item>
+        <item>Nivel 3</item>
+    </array>
+
+    <array name="tareasNivelUno">
+        <item>Silla</item>
+        <item>Plataforma (Torneos Regionales)</item>
+        <item>Cronometrador</item>
+    </array>
+
+    <array name="tareasNivelDos">
+        <item>Silla (Nacionales e Internacionales)</item>
+        <item>Plataforma (Torneos Nacionales)</item>
+        <item>Cronometrador (Nacionales e Internacionales)</item>
+    </array>
+
+    <array name="tareasNivelTres">
+        <item>Silla (Nacionales e Internacionales)</item>
+        <item>Plataforma (Torneos Nacionales)</item>
+        <item>Juez Principal (Mesa)</item>
+    </array>
+
 </resources>
