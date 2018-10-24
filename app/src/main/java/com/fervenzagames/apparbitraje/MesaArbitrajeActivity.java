@@ -28,8 +28,14 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
     private long mTimeLeftInMillis = START_TIME_IN_MILLIS_2; // DOS MINUTOS
 
+    private enum Estado  {COMBATE, DESCANSO_ENTRE_ASALTOS, DESCANSO_ENTRE_COMBATES}
+    private Estado estado;
+
     private Button mStartPauseBtn;
     private Button mResetBtn;
+
+    private Button mFinAsalto;
+    private Button mFinCombate;
 
 
 
@@ -47,12 +53,19 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         mStartPauseBtn.setText("Iniciar");
         mResetBtn = (Button) findViewById(R.id.reset_btn);
 
+        mFinAsalto = (Button) findViewById(R.id.terminar_asalto);
+        mFinCombate = (Button) findViewById(R.id.terminar_combate);
+
+        estado = Estado.DESCANSO_ENTRE_COMBATES;
+
         mStartPauseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mTimerRunning) {
                     pausarCrono();
                 } else {
+                    // Cambio de color a ROJO --> Estado = COMBATE
+                    estado = Estado.COMBATE;
                     iniciarCrono();
                 }
             }
@@ -61,7 +74,25 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         mResetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reiniciarCrono();
+                reiniciarCrono(START_TIME_IN_MILLIS_2);
+            }
+        });
+
+        mFinAsalto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                estado = Estado.DESCANSO_ENTRE_ASALTOS;
+                reiniciarCrono(START_TIME_IN_MILLIS); // UN MINUTO de DESCANSO
+                iniciarCrono();
+            }
+        });
+
+        mFinCombate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                estado = Estado.DESCANSO_ENTRE_COMBATES;
+                reiniciarCrono(START_TIME_IN_MILLIS_3); // TRES MINUTOS de DESCANSO
+                iniciarCrono();
             }
         });
 
@@ -79,6 +110,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                estado = Estado.DESCANSO_ENTRE_ASALTOS;
                 mTimerRunning = false;
                 mStartPauseBtn.setText("Iniciar");
             }
@@ -92,12 +124,14 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         mCountdownTimer.cancel();
         mTimerRunning = false;
         mStartPauseBtn.setText("Reanudar");
+        actualizarCrono();
     }
 
-    public void reiniciarCrono (){ // RESET
+    public void reiniciarCrono (long startTime){ // RESET
+        // estado = Estado.COMBATE;
         mCountdownTimer.cancel();
         mTimerRunning = false;
-        mTimeLeftInMillis = START_TIME_IN_MILLIS_2;
+        mTimeLeftInMillis = startTime;
         mStartPauseBtn.setText("Iniciar");
         actualizarCrono();
     }
@@ -107,6 +141,26 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         int segundos = (int) mTimeLeftInMillis / 1000 % 60;
 
         String tiempoFormateado = String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos);
+
+        // Dependiendo del valor del atributo Estado se deberá modificar el color del Texto.
+        switch (estado) {
+            case COMBATE:{
+                mCrono.setTextColor(getResources().getColor(R.color.colorVerde));
+                break;
+            }
+            case DESCANSO_ENTRE_ASALTOS:{
+                mCrono.setTextColor(getResources().getColor(R.color.colorRojo));
+                break;
+            }
+            case DESCANSO_ENTRE_COMBATES:{
+                mCrono.setTextColor(getResources().getColor(R.color.common_google_signin_btn_text_light));
+                break;
+            }
+            default:{
+                mCrono.setTextColor(getResources().getColor(R.color.common_google_signin_btn_text_light));
+                break;
+            }
+        }
 
         mCrono.setText(tiempoFormateado);
     }
