@@ -539,7 +539,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/pausa_btn"
-        app:layout_constraintTop_toBottomOf="@+id/crono" />
+        app:layout_constraintTop_toBottomOf="@+id/crono"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
 
     <!-- ZONA CENTRAL -->
 

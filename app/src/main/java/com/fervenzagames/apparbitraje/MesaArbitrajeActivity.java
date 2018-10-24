@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -21,6 +22,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
 
+    //region Atributos para el CRONO
     private TextView mCrono;
     private long pauseOffset;
     private boolean mTimerRunning;
@@ -37,6 +39,58 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
     private Button mFinAsalto;
     private Button mFinCombate;
+    //endregion
+
+    //region Atributos UI ROJO
+    private ImageView mFotoRojo;
+    private TextView mNombreRojo;
+        //region Botones
+        private Button mAmRojoBtn;
+        private Button mPenRojoBtn;
+        private Button mSalidasRojoBtn;
+        private Button mCuentasRojoBtn;
+        //endregion
+
+        //region TextViews
+        private TextView mAmRojoText;
+        private TextView mPenRojoText;
+        private TextView mSalidasRojoText;
+        private TextView mCuentasRojoText;
+        //endregion
+
+    //endregion
+
+    //region Atributos UI AZUL
+    private ImageView mFotoAzul;
+    private TextView mNombreAzul;
+        //region Botones
+        private Button mAmAzulBtn;
+        private Button mPenAzulBtn;
+        private Button mSalidasAzulBtn;
+        private Button mCuentasAzulBtn;
+        //endregion
+
+        //region TextViews
+        private TextView mAmAzulText;
+        private TextView mPenAzulText;
+        private TextView mSalidasAzulText;
+        private TextView mCuentasAzulText;
+        //endregion
+
+    //endregion
+
+    //region Atributos KO TKO
+    private Button KOBtn;
+    private Button TKOBtn;
+    //endregion
+
+    //region Atributos numCombate y numAsalto
+    private TextView mNumCombateText;
+    private TextView mNumAsaltoText;
+    //endregion
+
+    //region Atributos Trabajo con la BD
+    //endregion
 
 
     @Override
@@ -61,10 +115,12 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         // Reproducir Sonido Campana
         final MediaPlayer player = MediaPlayer.create(MesaArbitrajeActivity.this, R.raw.bell);
 
+        //region Botones CRONO
         mStartPauseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mTimerRunning) {
+                    mResetBtn.setVisibility(View.VISIBLE);
                     pausarCrono();
                 } else {
                     if(estado == Estado.COMBATE){ // Se reanuda el crono después de una pausa
@@ -84,6 +140,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         mResetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mResetBtn.setVisibility(View.INVISIBLE);
                 reiniciarCrono(START_TIME_IN_MILLIS_2);
             }
         });
@@ -109,8 +166,16 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         });
 
         actualizarCrono();
+        //endregion
+
+        //region UI ROJO
+        //endregion
+
+        //region UI AZUL
+        //endregion
     }
 
+    //region CRONO Comportamiento y Definición
     // Métodos para el CRONÓMETRO
     public void iniciarCrono (){ //START
         mCountdownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) { // Empieza con el valor indicado en mTimeLeftInMillis y se actualiza cada 1000 ms (cada segundo)
@@ -124,24 +189,30 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
             public void onFinish() {
                 // Vamos a especificar qué pasará cuando el crono acabe de contar.
                 // Puede ser al final de un asalto, al final del descanso entre asaltos o al final de un descanso entre combates.
-/*                switch(estado){
+                /*switch(estado){
                     case COMBATE:{
                         // Si un competidor ha ganado el combate, es decir, FIN COMBATE.
+                        // Deberemos recopilar los datos del combate, es decir, ganador y motivo para actualizar la entrada correspondiente a este combate en la BD.
+                        // Número de asaltos ganados para cada competidor.
                         break;
                     }
                     case DESCANSO_ENTRE_ASALTOS:{
                         // Si debemos preparar el crono para el siguiente asalto.
+                        // Deberemos recopilar los datos del asalto, es decir, ganador, motivo, descripción, puntuaciónRojo, puntuaciónAzul y duración del asalto.
+                        // Con esos datos podremos actualizar la entrada correspondiente a este asalto en la BD.
+                        // Incrementar el número de asaltos ganados por el ganador.
                         break;
                     }
                     case DESCANSO_ENTRE_COMBATES:{
                         // Si debemos preparar el crono para comenzar un nuevo combate, es decir, PRIMER asalto.
+                        // Inicializar las variables del combate y del primer asalto.
                         break;
                     }
                 }*/
                 estado = Estado.DESCANSO_ENTRE_ASALTOS;
                 mTimerRunning = false;
                 mStartPauseBtn.setText("Iniciar");
-                // reiniciarCrono(START_TIME_IN_MILLIS);
+                //reiniciarCrono(START_TIME_IN_MILLIS);
             }
         }.start(); // Iniciar el CountDownTimer que hemos creado.
 
@@ -193,4 +264,21 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
         mCrono.setText(tiempoFormateado);
     }
+    //endregion
+
+    //region Trabajo con la DB
+
+    //region Cargar Datos desde la BD
+
+    //endregion
+
+    //region Guardar Datos en la BD
+
+    //endregion
+
+    //region Actualizar Datos en la BD
+
+    //endregion
+
+    //endregion
 }
