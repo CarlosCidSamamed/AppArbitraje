@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje;
 
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +39,6 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
     private Button mFinCombate;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +58,9 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
         estado = Estado.DESCANSO_ENTRE_COMBATES;
 
+        // Reproducir Sonido Campana
+        final MediaPlayer player = MediaPlayer.create(MesaArbitrajeActivity.this, R.raw.bell);
+
         mStartPauseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +70,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
                     // Cambio de color a ROJO --> Estado = COMBATE
                     estado = Estado.COMBATE;
                     iniciarCrono();
+                    player.start();
                 }
             }
         });
@@ -84,6 +88,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
                 estado = Estado.DESCANSO_ENTRE_ASALTOS;
                 reiniciarCrono(START_TIME_IN_MILLIS); // UN MINUTO de DESCANSO
                 iniciarCrono();
+                player.start();
             }
         });
 
@@ -93,6 +98,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
                 estado = Estado.DESCANSO_ENTRE_COMBATES;
                 reiniciarCrono(START_TIME_IN_MILLIS_3); // TRES MINUTOS de DESCANSO
                 iniciarCrono();
+                player.start();
             }
         });
 
