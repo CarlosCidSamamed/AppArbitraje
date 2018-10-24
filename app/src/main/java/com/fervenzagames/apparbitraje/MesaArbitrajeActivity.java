@@ -67,10 +67,16 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
                 if(mTimerRunning) {
                     pausarCrono();
                 } else {
-                    // Cambio de color a ROJO --> Estado = COMBATE
-                    estado = Estado.COMBATE;
-                    iniciarCrono();
-                    player.start();
+                    if(estado == Estado.COMBATE){ // Se reanuda el crono después de una pausa
+
+                        iniciarCrono();
+
+                    } else { // Nuevo Asalto
+                        // Cambio de color a VERDE --> Estado = COMBATE
+                        estado = Estado.COMBATE;
+                        iniciarCrono();
+                        player.start();
+                    }
                 }
             }
         });
@@ -116,9 +122,26 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                // Vamos a especificar qué pasará cuando el crono acabe de contar.
+                // Puede ser al final de un asalto, al final del descanso entre asaltos o al final de un descanso entre combates.
+/*                switch(estado){
+                    case COMBATE:{
+                        // Si un competidor ha ganado el combate, es decir, FIN COMBATE.
+                        break;
+                    }
+                    case DESCANSO_ENTRE_ASALTOS:{
+                        // Si debemos preparar el crono para el siguiente asalto.
+                        break;
+                    }
+                    case DESCANSO_ENTRE_COMBATES:{
+                        // Si debemos preparar el crono para comenzar un nuevo combate, es decir, PRIMER asalto.
+                        break;
+                    }
+                }*/
                 estado = Estado.DESCANSO_ENTRE_ASALTOS;
                 mTimerRunning = false;
                 mStartPauseBtn.setText("Iniciar");
+                // reiniciarCrono(START_TIME_IN_MILLIS);
             }
         }.start(); // Iniciar el CountDownTimer que hemos creado.
 
