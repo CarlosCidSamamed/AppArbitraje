@@ -33,18 +33,18 @@
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".CargoNivelActivity"
             android:parentActivityName=".SettingsActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".CampeonatosActivity"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".DetalleCampeonatoActivity"
             android:parentActivityName=".CampeonatosActivity"
@@ -52,15 +52,17 @@
         <activity
             android:name=".AddCampeonatoActivity"
             android:parentActivityName=".CampeonatosActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".AddModalidadActivity"
             android:parentActivityName=".AddCampeonatoActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".DetalleModalidadActivity"
-
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MesaArbitrajeActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

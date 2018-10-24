@@ -114,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(campIntent);
                 break;
             }
+            case R.id.main_arbitrar_combate:{
+                Intent arbitrarIntent = new Intent(MainActivity.this, MesaArbitrajeActivity.class);
+                startActivity(arbitrarIntent);
+            }
         }
 
         return true;

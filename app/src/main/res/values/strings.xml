@@ -43,6 +43,32 @@
     <string name="listadoModalidades">Listado Modalidades</string>
     <string name="anadir">+</string>
     <string name="lista_categorias">Lista Categorías</string>
+    <string name="foto_del_competidor_rojo">Foto del Competidor Rojo</string>
+    <string name="amonestaciones">Amonestaciones</string>
+    <string name="penalizaciones">Penalizaciones</string>
+    <string name="salidas">Salidas</string>
+    <string name="cuentas">Cuentas</string>
+    <string name="_0">0</string>
+    <string name="foto_del_competidor_azul">Foto del Competidor Azul</string>
+    <string name="crono">CRONO</string>
+    <string name="tko">TKO</string>
+    <string name="ko">KO</string>
+    <string name="comenzar_combate">Comenzar Combate</string>
+    <string name="terminar_combate">Terminar Combate</string>
+    <string name="terminar_asalto">Terminar Asalto</string>
+    <string name="a">A</string>
+    <string name="p">P</string>
+    <string name="s">S</string>
+    <string name="c">C</string>
+    <string name="silla_1">Silla 1</string>
+    <string name="foto_del_arbitro">Foto del Árbitro</string>
+    <string name="puntuacion">Puntuación</string>
+    <string name="estado_de_conexion">Estado de Conexión</string>
+    <string name="arbitrar">Arbitrar</string>
+    <string name="combate">Combate</string>
+    <string name="asalto">Asalto</string>
+    <string name="pausa">Pausa</string>
+    <string name="reiniciar">Reiniciar</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">
