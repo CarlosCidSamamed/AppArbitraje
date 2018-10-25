@@ -72,6 +72,7 @@
     <string name="r3">R3</string>
     <string name="r2">R2</string>
     <string name="r1">R1</string>
+    <string name="logotipo_federacion_galega_de_kungfu">Logotipo Federación Galega de Kungfu</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">

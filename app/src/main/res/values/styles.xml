@@ -6,6 +6,23 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+<!--        &lt;!&ndash; Toolbar styles &ndash;&gt;
+        <item name="toolbarStyle">@style/Custom.Widget.Toolbar</item>
+        <item name="toolbarNavigtionButtonStyle">@style/Custom.Widget.Toolbar.Button.Navigation</item>-->
     </style>
+
+   <!-- <style name="Custom.Widget.Toolbar" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="maxButtonHeight">48dp</item>
+        <item name="android:paddingLeft">@dimen/toolbar_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/toolbar_horizontal_padding</item>
+        <item name="contentInsetStart">@dimen/first_keyline</item>
+
+    </style>
+
+    <style name="Custom.Widget.Toolbar.Button.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+    <item name="android:minWidth">48dp</item>
+    </style>-->
 
 </resources>

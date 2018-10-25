@@ -1,20 +1,29 @@
 package com.fervenzagames.apparbitraje;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Locale;
 
 public class MesaArbitrajeActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
 
     private static final long START_TIME_IN_MILLIS = 60000;    // Un minuto
     private static final long START_TIME_IN_MILLIS_2 = 120000; // Dos minutos
@@ -52,10 +61,26 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         //endregion
 
         //region TextViews
-        private TextView mAmRojoText;
-        private TextView mPenRojoText;
-        private TextView mSalidasRojoText;
-        private TextView mCuentasRojoText;
+        //region Round 1
+        private TextView mAmRojoR1Text;
+        private TextView mPenRojoR1Text;
+        private TextView mSalidasRojoR1Text;
+        private TextView mCuentasRojoR1Text;
+        //endregion
+
+        //region Round 2
+        private TextView mAmRojoR2Text;
+        private TextView mPenRojoR2Text;
+        private TextView mSalidasRojoR2Text;
+        private TextView mCuentasRojoR2Text;
+        //endregion
+
+        //region Round 3
+        private TextView mAmRojoR3Text;
+        private TextView mPenRojoR3Text;
+        private TextView mSalidasRojoR3Text;
+        private TextView mCuentasRojoR3Text;
+        //endregion
         //endregion
 
     //endregion
@@ -71,10 +96,29 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         //endregion
 
         //region TextViews
-        private TextView mAmAzulText;
-        private TextView mPenAzulText;
-        private TextView mSalidasAzulText;
-        private TextView mCuentasAzulText;
+
+        //region Round 1
+        private TextView mAmAzulR1Text;
+        private TextView mPenAzulR1Text;
+        private TextView mSalidasAzulR1Text;
+        private TextView mCuentasAzulR1Text;
+        //endregion
+
+        //region Round 2
+        private TextView mAmAzulR2Text;
+        private TextView mPenAzulR2Text;
+        private TextView mSalidasAzulR2Text;
+        private TextView mCuentasAzulR2Text;
+        //endregion
+
+        //region Round 3
+        private TextView mAmAzulR3Text;
+        private TextView mPenAzulR3Text;
+        private TextView mSalidasAzulR3Text;
+        private TextView mCuentasAzulR3Text;
+        //endregion
+
+
         //endregion
 
     //endregion
@@ -97,6 +141,8 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mesa_arbitraje);
+
+        mAuth = FirebaseAuth.getInstance();
 
         mToolbar = (Toolbar) findViewById(R.id.mesa_arbitraje_bar);
         setSupportActionBar(mToolbar);
@@ -280,5 +326,84 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
     //endregion
 
+    //endregion
+
+    /*--------------------------------------------------- MENU PRINCIPAL ---------------------------------------------------*/
+    //region Menú Principal
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
+
+        // Si el usuario no ha iniciado sesión deberemos abrir la pantalla de LOGIN
+        if(currentUser == null){
+            sendToStart();
+        }
+    }
+
+    private void sendToStart() {
+        /* Se crea un Intent para la página de LOGIN */
+        Intent startIntent = new Intent(MesaArbitrajeActivity.this, StartActivity.class);
+        /* Se inicia ese Intent */
+        startActivity(startIntent);
+        /* Con esta línea evitamos que al pulsar el botón para retroceder se vuelva a esta actividad. */
+        finish();
+    }
+
+    // Selecionar el menú principal que deseamos y mostrarlo.
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        return true;
+    }
+
+    // ¿Qué ocurre si se pulsa algún botón en el menú principal?
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        switch(item.getItemId())
+        {
+            case R.id.main_logout_btn:{
+                // Vamos a incluir el código para cerrar la sesión.
+                FirebaseAuth.getInstance().signOut(); // Cerrar sesión con Firebase Auth.
+                sendToStart(); // Redirigir al inicio de la app.
+                break;
+            }
+            case R.id.main_settings_btn:{
+                Toast.makeText(MesaArbitrajeActivity.this, "Ha pulsado el botón Opciones", Toast.LENGTH_SHORT).show();
+                break;
+            }
+            case R.id.main_account_settings:{
+                // Toast.makeText(MainActivity.this, "Ha pulsado el botón de Cuenta de Usuario", Toast.LENGTH_SHORT).show();
+                // Crear el Intent de la página de Settings
+                Intent sett_intent = new Intent(MesaArbitrajeActivity.this, SettingsActivity.class);
+                // E iniciarlo
+                startActivity(sett_intent);
+                break;
+            }
+            case R.id.main_app_type:{
+                Toast.makeText(MesaArbitrajeActivity.this, "Ha pulsado el botón de Tipo de App", Toast.LENGTH_SHORT).show();
+                break;
+            }
+            case R.id.main_ver_campeonatos:{
+                Toast.makeText(MesaArbitrajeActivity.this, "Ver los Campeonatos de la BD", Toast.LENGTH_SHORT).show();
+                Intent campIntent = new Intent(MesaArbitrajeActivity.this, CampeonatosActivity.class);
+                startActivity(campIntent);
+                break;
+            }
+            case R.id.main_arbitrar_combate:{
+                Intent arbitrarIntent = new Intent(MesaArbitrajeActivity.this, MesaArbitrajeActivity.class);
+                startActivity(arbitrarIntent);
+            }
+        }
+
+        return true;
+    }
     //endregion
 }
