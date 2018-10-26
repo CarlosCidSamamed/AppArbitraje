@@ -111,7 +111,11 @@ public class DetalleModalidadActivity extends AppCompatActivity {
                 idCamp = extras.getString("idCamp");
                 idMod = extras.getString("idMod");
                 Intent addCatIntent = new Intent(DetalleModalidadActivity.this, AddCategoriaActivity.class);
-                addCatIntent.putExtra("idMod", idMod);
+                Bundle extras2 = new Bundle();
+                extras2.putString("idCamp", idCamp);
+                extras2.putString("idMod", idMod);
+                extras2.putString("nombreMod", modNombre.getText().toString());
+                addCatIntent.putExtras(extras2);
                 startActivity(addCatIntent);
             }
         });
