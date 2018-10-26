@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -96,6 +97,22 @@ public class DetalleModalidadActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        // Añadir Categorías
+        mAddCatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Para poder guardar la categoría en la modalidad que le corresponde deberemos pasar al intent el id de la Modalidad.
+                // Vamos a recuperar idCamp e idMod del Bundle del Extra del Intent
+                Intent intent = getIntent();
+                Bundle extras = intent.getExtras();
+                idCamp = extras.getString("idCamp");
+                idMod = extras.getString("idMod");
+                Intent addCatIntent = new Intent(DetalleModalidadActivity.this, AddCategoriaActivity.class);
+                addCatIntent.putExtra("idMod", idMod);
+                startActivity(addCatIntent);
             }
         });
 

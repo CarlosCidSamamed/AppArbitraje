@@ -63,6 +63,9 @@
         <activity
             android:name=".MesaArbitrajeActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".AddCategoriaActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

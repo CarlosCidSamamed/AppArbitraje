@@ -187,6 +187,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mResetBtn.setVisibility(View.INVISIBLE);
+                estado = Estado.DESCANSO_ENTRE_COMBATES;
                 reiniciarCrono(START_TIME_IN_MILLIS_2);
             }
         });

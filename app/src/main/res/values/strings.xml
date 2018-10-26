@@ -130,17 +130,17 @@
     </array>
 
     <array name="categoriasPeso">
-        <item>48</item>
-        <item>52</item>
-        <item>56</item>
-        <item>60</item>
-        <item>65</item>
-        <item>70</item>
-        <item>75</item>
-        <item>80</item>
-        <item>85</item>
-        <item>90</item>
-        <item>90+</item>
+        <item>Menos de 48 kg</item>
+        <item>Menos de 52 kg</item>
+        <item>Menos de 56 kg</item>
+        <item>Menos de 60 kg</item>
+        <item>Menos de 65 kg</item>
+        <item>Menos de 70 kg</item>
+        <item>Menos de 75 kg</item>
+        <item>Menos de 80 kg</item>
+        <item>Menos de 85 kg</item>
+        <item>Menos de 90 kg</item>
+        <item>90 kg o más</item>
     </array>
 
     <array name="nivelesJueces">
