@@ -66,6 +66,9 @@
         <activity
             android:name=".AddCategoriaActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".SillaArbitrajeActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

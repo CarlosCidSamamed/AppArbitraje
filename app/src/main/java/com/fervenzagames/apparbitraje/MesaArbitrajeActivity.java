@@ -157,6 +157,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         mFinCombate = (Button) findViewById(R.id.terminar_combate);
 
         estado = Estado.DESCANSO_ENTRE_COMBATES;
+        mResetBtn.setVisibility(View.INVISIBLE);
 
         // Reproducir Sonido Campana
         final MediaPlayer player = MediaPlayer.create(MesaArbitrajeActivity.this, R.raw.bell);
