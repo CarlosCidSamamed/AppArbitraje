@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -71,9 +72,9 @@ public class DetalleModalidadActivity extends AppCompatActivity {
         Bundle extras = intent.getExtras();
         idCamp = extras.getString("idCamp");
         idMod = extras.getString("idMod");
-
+/*
         Toast.makeText(DetalleModalidadActivity.this, "PUT EXTRA idCamp --> " + idCamp, Toast.LENGTH_LONG).show();
-        Toast.makeText(DetalleModalidadActivity.this, "PUT EXTRA idMod --> " + idMod, Toast.LENGTH_LONG).show();
+        Toast.makeText(DetalleModalidadActivity.this, "PUT EXTRA idMod --> " + idMod, Toast.LENGTH_LONG).show();*/
 
         modDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idCamp).child(idMod); // Referencia a esta Modalidad.
         campDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
@@ -128,9 +129,30 @@ public class DetalleModalidadActivity extends AppCompatActivity {
                 Bundle extras2 = new Bundle();
                 extras2.putString("idCamp", idCamp);
                 extras2.putString("idMod", idMod);
-                extras2.putString("nombreMod", modNombre.getText().toString()   );
+                extras2.putString("nombreMod", modNombre.getText().toString());
                 addCatIntent.putExtras(extras2);
                 startActivity(addCatIntent);
+            }
+        });
+
+        // Actualizar Lista Categorías y gestionar el click sobre una categoría
+        mListaCatView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mCatListAdapter.notifyDataSetChanged(); // Notificar actualización de Datos
+
+                // Se captura el elemento seleccionado
+                Categorias cat = mCatList.get(position);
+                // Se crea un nuevo Intent
+                Intent detalleCartIntent = new Intent(DetalleModalidadActivity.this, DetalleCategoriaActivity.class);
+                String idMod = getIntent().getExtras().getString("idMod");
+                String idCat = cat.getId();
+                Bundle extras = new Bundle();
+                extras.putString("idCamp",idCamp);
+                extras.putString("idMod", idMod);
+                extras.putString("idCat", idCat);
+                detalleCartIntent.putExtras(extras);
+                startActivity(detalleCartIntent);
             }
         });
 

@@ -70,7 +70,7 @@
 
     <Button
         android:id="@+id/mod_detalle_addCat_btn"
-        android:layout_width="37dp"
+        android:layout_width="38dp"
         android:layout_height="38dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"

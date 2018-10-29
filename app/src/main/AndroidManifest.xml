@@ -71,10 +71,13 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".SillaArbitrajeKCActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".SillaArbitrajeSJActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".DetalleCategoriaActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

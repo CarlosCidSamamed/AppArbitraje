@@ -84,6 +84,8 @@
     <string name="mostrar_cartulinas">Mostrar Cartulinas</string>
     <string name="patada_3">Pat 3</string>
     <string name="_3">+3</string>
+    <string name="categoria">Categoría</string>
+    <string name="lista_de_combates">Lista de Combates</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">
