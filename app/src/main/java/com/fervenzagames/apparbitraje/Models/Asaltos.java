@@ -18,11 +18,16 @@ public class Asaltos {
     private String duracion;
     private List<Puntuaciones> listaPuntuaciones;
     private List<Incidencias> listaIncidencias;
+    private enum EstadoAsalto {Pendiente, Finalizado, Cancelado};
+    private EstadoAsalto estado;
 
     public Asaltos() {
     }
 
-    public Asaltos(String id, int numAsalto, String ganador, String motivo, String descripcion, int puntuacionRojo, int puntuacionAzul, String duracion, List<Puntuaciones> listaPuntuaciones, List<Incidencias> listaIncidencias) {
+    public Asaltos(String id, int numAsalto, String ganador, String motivo,
+                   String descripcion, int puntuacionRojo, int puntuacionAzul,
+                   String duracion, List<Puntuaciones> listaPuntuaciones, List<Incidencias> listaIncidencias,
+                   EstadoAsalto estado) {
         this.id = id;
         this.numAsalto = numAsalto;
         this.ganador = ganador;
@@ -33,6 +38,7 @@ public class Asaltos {
         this.duracion = duracion;
         this.listaPuntuaciones = listaPuntuaciones;
         this.listaIncidencias = listaIncidencias;
+        this.estado = estado;
     }
 
     public String getId() {
@@ -113,5 +119,38 @@ public class Asaltos {
 
     public void setListaIncidencias(List<Incidencias> listaIncidencias) {
         this.listaIncidencias = listaIncidencias;
+    }
+
+    public EstadoAsalto getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoAsalto estado) {
+        this.estado = estado;
+    }
+
+    public String estadoToString(EstadoAsalto estado){
+
+        String res = "";
+
+        switch(estado){
+            case Pendiente:
+            {
+                res = "Pendiente";
+                break;
+            }
+            case Finalizado:
+            {
+                res = "Finalizado";
+                break;
+            }
+            case Cancelado:
+            {
+                res = "Cancelado";
+                break;
+            }
+        }
+
+        return res;
     }
 }

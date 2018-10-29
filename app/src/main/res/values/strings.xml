@@ -86,6 +86,13 @@
     <string name="_3">+3</string>
     <string name="categoria">Categoría</string>
     <string name="lista_de_combates">Lista de Combates</string>
+    <string name="modalidad">Modalidad</string>
+    <string name="ganador">Ganador</string>
+    <string name="motivo">Motivo</string>
+    <string name="estado">Estado</string>
+    <string name="numero">Número</string>
+    <string name="lista_de_asaltos">Lista de Asaltos</string>
+    <string name="enlace_al_video">Enlace al Vídeo</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">

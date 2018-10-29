@@ -17,13 +17,15 @@ public class Combates {
     private String modalidad;
     private String categoria;
     private String campeonato;
+    private enum EstadoCombate {Pendiente, Finalizado, Cancelado};
+    private EstadoCombate estadoCombate;
 
     public Combates() {
     }
 
     public Combates(String id, int numCombate, String ganador, String motivo, String enlaceVideo,
                     String idRojo, String idAzul, List<Asaltos> listaAsaltos,
-                    String modalidad, String categoria, String campeonato) {
+                    String modalidad, String categoria, String campeonato, EstadoCombate estadoCombate) {
         this.id = id;
         this.numCombate = numCombate;
         this.ganador = ganador;
@@ -35,6 +37,7 @@ public class Combates {
         this.modalidad = modalidad;
         this.categoria = categoria;
         this.campeonato = campeonato;
+        this.estadoCombate = estadoCombate;
     }
 
     public String getId() {
@@ -123,5 +126,30 @@ public class Combates {
 
     public void setCampeonato(String campeonato) {
         this.campeonato = campeonato;
+    }
+
+    public EstadoCombate getEstadoCombate() { return estadoCombate; }
+
+    public void setEstadoCombate(EstadoCombate estadoCombate) { this.estadoCombate = estadoCombate; }
+
+    public String estadoToString (EstadoCombate estado){
+        String res = "";
+
+        switch (estado){
+            case Pendiente:{
+                res = "Pendiente";
+                break;
+            }
+            case Finalizado:{
+                res = "Finalizado";
+                break;
+            }
+            case Cancelado:{
+                res = "Cancelado";
+                break;
+            }
+        }
+
+        return res;
     }
 }
