@@ -2,6 +2,7 @@ package com.fervenzagames.apparbitraje;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,9 +13,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Models.Categorias;
+import com.fervenzagames.apparbitraje.Models.Combates;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.List;
 
 public class AddCategoriaActivity extends AppCompatActivity {
 
@@ -89,9 +98,55 @@ public class AddCategoriaActivity extends AppCompatActivity {
 
     public void addCategoria(){
 
-        String nombreCat = nombrarCategoria();
+        final String nombreCat = nombrarCategoria();
         // Comprobar el nombre generado para la categoría con un Toast.
         Toast.makeText(AddCategoriaActivity.this, "El nombre de la Categoría es " + nombreCat, Toast.LENGTH_LONG).show();
+
+        // Usar el id de la Modalidad para crear una rama en Categorías que tenga el mismo id que la modalidad a la que pertenece la Categoría que vamos a crear.
+        // El idMod se obtiene de los extras de DetalleModalidad
+        Intent intent = getIntent();
+        final String idMod = intent.getExtras().getString("idMod");
+
+        // El nombre de la cateogoría se genera con el método nombrarCategoria(). Se almacena en la variable nombreCat.
+        // El resto de los valores de sexo, edad y peso se obtienen de los spinners de esta actividad.
+        String sexo = mSexoSpinner.getSelectedItem().toString();
+        String edad = mEdadSpinner.getSelectedItem().toString();
+        String peso = mPesoSpinner.getSelectedItem().toString();
+
+        // Lista de Combates vacía
+        List<Combates> listaCombates = null;
+
+        // Insertar la Categoría en la BD para obtener su ID único. Dicho ID lo almacenamos en idCat.
+        final String idCat = mCatDB.child(idMod).push().getKey();
+
+        // Creamos el objeto de tio Categorias
+        final Categorias cat = new Categorias(idCat, nombreCat, edad, sexo, peso, listaCombates);
+
+        // Comprobación de duplicados ¿Existe ya esta categoría para esta modalidad?
+        // Consulta
+        Query consulta = mCatDB.child(idMod);
+        Query consulta2 = consulta
+                .orderByChild("nombre")
+                .equalTo(nombreCat)
+                .limitToFirst(1);
+
+        consulta2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){ // Comprobar si existe esta Categoría en esta Modalidad
+                    // Mensaje de aviso por pantalla
+                    Toast.makeText(AddCategoriaActivity.this, "Ya existe esa Categoría para esta Modalidad en la BD. Compruebe el formulario...", Toast.LENGTH_LONG).show();
+                } else { // Si no existe esa Categoría en la BD se almacena donde le corresponde.
+                    mCatDB.child(idMod).child(idCat).setValue(cat);
+                    Toast.makeText(AddCategoriaActivity.this, "Se ha añadido la Categoría " + nombreCat + " a la Modalidad " + nombreMod + "(BD)", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 

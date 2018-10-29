@@ -25,6 +25,7 @@ public class DetalleModalidadActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
 
+    private TextView mNombreCamp;
     private String idCamp;
     private String idMod;
     private DatabaseReference modDB;
@@ -45,9 +46,12 @@ public class DetalleModalidadActivity extends AppCompatActivity {
 
         nombreCamp = "";
 
+        mNombreCamp = (TextView) findViewById(R.id.mod_detalle_nombreCamp);
+
+
         mToolbar = (Toolbar) findViewById(R.id.mod_detalle_bar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Detalle Modalidad ( " + nombreCamp + " )");
+        getSupportActionBar().setTitle("Detalle Modalidad");
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Deshabilitar la flecha atrás en la barra de título.
 
         modNombre = (TextView) findViewById(R.id.mod_detalle_nombre);
@@ -74,7 +78,8 @@ public class DetalleModalidadActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 nombreCamp = dataSnapshot.child("nombre").getValue().toString();
-                mToolbar.setTitle("Detalle Modalidad ( " + nombreCamp + " )");
+                mNombreCamp.setText(nombreCamp);
+                // mToolbar.setTitle("Detalle Modalidad ( " + nombreCamp + " )");
             }
 
             @Override
@@ -114,7 +119,7 @@ public class DetalleModalidadActivity extends AppCompatActivity {
                 Bundle extras2 = new Bundle();
                 extras2.putString("idCamp", idCamp);
                 extras2.putString("idMod", idMod);
-                extras2.putString("nombreMod", modNombre.getText().toString());
+                extras2.putString("nombreMod", modNombre.getText().toString()   );
                 addCatIntent.putExtras(extras2);
                 startActivity(addCatIntent);
             }
