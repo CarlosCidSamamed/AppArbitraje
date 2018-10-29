@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DetalleModalidadActivity extends AppCompatActivity {
@@ -37,6 +38,10 @@ public class DetalleModalidadActivity extends AppCompatActivity {
 
     private String nombreCamp;
 
+    private DatabaseReference catsDB; // Referencia a las CATEGORÍAS de esta Modalidad
+    private List<Categorias> mCatList;
+    private CategoriasList mCatListAdapter;
+
 
 
     @Override
@@ -47,7 +52,6 @@ public class DetalleModalidadActivity extends AppCompatActivity {
         nombreCamp = "";
 
         mNombreCamp = (TextView) findViewById(R.id.mod_detalle_nombreCamp);
-
 
         mToolbar = (Toolbar) findViewById(R.id.mod_detalle_bar);
         setSupportActionBar(mToolbar);
@@ -73,6 +77,11 @@ public class DetalleModalidadActivity extends AppCompatActivity {
 
         modDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idCamp).child(idMod); // Referencia a esta Modalidad.
         campDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
+
+        catsDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(idMod);
+        mListaCatView = (ListView) findViewById(R.id.mod_detalle_listCat);
+        mCatList = new ArrayList<>();
+        mCatListAdapter = new CategoriasList(DetalleModalidadActivity.this, mCatList);
 
         campDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -125,5 +134,60 @@ public class DetalleModalidadActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        modDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mCatList.clear();
+                String idMod = getIntent().getExtras().getString("idMod");
+                // Localizar las Categorías de esta Modalidad
+                catsDB.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mCatList.clear();
+                        for(DataSnapshot catsSnapshot : dataSnapshot.getChildren()){ // Recorremos las Categorías de esta Modalidad
+                            Categorias cat = catsSnapshot.getValue(Categorias.class);
+                            mCatList.add(cat);
+                        }
+                        CategoriasList adapter = new CategoriasList(DetalleModalidadActivity.this, mCatList);
+                        mListaCatView.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // Lista de Categorías de esta Modalidad
+        catsDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mCatList.clear();
+                for(DataSnapshot catsSnapshot : dataSnapshot.getChildren()){ // Recorremos las Categorías de esta Modalidad
+                    Categorias cat = catsSnapshot.getValue(Categorias.class);
+                    mCatList.add(cat);
+                }
+                CategoriasList adapter = new CategoriasList(DetalleModalidadActivity.this, mCatList);
+                mListaCatView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

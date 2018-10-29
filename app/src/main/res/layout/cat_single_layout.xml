@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/mod_edad"
+        android:id="@+id/cat_edad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -36,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cat_nombre" />
 
     <TextView
-        android:id="@+id/mod_sexo"
+        android:id="@+id/cat_sexo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -48,10 +48,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mod_edad" />
+        app:layout_constraintTop_toBottomOf="@+id/cat_edad" />
 
     <TextView
-        android:id="@+id/mod_peso"
+        android:id="@+id/cat_peso"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -63,6 +63,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mod_sexo" />
+        app:layout_constraintTop_toBottomOf="@+id/cat_sexo" />
 
 </android.support.constraint.ConstraintLayout>
