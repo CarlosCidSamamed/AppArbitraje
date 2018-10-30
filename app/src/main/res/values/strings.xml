@@ -195,4 +195,10 @@
         <item>Sexo</item>
     </array>
 
+    <array name="estadosCombate">
+        <item>Pendiente</item>
+        <item>Finalizado</item>
+        <item>Cancelado</item>
+    </array>
+
 </resources>

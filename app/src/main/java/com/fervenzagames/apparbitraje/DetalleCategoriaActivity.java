@@ -1,9 +1,11 @@
 package com.fervenzagames.apparbitraje;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
     private ListView mListaCombates;
     private Button mAddCombateBtn;
 
+    private DatabaseReference mCampDB;
     private DatabaseReference mModDB;
     private DatabaseReference mCatDB;
     private DatabaseReference mCombatesDB;
@@ -50,6 +53,7 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
         String idMod = getIntent().getExtras().getString("idMod");
         String idCat = getIntent().getExtras().getString("idCat");
 
+        mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
         mModDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idMod);
         mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(idMod).child(idCat);
 
@@ -68,6 +72,33 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        mAddCombateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /* En Detalle Modalidad pasamos como extras los siguientes datos:
+                *       idCamp
+                *       idMod
+                *       idCat
+                *
+                *  Pasaremos esos mismos datos como extra a Añadir Combate
+                */
+
+                String idCamp = getIntent().getExtras().getString("idCamp");
+                String idMod = getIntent().getExtras().getString("idMod");
+                String idCat = getIntent().getExtras().getString("idCat");
+
+                Bundle extras = new Bundle();
+                extras.putString("idCamp", idCamp);
+                extras.putString("idMod", idMod);
+                extras.putString("idCat", idCat);
+
+                Intent addCombateIntent = new Intent(DetalleCategoriaActivity.this, AddCombateActivity.class);
+                addCombateIntent.putExtras(extras);
+                startActivity(addCombateIntent);
             }
         });
 
