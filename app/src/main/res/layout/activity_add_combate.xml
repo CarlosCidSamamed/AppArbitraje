@@ -68,7 +68,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.188"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_comb_nombreCampeonato" />
+        app:layout_constraintTop_toBottomOf="@+id/add_comb_nombreCampeonato"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/colorRojo"/>
 
     <TextView
         android:id="@+id/add_comb_Rojo_nombre"
@@ -85,6 +87,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_comb_Rojo" />
 
+
+    <Button
+        android:id="@+id/add_comb_Rojo_btn"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/anadir"
+        app:layout_constraintEnd_toStartOf="@+id/add_comb_Rojo"
+        app:layout_constraintHorizontal_bias="0.888"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_comb_nombreCampeonato" />
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/add_comb_Azul"
         android:layout_width="100dp"
@@ -98,7 +116,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.821"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_comb_nombreCampeonato" />
+        app:layout_constraintTop_toBottomOf="@+id/add_comb_nombreCampeonato"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/colorAccent2" />
 
     <TextView
         android:id="@+id/add_comb_Azul_nombre"
@@ -114,6 +134,21 @@
         app:layout_constraintHorizontal_bias="0.829"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_comb_Azul" />
+
+    <Button
+        android:id="@+id/add_comb_Azul_btn"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/anadir"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.241"
+        app:layout_constraintStart_toEndOf="@+id/add_comb_Azul"
+        app:layout_constraintTop_toBottomOf="@+id/add_comb_nombreCampeonato" />
 
     <TextView
         android:id="@+id/add_comb_estado"
