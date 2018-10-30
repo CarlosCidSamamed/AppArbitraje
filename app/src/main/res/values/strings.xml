@@ -93,6 +93,7 @@
     <string name="numero">Número</string>
     <string name="lista_de_asaltos">Lista de Asaltos</string>
     <string name="enlace_al_video">Enlace al Vídeo</string>
+    <string name="ordenar_por">Ordenar por</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">
@@ -185,6 +186,13 @@
         <item>Silla (Nacionales e Internacionales)</item>
         <item>Plataforma (Torneos Nacionales)</item>
         <item>Juez Principal (Mesa)</item>
+    </array>
+
+    <array name="camposOrdenacionCategorias">
+        <item>Nombre</item>
+        <item>Peso</item>
+        <item>Edad</item>
+        <item>Sexo</item>
     </array>
 
 </resources>

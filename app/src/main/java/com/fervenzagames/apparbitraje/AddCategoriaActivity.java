@@ -157,8 +157,8 @@ public class AddCategoriaActivity extends AppCompatActivity {
         /* Ejemplo: SD -85 M ABS -->
             Modalidad : Sanda
             Peso : Menos de 85 kg
-            Sexo : Masculino
             Edad : Absoluto
+            Sexo : Masculino
          */
         String sexo = mSexoSpinner.getSelectedItem().toString();
         String edad = mEdadSpinner.getSelectedItem().toString();
@@ -251,25 +251,6 @@ public class AddCategoriaActivity extends AppCompatActivity {
             }
         }
 
-        // Sexo
-        switch (sexo){
-            case "Femenino":
-            {
-                nombreCat = nombreCat + " F ";
-                break;
-            }
-            case "Masculino":
-            {
-                nombreCat = nombreCat + " M ";
-                break;
-            }
-            case "Mixto":
-            {
-                nombreCat = nombreCat + " X ";
-                break;
-            }
-        }
-
         // Edad
         switch (edad){
             case "PreInfantil":
@@ -315,6 +296,25 @@ public class AddCategoriaActivity extends AppCompatActivity {
             case "Sénior D (+70)":
             {
                 nombreCat = nombreCat + " SEN_D ";
+                break;
+            }
+        }
+
+        // Sexo
+        switch (sexo){
+            case "Femenino":
+            {
+                nombreCat = nombreCat + " F ";
+                break;
+            }
+            case "Masculino":
+            {
+                nombreCat = nombreCat + " M ";
+                break;
+            }
+            case "Mixto":
+            {
+                nombreCat = nombreCat + " X ";
                 break;
             }
         }

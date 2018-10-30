@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.fervenzagames.apparbitraje.Models.Categorias;
 import com.fervenzagames.apparbitraje.Models.Modalidades;
 
 import java.util.List;
@@ -51,4 +52,6 @@ public class ModalidadesList extends ArrayAdapter<Modalidades> {
     public Modalidades getItem(int position) {
         return modList.get(position);
     }
+
+
 }

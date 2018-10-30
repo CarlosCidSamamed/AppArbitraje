@@ -2,6 +2,7 @@ package com.fervenzagames.apparbitraje;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,15 +10,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
 import com.fervenzagames.apparbitraje.Models.Categorias;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -43,7 +47,9 @@ public class DetalleModalidadActivity extends AppCompatActivity {
     private List<Categorias> mCatList;
     private CategoriasList mCatListAdapter;
 
+    private Spinner mOrdenarSpinner;
 
+    private Query catsOrdenadas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +69,8 @@ public class DetalleModalidadActivity extends AppCompatActivity {
         modDesc = (TextView) findViewById(R.id.mod_detalle_desc);
         mListaCatView = (ListView) findViewById(R.id.mod_detalle_listCat);
         mAddCatBtn = (Button) findViewById(R.id.mod_detalle_addCat_btn);
+
+        mOrdenarSpinner = (Spinner) findViewById(R.id.mod_detalle_ordenarSpinner);
 /*
         idCamp = getIntent().getStringExtra("idCamp");
         idMod = getIntent().getStringExtra("idMod");*/
@@ -83,6 +91,9 @@ public class DetalleModalidadActivity extends AppCompatActivity {
         mListaCatView = (ListView) findViewById(R.id.mod_detalle_listCat);
         mCatList = new ArrayList<>();
         mCatListAdapter = new CategoriasList(DetalleModalidadActivity.this, mCatList);
+
+        catsOrdenadas = catsDB
+            .orderByChild("nombre");
 
         campDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -168,7 +179,7 @@ public class DetalleModalidadActivity extends AppCompatActivity {
                 mCatList.clear();
                 String idMod = getIntent().getExtras().getString("idMod");
                 // Localizar las Categorías de esta Modalidad
-                catsDB.addValueEventListener(new ValueEventListener() {
+                catsOrdenadas.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         mCatList.clear();
@@ -194,10 +205,50 @@ public class DetalleModalidadActivity extends AppCompatActivity {
         });
 
         // Lista de Categorías de esta Modalidad
-        catsDB.addValueEventListener(new ValueEventListener() {
+
+        // Dependiendo del valor seleccionado en el Spinner se ordenarán las categorías según el campo indicado.
+        mOrdenarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                catsOrdenadas = actualizarListaCategorias(mOrdenarSpinner.getSelectedItem().toString().toLowerCase());
+                Toast.makeText(DetalleModalidadActivity.this,
+                        "Spinner Filtro --> " + mOrdenarSpinner.getSelectedItem().toString().toLowerCase(),
+                        Toast.LENGTH_SHORT).show();
+                catsOrdenadas.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mCatList.clear();
+                        for(DataSnapshot catsSnapshot : dataSnapshot.getChildren()){ // Recorremos las Categorías de esta Modalidad
+                            Categorias cat = catsSnapshot.getValue(Categorias.class);
+                            mCatList.add(cat);
+                        }
+                        CategoriasList adapter = new CategoriasList(DetalleModalidadActivity.this, mCatList);
+                        mListaCatView.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        /*catsOrdenadas = actualizarListaCategorias(mOrdenarSpinner.getSelectedItem().toString());
+        mCatListAdapter.notifyDataSetChanged();*/
+
+        catsOrdenadas.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mCatList.clear();
+
+                //mCatListAdapter.notifyDataSetChanged();
+
                 for(DataSnapshot catsSnapshot : dataSnapshot.getChildren()){ // Recorremos las Categorías de esta Modalidad
                     Categorias cat = catsSnapshot.getValue(Categorias.class);
                     mCatList.add(cat);
@@ -211,5 +262,48 @@ public class DetalleModalidadActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public Query actualizarListaCategorias(String filtro){
+
+        Query catsActualizadas = catsDB
+                .orderByChild(filtro);
+
+        mCatListAdapter.notifyDataSetChanged();
+
+/*        catsActualizadas.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { // Se usa cuando se trabaja con datos ORDENADOS
+                // Extraer los resultados de la consulta y pasarlos a un List
+                List<Categorias> lista = new ArrayList<>();
+                for(DataSnapshot catSnapshot:dataSnapshot.getChildren()){
+                    Categorias cat = catSnapshot.getValue(Categorias.class);
+                    lista.add(cat);
+                }
+                mCatListAdapter.actualizarCategorias(lista);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
+        return catsActualizadas;
     }
 }

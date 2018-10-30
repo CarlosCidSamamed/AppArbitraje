@@ -34,14 +34,14 @@ public class CategoriasList extends ArrayAdapter<Categorias> {
         convertView = LayoutInflater.from(context).inflate(R.layout.cat_single_layout, null);
 
         TextView nombre = convertView.findViewById(R.id.cat_nombre);
-        TextView edad = convertView.findViewById(R.id.cat_edad);
+/*        TextView edad = convertView.findViewById(R.id.cat_edad);
         TextView sexo = convertView.findViewById(R.id.cat_sexo);
-        TextView peso = convertView.findViewById(R.id.cat_peso);
+        TextView peso = convertView.findViewById(R.id.cat_peso);*/
 
         nombre.setText(cat.getNombre());
-        edad.setText(cat.getEdad());
+/*        edad.setText(cat.getEdad());
         sexo.setText(cat.getSexo());
-        peso.setText(cat.getPeso());
+        peso.setText(cat.getPeso());*/
 
         return convertView;
     }
@@ -52,4 +52,11 @@ public class CategoriasList extends ArrayAdapter<Categorias> {
     @Nullable
     @Override
     public Categorias getItem(int position) { return catList.get(position); }
+
+    // Método para actualizar la lista de Categorias una vez que ya se ha creado el Adapter.
+    public void actualizarCategorias(List<Categorias> cats){
+        this.catList.clear();
+        this.catList.addAll(catList);
+        notifyDataSetChanged();
+    }
 }
