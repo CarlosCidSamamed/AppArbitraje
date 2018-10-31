@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddCombateActivity"
+    tools:context=".Add_Activities.AddCombateActivity"
     android:keepScreenOn="true">
 
     <include layout="@layout/app_bar_layout" android:id="@+id/comb_detalle_app_bar" />
@@ -82,7 +82,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.165"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comb_detalle_nombreCampeonato" />
+        app:layout_constraintTop_toBottomOf="@+id/comb_detalle_nombreCampeonato"
+        app:civ_border_width="4dp"
+        app:civ_border_color="@color/colorRojo"/>
 
     <TextView
         android:id="@+id/comb_detalle_Rojo_nombre"
@@ -112,7 +114,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.851"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comb_detalle_nombreCampeonato" />
+        app:layout_constraintTop_toBottomOf="@+id/comb_detalle_nombreCampeonato"
+        app:civ_border_width="4dp"
+        app:civ_border_color="@color/colorAccent2"/>
 
     <TextView
         android:id="@+id/comb_detalle_Azul_nombre"

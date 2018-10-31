@@ -1,4 +1,4 @@
-package com.fervenzagames.apparbitraje;
+package com.fervenzagames.apparbitraje.Adapters;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.fervenzagames.apparbitraje.Models.Categorias;
 import com.fervenzagames.apparbitraje.Models.Modalidades;
+import com.fervenzagames.apparbitraje.R;
 
 import java.util.List;
 

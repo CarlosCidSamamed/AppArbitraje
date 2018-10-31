@@ -12,6 +12,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.fervenzagames.apparbitraje.Adapters.CampeonatosList;
+import com.fervenzagames.apparbitraje.Add_Activities.AddCampeonatoActivity;
+import com.fervenzagames.apparbitraje.Detail_Activities.DetalleCampeonatoActivity;
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

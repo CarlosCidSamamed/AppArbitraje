@@ -1,4 +1,4 @@
-package com.fervenzagames.apparbitraje;
+package com.fervenzagames.apparbitraje.Add_Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.fervenzagames.apparbitraje.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

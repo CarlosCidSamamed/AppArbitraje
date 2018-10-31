@@ -1,7 +1,9 @@
-package com.fervenzagames.apparbitraje;
+package com.fervenzagames.apparbitraje.Detail_Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.fervenzagames.apparbitraje.R;
 
 public class DetalleCombateActivity extends AppCompatActivity {
 

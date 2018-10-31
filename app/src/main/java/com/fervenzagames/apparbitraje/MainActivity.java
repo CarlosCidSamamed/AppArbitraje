@@ -1,7 +1,6 @@
 package com.fervenzagames.apparbitraje;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Arbitraje_Activities.MesaArbitrajeActivity;
+import com.fervenzagames.apparbitraje.Arbitraje_Activities.SillaArbitrajeActivity;
+import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.time.chrono.MinguoChronology;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddCategoriaActivity"
+    tools:context=".Add_Activities.AddCategoriaActivity"
     >
 
     <include layout="@layout/app_bar_layout" android:id="@+id/add_cat_bar" />

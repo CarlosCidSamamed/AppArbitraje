@@ -23,20 +23,20 @@
             android:name=".StartActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".User_Activities.RegisterActivity"
             android:parentActivityName=".StartActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".User_Activities.LoginActivity"
             android:parentActivityName=".StartActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".User_Activities.SettingsActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".CargoNivelActivity"
-            android:parentActivityName=".SettingsActivity"
+            android:name=".User_Activities.CargoNivelActivity"
+            android:parentActivityName=".User_Activities.SettingsActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
@@ -46,40 +46,40 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".DetalleCampeonatoActivity"
+            android:name=".Detail_Activities.DetalleCampeonatoActivity"
             android:parentActivityName=".CampeonatosActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".AddCampeonatoActivity"
+            android:name=".Add_Activities.AddCampeonatoActivity"
             android:parentActivityName=".CampeonatosActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".AddModalidadActivity"
-            android:parentActivityName=".AddCampeonatoActivity"
+            android:name=".Add_Activities.AddModalidadActivity"
+            android:parentActivityName=".Add_Activities.AddCampeonatoActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".DetalleModalidadActivity"
+            android:name=".Detail_Activities.DetalleModalidadActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".MesaArbitrajeActivity"
+            android:name=".Arbitraje_Activities.MesaArbitrajeActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".AddCategoriaActivity"
+            android:name=".Add_Activities.AddCategoriaActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".SillaArbitrajeActivity"
+            android:name=".Arbitraje_Activities.SillaArbitrajeActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".SillaArbitrajeKCActivity"
+            android:name=".Arbitraje_Activities.SillaArbitrajeKCActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".SillaArbitrajeSJActivity"
+            android:name=".Arbitraje_Activities.SillaArbitrajeSJActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".DetalleCategoriaActivity"
+            android:name=".Detail_Activities.DetalleCategoriaActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".AddCombateActivity" />
-        <activity android:name=".DetalleCombateActivity"></activity>
+        <activity android:name=".Add_Activities.AddCombateActivity" />
+        <activity android:name=".Detail_Activities.DetalleCombateActivity"></activity>
     </application>
 
 </manifest>

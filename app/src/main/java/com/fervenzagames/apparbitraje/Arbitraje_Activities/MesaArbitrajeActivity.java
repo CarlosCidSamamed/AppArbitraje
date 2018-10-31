@@ -1,9 +1,8 @@
-package com.fervenzagames.apparbitraje;
+package com.fervenzagames.apparbitraje.Arbitraje_Activities;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,11 +10,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.CampeonatosActivity;
+import com.fervenzagames.apparbitraje.R;
+import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
+import com.fervenzagames.apparbitraje.StartActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

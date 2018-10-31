@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
-    tools:context=".SillaArbitrajeActivity">
+    tools:context=".Arbitraje_Activities.SillaArbitrajeActivity">
 
     <include layout="@layout/app_bar_layout" android:id="@+id/silla_arbitraje_bar" />
 

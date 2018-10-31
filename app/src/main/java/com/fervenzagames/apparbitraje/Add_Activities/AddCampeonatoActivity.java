@@ -1,6 +1,5 @@
-package com.fervenzagames.apparbitraje;
+package com.fervenzagames.apparbitraje.Add_Activities;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
 import com.fervenzagames.apparbitraje.Models.Modalidades;
+import com.fervenzagames.apparbitraje.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
