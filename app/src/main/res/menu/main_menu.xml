@@ -12,6 +12,9 @@
         android:id="@+id/main_arbitrar_combate"
         android:title="@string/arbitrar" />
     <item
+        android:id="@+id/main_competidor"
+        android:title="@string/competidor" />
+    <item
         android:id="@+id/main_settings_btn"
         android:title="@string/opciones" />
     <item

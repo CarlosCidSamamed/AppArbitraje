@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Add_Activities.AddCompetidorActivity;
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.MesaArbitrajeActivity;
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.SillaArbitrajeActivity;
 import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
@@ -143,6 +144,10 @@ public class MainActivity extends AppCompatActivity {
                     Intent arbitrarIntent = new Intent(MainActivity.this, MesaArbitrajeActivity.class);
                     startActivity(arbitrarIntent);
                 }
+            }
+            case R.id.main_competidor:{ // Prueba de la Actividad para Añadir un Competidor a la BD.
+                Intent competidorIntent = new Intent(MainActivity.this, AddCompetidorActivity.class);
+                startActivity(competidorIntent);
             }
         }
 

@@ -94,6 +94,21 @@
     <string name="lista_de_asaltos">Lista de Asaltos</string>
     <string name="enlace_al_video">Enlace al Vídeo</string>
     <string name="ordenar_por">Ordenar por</string>
+    <string name="elija_el_competidor">Elija el Competidor</string>
+    <string name="x">X</string>
+    <string name="primer_apellido">Primer Apellido</string>
+    <string name="segundo_apellido">Segundo Apellido</string>
+    <string name="dni_pasaporte">DNI / Pasaporte</string>
+    <string name="elegir">Elegir</string>
+    <string name="fecha_de_nacimiento">Fecha de Nacimiento</string>
+    <string name="categoria_de_edad">Categoría de Edad</string>
+    <string name="categoria_de_peso">Categoría de Peso</string>
+    <string name="altura">Altura</string>
+    <string name="envergadura">Envergadura</string>
+    <string name="federacion">Federación</string>
+    <string name="escuela_club">Escuela / Club</string>
+    <string name="pais">País</string>
+    <string name="competidor">Competidor</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">
@@ -199,6 +214,16 @@
         <item>Pendiente</item>
         <item>Finalizado</item>
         <item>Cancelado</item>
+    </array>
+
+    <array name="sexoCompetidores">
+        <item>Femenino</item>
+        <item>Masculino</item>
+    </array>
+
+    <array name="guardias">
+        <item>Diestra</item>
+        <item>Zurda</item>
     </array>
 
 </resources>

@@ -78,8 +78,15 @@
         <activity
             android:name=".Detail_Activities.DetalleCategoriaActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".Add_Activities.AddCombateActivity" />
-        <activity android:name=".Detail_Activities.DetalleCombateActivity"></activity>
+        <activity
+            android:name=".Add_Activities.AddCombateActivity"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".Detail_Activities.DetalleCombateActivity"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".Add_Activities.AddCompetidorActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

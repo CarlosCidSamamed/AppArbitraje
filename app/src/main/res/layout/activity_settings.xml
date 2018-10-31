@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     tools:context=".User_Activities.SettingsActivity"
-    android:keepScreenOn="true"> // Esta línea impide que la pantalla se apague mientras estemos en esta activity
+    android:keepScreenOn="true">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/settings_image"
