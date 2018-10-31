@@ -127,15 +127,15 @@
     </array>
 
     <array name="categoriasEdad">
-        <item>PreInfantil</item>
-        <item>Infantil</item>
-        <item>Cadete</item>
-        <item>Junior</item>
-        <item>Absoluto</item>
-        <item>Sénior A (+40)</item>
-        <item>Sénior B (+50)</item>
-        <item>Sénior C (+60)</item>
-        <item>Sénior D (+70)</item>
+        <item>01_PreInfantil</item>
+        <item>02_Infantil</item>
+        <item>03_Cadete</item>
+        <item>04_Junior</item>
+        <item>05_Absoluto</item>
+        <item>06_Sénior A (+40)</item>
+        <item>07_Sénior B (+50)</item>
+        <item>08_Sénior C (+60)</item>
+        <item>09_Sénior D (+70)</item>
     </array>
 
     <array name="descripcionCatEdad">

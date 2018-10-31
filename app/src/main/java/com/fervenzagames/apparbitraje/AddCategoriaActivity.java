@@ -253,49 +253,49 @@ public class AddCategoriaActivity extends AppCompatActivity {
 
         // Edad
         switch (edad){
-            case "PreInfantil":
+            case "01_PreInfantil":
             {
-                nombreCat = nombreCat + " PRE-INF ";
+                nombreCat = nombreCat + "01_PRE-INF";
                 break;
             }
-            case "Infantil":
+            case "02_Infantil":
             {
-                nombreCat = nombreCat + " INF ";
+                nombreCat = nombreCat + "02_INF";
                 break;
             }
-            case "Cadete":
+            case "03_Cadete":
             {
-                nombreCat = nombreCat + " CAD ";
+                nombreCat = nombreCat + "03_CAD";
                 break;
             }
-            case "Junior":
+            case "04_Junior":
             {
-                nombreCat = nombreCat + " JUN ";
+                nombreCat = nombreCat + "04_JUN";
                 break;
             }
-            case "Absoluto":
+            case "05_Absoluto":
             {
-                nombreCat = nombreCat + " ABS ";
+                nombreCat = nombreCat + "05_ABS";
                 break;
             }
-            case "Sénior A (+40)":
+            case "06_Sénior A (+40)":
             {
-                nombreCat = nombreCat + " SEN_A ";
+                nombreCat = nombreCat + "06_SEN_A";
                 break;
             }
-            case "Sénior B (+50)":
+            case "07_Sénior B (+50)":
             {
-                nombreCat = nombreCat + " SEN_B ";
+                nombreCat = nombreCat + "07_SEN_B";
                 break;
             }
-            case "Sénior C (+60)":
+            case "08_Sénior C (+60)":
             {
-                nombreCat = nombreCat + " SEN_C ";
+                nombreCat = nombreCat + "08_SEN_C";
                 break;
             }
-            case "Sénior D (+70)":
+            case "09_Sénior D (+70)":
             {
-                nombreCat = nombreCat + " SEN_D ";
+                nombreCat = nombreCat + "09_SEN_D";
                 break;
             }
         }
