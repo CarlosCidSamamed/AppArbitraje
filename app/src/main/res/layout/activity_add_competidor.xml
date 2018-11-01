@@ -208,7 +208,8 @@
             android:id="@+id/add_comp_pesoEditText"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:hint="@string/peso" />
+            android:hint="@string/peso_ej_56_75"
+            android:inputType="numberDecimal"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -229,7 +230,8 @@
             android:id="@+id/add_comp_alturaEditText"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:hint="@string/altura" />
+            android:hint="@string/altura"
+            android:inputType="numberDecimal"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -250,7 +252,8 @@
             android:id="@+id/add_comp_envergaduraEditText"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:hint="@string/envergadura" />
+            android:hint="@string/envergadura"
+            android:inputType="numberDecimal"/>
     </android.support.design.widget.TextInputLayout>
 
     <Spinner
@@ -364,5 +367,20 @@
         app:layout_constraintHorizontal_bias="0.477"
         app:layout_constraintStart_toEndOf="@+id/add_comp_foto"
         app:layout_constraintTop_toBottomOf="@+id/spinner2" />
+
+    <Button
+        android:id="@+id/add_comp_asignarCatPesoBtn"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="192dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="->"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.767"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_competidor_app_bar" />
 
 </android.support.constraint.ConstraintLayout>

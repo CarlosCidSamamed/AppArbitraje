@@ -2,16 +2,21 @@ package com.fervenzagames.apparbitraje.Add_Activities;
 
 import android.app.DatePickerDialog;
 
+import android.content.Intent;
 import android.provider.CalendarContract;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import java.text.DateFormat;
+
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +30,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class AddCompetidorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private Toolbar mToolbar;
@@ -36,6 +43,15 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
     // Edad y Categoría de Edad
     private TextView mEdad;
     private TextView mCatEdad;
+    // Peso y Categoría de Peso
+    private TextInputLayout mPeso;
+    private TextView mCatPeso;
+    private Button mAsignarCatPesoBtn;
+    // Imagen
+    private CircleImageView mFoto;
+    private Button mCambiarFotoBtn;
+    private final static int GALLERY_PICK = 1;
+
 
     private int anhoNac; // En estas variables globales almacenaré la fecha que se obtiene con el datepicker para poder calcular la edad del competidor (y la categoría de edad).
     private int mesNac;
@@ -57,13 +73,18 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
 
         mEdad = (TextView) findViewById(R.id.add_comp_edadText);
         mCatEdad = (TextView) findViewById(R.id.add_comp_catEdadText);
+        mAsignarCatPesoBtn = (Button) findViewById(R.id.add_comp_asignarCatPesoBtn);
+
+        mPeso = (TextInputLayout) findViewById(R.id.add_comp_pesoInput);
+        mCatPeso = (TextView) findViewById(R.id.add_comp_catPesoText);
+
+        mFoto = (CircleImageView) findViewById(R.id.add_comp_foto);
+        mCambiarFotoBtn = (Button) findViewById(R.id.add_comp_elegirFotoBtn);
 
         fechaSeleccionada = false;
         anhoNac = 0;
         mesNac = 0;
         diaNac = 0;
-
-        Toast.makeText(AddCompetidorActivity.this, " Año -- > " + anhoNac, Toast.LENGTH_SHORT).show();
 
         mElegirFechBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +92,30 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
                 DialogFragment datePicker = new DatePickerFragment();
                 datePicker.show(getSupportFragmentManager(), "date picker");
                 // fechaSeleccionada = true;
+            }
+        });
+
+        mAsignarCatPesoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    String pesoStr = mPeso.getEditText().getText().toString();
+                    if(!TextUtils.isEmpty(pesoStr)){ // Si se ha introducido un peso antes de pulsar el botón...
+                        Float peso = Float.parseFloat(pesoStr); // Convertir el String en un Float...
+                        asignarCategoriaPeso(peso); // Invocar al método.
+                    } else {
+                        Toast.makeText(AddCompetidorActivity.this, "Introduzca un peso antes de pulsar el botón para asignar la Categoría de PESO.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mCambiarFotoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                asignarFoto();
             }
         });
 
@@ -160,5 +205,44 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
 
         // Asignar la categoría de Edad al TextView correspondiente.
         mCatEdad.setText(catEdad);
+    }
+
+    // A partir del peso que se pasa como parámetro a este método se asigna la categoría de Peso al competidor.
+    public void asignarCategoriaPeso(float peso){
+        String catPeso = "";
+        if(peso < 48){
+            catPeso = "Menos de 48 kg";
+        } else if((peso >= 48) && (peso <52)){
+            catPeso = "Menos de 52 kg";
+        } else if((peso >= 52) && (peso < 56)){
+            catPeso = "Menos de 56 kg";
+        } else if((peso >= 56) && (peso < 60)){
+            catPeso = "Menos de 60 kg";
+        } else if((peso >= 60) && (peso < 65)){
+            catPeso = "Menos de 65 kg";
+        } else if((peso >= 65) && (peso < 70)){
+            catPeso = "Menos de 70 kg";
+        } else if((peso >= 70) && (peso < 75)){
+            catPeso = "Menos de 75 kg";
+        } else if((peso >= 75) && (peso < 80)){
+            catPeso = "Menos de 80 kg";
+        } else if((peso >= 80) && (peso < 85)){
+            catPeso = "Menos de 85 kg";
+        } else if((peso >= 85) && (peso < 90)){
+            catPeso = "Menos de 90 kg";
+        } else if(peso >= 90){
+            catPeso = "90 kg o más";
+        }
+        // Asignar la categoria de PESO al TextView correspondiente.
+        mCatPeso.setText(catPeso);
+    }
+
+    public void asignarFoto(){
+        // Al pulsar el botón para elegir la foto se lanza un Intent de la Activity de la galería del dispositivo.
+        Intent galleryIntent = new Intent();
+        galleryIntent.setType("image/*");
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+        startActivityForResult(Intent.createChooser(galleryIntent, "Seleccionar Imagen"), GALLERY_PICK);
     }
 }
