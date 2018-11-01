@@ -94,6 +94,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
         int edad = calcularEdad(anhoNac, mesNac, diaNac);
         String edadStr = Integer.toString(edad);
         mEdad.setText(edadStr);
+        asignarCategoriaEdad(edad, null);
     }
 
 
@@ -123,6 +124,41 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
             edad = edad - 1;
         }
 
+        if(edad < 0){
+            Toast.makeText(AddCompetidorActivity.this, "La fecha seleccionada es posterior a la fecha actual. Corrija la fecha de nacimiento.", Toast.LENGTH_LONG).show();
+            edad = 0;
+        } else if (edad > 80) {
+            Toast.makeText(AddCompetidorActivity.this, "Según la normativa no puede haber ningún competidor cuya edad supere los 80 años. Compruebe la fecha de nacimiento.", Toast.LENGTH_LONG).show();
+        }
+
         return edad;
+    }
+
+    // Una vez calculada la edad a partir de la fecha de Nacimiento se asignará al competidor la categoría de EDAD que le corresponde en el año actual.
+    // Dependiendo de la modalidad de competición existen edades mínimas. Por ejemplo, en Sanda, la categoría de edad mínima es Junior, es decir, de 15 a 17 años.
+    public void asignarCategoriaEdad(int edad, String modalidad){
+        String catEdad = "";
+        if((edad <= 8) && (edad >= 4)){
+            catEdad = "01_PreInfantil";
+        } else if ((edad >= 9) && (edad <= 11)){
+            catEdad = "02_Infantil";
+        } else if ((edad >= 12) && (edad <= 14)){
+            catEdad = "03_Cadete";
+        } else if ((edad >= 15) && (edad <= 17)){
+            catEdad = "04_Junior";
+        } else if ((edad >= 18) && (edad <= 40)){
+            catEdad = "05_Absoluto";
+        } else if ((edad >= 41) && (edad <= 50)){
+            catEdad = "06_Sénior A (+40)";
+        } else if ((edad >= 51) && (edad <= 60)){
+            catEdad = "07_Sénior B (+50)";
+        } else if ((edad >= 61) && (edad <= 70)){
+            catEdad = "08_Sénior C (+60)";
+        } else if ((edad >= 71) && (edad <= 80)){
+            catEdad = "09_Sénior D (+70)";
+        }
+
+        // Asignar la categoría de Edad al TextView correspondiente.
+        mCatEdad.setText(catEdad);
     }
 }
