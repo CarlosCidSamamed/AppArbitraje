@@ -2,32 +2,37 @@ package com.fervenzagames.apparbitraje.Add_Activities;
 
 import android.app.DatePickerDialog;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.provider.CalendarContract;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import java.text.DateFormat;
 
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.R;
 import com.fervenzagames.apparbitraje.Utils.DatePickerFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -35,6 +40,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AddCompetidorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private Toolbar mToolbar;
+    private ProgressDialog mProgressDialog;
+
+    // Nombre, Apellidos, DNI / Pasaporte
+    private TextInputLayout mNombre;
+    private TextInputLayout mAp1;
+    private TextInputLayout mAp2;
+    private TextInputLayout mDNI;
+
+    // Federación, Escuela / Club, País
+    private TextInputLayout mFed;
+    private TextInputLayout mEsc;
+    private TextInputLayout mPais;
 
     // FECHA NACIMIENTO
     private Button mElegirFechBtn;
@@ -47,10 +64,19 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
     private TextInputLayout mPeso;
     private TextView mCatPeso;
     private Button mAsignarCatPesoBtn;
+    // Altura y Envergadura
+    private TextInputLayout mAltura;
+    private TextInputLayout mEnv;
+
     // Imagen
     private CircleImageView mFoto;
     private Button mCambiarFotoBtn;
     private final static int GALLERY_PICK = 1;
+    private StorageReference mImagenStorage; // Referencia a Firebase Storage para poder almacenar las fotos de los competidores.
+
+    private DatabaseReference mCompetidorDB;
+
+    private Button mGuardarBtn;
 
 
     private int anhoNac; // En estas variables globales almacenaré la fecha que se obtiene con el datepicker para poder calcular la edad del competidor (y la categoría de edad).
@@ -68,6 +94,15 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Añadir Competidor");
 
+        mNombre = (TextInputLayout) findViewById(R.id.add_comp_nombreInput);
+        mAp1 = (TextInputLayout) findViewById(R.id.add_comp_ap1Input);
+        mAp2 = (TextInputLayout) findViewById(R.id.add_comp_ap2Input);
+        mDNI = (TextInputLayout) findViewById(R.id.add_comp_dniInput);
+
+        mFed = (TextInputLayout) findViewById(R.id.add_comp_federacionInput);
+        mEsc = (TextInputLayout) findViewById(R.id.add_comp_escuelaClubInput);
+        mPais = (TextInputLayout) findViewById(R.id.add_comp_paisInput);
+
         mElegirFechBtn = (Button) findViewById(R.id.add_comp_fechaNacBtn);
         mFechaTextView = (TextView) findViewById(R.id.add_comp_fechaNacText);
 
@@ -78,8 +113,15 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
         mPeso = (TextInputLayout) findViewById(R.id.add_comp_pesoInput);
         mCatPeso = (TextView) findViewById(R.id.add_comp_catPesoText);
 
+        mAltura = (TextInputLayout) findViewById(R.id.add_comp_alturaInput);
+        mEnv = (TextInputLayout) findViewById(R.id.add_comp_envergaduraInput);
+
         mFoto = (CircleImageView) findViewById(R.id.add_comp_foto);
         mCambiarFotoBtn = (Button) findViewById(R.id.add_comp_elegirFotoBtn);
+        mImagenStorage = FirebaseStorage.getInstance().getReference();
+        mCompetidorDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Competidores");
+
+        mGuardarBtn = (Button) findViewById(R.id.add_comp_guardarDatos_btn);
 
         fechaSeleccionada = false;
         anhoNac = 0;
@@ -112,10 +154,30 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
             }
         });
 
+        if(!TextUtils.isEmpty(mDNI.getEditText().getText().toString())){
+            mCambiarFotoBtn.setVisibility(View.INVISIBLE);
+        } else {
+            mCambiarFotoBtn.setVisibility(View.VISIBLE);
+        }
         mCambiarFotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 asignarFoto();
+            }
+        });
+
+        mGuardarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Comprobar que el formulario se haya rellenado por completo
+                boolean todosDatosOK = true;
+                // Nombre, Apellidos y DNI
+                todosDatosOK &= comprobarDatosPersonales(); // true y lo que devuelva comprobarDatosPersonales.
+                todosDatosOK &= comprobarDatosFisicos();
+                todosDatosOK &= comprobarDatosFed();
+                if(todosDatosOK){
+                    guardarDatosCompetidor();
+                }
             }
         });
 
@@ -237,6 +299,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
         mCatPeso.setText(catPeso);
     }
 
+    // IMAGEN DEL COMPETIDOR
     public void asignarFoto(){
         // Al pulsar el botón para elegir la foto se lanza un Intent de la Activity de la galería del dispositivo.
         Intent galleryIntent = new Intent();
@@ -244,5 +307,159 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
         galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
 
         startActivityForResult(Intent.createChooser(galleryIntent, "Seleccionar Imagen"), GALLERY_PICK);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GALLERY_PICK && resultCode == RESULT_OK){
+            Uri imageUri = data.getData();
+
+            // Toast.makeText(SettingsActivity.this, imageUri, Toast.LENGTH_LONG).show();
+
+            CropImage.activity(imageUri)
+                    .setAspectRatio(1, 1)
+                    .start(this);
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+            if (resultCode == RESULT_OK) {
+
+                mProgressDialog = new ProgressDialog(AddCompetidorActivity.this);
+                mProgressDialog.setTitle("Subiendo Imagen...");
+                mProgressDialog.setMessage("Espere mientras se sube la imagen...");
+                mProgressDialog.setCanceledOnTouchOutside(false);
+                mProgressDialog.show();
+
+                final Uri resultUri = result.getUri();
+                // Nombre de la foto será igual al DNI / Pasaporte del Competidor. Tanto el DNI como el Pasaporte son únicos y servirán para comprobar si ya existe esa imagen.
+                final String dni = mDNI.getEditText().getText().toString();
+                if(!TextUtils.isEmpty(dni)){
+                   final String nombreArchivo = dni;
+                } else {
+                    Toast.makeText(this, "Es necesario que introduzca el DNI o el Pasaporte para poder añadir una FOTO al formulario.", Toast.LENGTH_SHORT).show();
+                }
+
+                final StorageReference filepath = mImagenStorage.child("fotosCompetidores").child(dni + ".jpg");
+
+                filepath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if(task.isSuccessful()){
+                            // Toast.makeText(SettingsActivity.this, "Subiendo Imagen...", Toast.LENGTH_SHORT).show();
+                            mImagenStorage.child("fotosCompetidores").child(dni + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String download_Url = uri.toString();
+
+                                    mCompetidorDB.child("foto").setValue(download_Url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()){
+                                                mProgressDialog.dismiss();
+                                                Toast.makeText(AddCompetidorActivity.this, "Éxito al subir la imagen.", Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toast.makeText(AddCompetidorActivity.this, "ERROR al subir la imagen.", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
+
+                        } else {
+                            Toast.makeText(AddCompetidorActivity.this, "¡¡Error al subir la Imagen!!", Toast.LENGTH_SHORT).show();
+                            mProgressDialog.dismiss();
+                        }
+                    }
+                });
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+    }
+
+    // Método para mostrar la imagen del competidor una vez que se haya subido al Firebase Storage.
+    public void mostrarImagen(){
+
+    }
+
+    // Guardar los datos del formulario en la DB
+    public void guardarDatosCompetidor(){
+        Toast.makeText(this, "Guardando Datos del Competidor en la BD.", Toast.LENGTH_SHORT).show();
+    }
+    
+    // Métodos para comprobar todos los datos del formulario excepto la FOTO
+    public boolean comprobarDatosPersonales(){
+        boolean datosOK = false;
+        // Nombre, Apellidos y DNI
+        try {
+            String nombre = mNombre.getEditText().getText().toString();
+            String ap1 = mAp1.getEditText().getText().toString();
+            String ap2 = mAp2.getEditText().getText().toString();
+            if(!TextUtils.isEmpty(nombre) && (!TextUtils.isEmpty(ap1)) && (!TextUtils.isEmpty(ap2))){
+                datosOK = true;
+            } else {
+                Toast.makeText(this, "Introduzca el nombre, ambos apellidos y el DNI antes de pulsar el botón de Guardar Datos.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return datosOK;
+    }
+
+    public boolean comprobarDatosFisicos(){
+        // Fecha de Nacimiento, Edad, Categoría de Edad, Peso, Categoría de Peso, Altura y Envergadura
+        boolean datosOK = false;
+
+        try {
+            String fechaNac = mFechaTextView.getText().toString();
+            String edad = mEdad.getText().toString();
+            String catEdad = mCatEdad.getText().toString();
+            String peso = mPeso.getEditText().getText().toString();
+            String catPeso = mCatPeso.getText().toString();
+            String altura = mAltura.getEditText().getText().toString();
+            String env = mEnv.getEditText().getText().toString();
+
+            if((!TextUtils.isEmpty(fechaNac)) &&
+                    (!TextUtils.isEmpty(edad)) &&
+                    (!TextUtils.isEmpty(catEdad)) &&
+                    (!TextUtils.isEmpty(peso)) &&
+                    (!TextUtils.isEmpty(catPeso)) &&
+                    (!TextUtils.isEmpty(altura)) &&
+                    (!TextUtils.isEmpty(env))){
+                datosOK = true;
+            } else {
+                Toast.makeText(this, "Introduzca los datos de la parte izquierda del formulario (datos físicos) antes de pulsar el botón de Guardar Datos.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return datosOK;
+    }
+
+    public boolean comprobarDatosFed(){
+        boolean datosOK = false;
+
+        try {
+            String fed = mFed.getEditText().getText().toString();
+            String esc = mEsc.getEditText().getText().toString();
+            String pais = mPais.getEditText().getText().toString();
+            if(!TextUtils.isEmpty(fed) && (!TextUtils.isEmpty(esc)) && (!TextUtils.isEmpty(pais))){
+                datosOK = true;
+            } else {
+                Toast.makeText(this, "Introduzca el nombre de la federación, la escuela o club del competidor y el país antes de pulsar el botón de Guardar Datos.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return datosOK;
     }
 }
