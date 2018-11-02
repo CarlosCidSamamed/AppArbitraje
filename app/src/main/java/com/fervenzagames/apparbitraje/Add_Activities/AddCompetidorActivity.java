@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.Calendar;
@@ -177,6 +178,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
             @Override
             public void onClick(View v) {
                 asignarFoto();
+                mostrarImagen();
             }
         });
 
@@ -400,7 +402,29 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
 
     // Método para mostrar la imagen del competidor una vez que se haya subido al Firebase Storage.
     public void mostrarImagen(){
+        // Acceder a la BD para localizar al Competidor y la URL de descarga de su foto.
+        // Si el campo de DNI no contiene datos no se realiza la búsqueda.
+        try {
+            final String dni = mDNI.getEditText().getText().toString();
+            if(!TextUtils.isEmpty(dni)){
+                mCompetidorDB.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String foto = dataSnapshot.child(dni) .child("foto").getValue().toString();
+                        Picasso.get().load(foto).into(mFoto);
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Rellene el campo de DNI antes de intentar cmabiar la Imagen del Competidor.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     // Guardar los datos del formulario en la DB
