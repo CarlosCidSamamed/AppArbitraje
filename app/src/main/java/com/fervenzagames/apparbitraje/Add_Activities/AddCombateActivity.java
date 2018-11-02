@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje.Add_Activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -7,9 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Adapters.CompetidoresList;
 import com.fervenzagames.apparbitraje.Dialogs.AddCompetidorDialog;
 import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.fervenzagames.apparbitraje.R;
@@ -17,7 +21,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -48,6 +56,12 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
     private DatabaseReference mModDB;
     private DatabaseReference mCatDB;
     private DatabaseReference mCombateDB;
+    private DatabaseReference mCompRojoDB;
+    private DatabaseReference mCompAzulDB;
+    private DatabaseReference mListaCompetidoresDB;
+    private List<Competidores> mListaComp;
+    private ListView mListaCompView;
+    private ListView mListViewPrueba;
 
 
     private String idCamp;
@@ -92,6 +106,13 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
         mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
         mModDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idCamp).child(idMod);
         mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(idMod).child(idCat);
+
+        mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates").child(idCat); // Los combates dependen de la categoría a la que pertenecen.
+
+        mListaCompetidoresDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Competidores"); // Referencia a la lista completa de Competidores de la BD.
+        mListaComp = new ArrayList<>();
+        mListaCompView = (ListView) findViewById(R.id.add_comp_dialog_listView);
+        mListViewPrueba = (ListView) findViewById(R.id.add_comb_pruebaListView);
 
         idRojo = "";
         idAzul = "";
@@ -138,7 +159,8 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
         mRojoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                idRojo = abrirDialogo();
+                filtrarCompetidores();
+                //idRojo = abrirDialogo();
             }
         });
 
@@ -158,6 +180,9 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
         // Mostramos el dialogo...
         AddCompetidorDialog dialogo = new AddCompetidorDialog();
         dialogo.show(getSupportFragmentManager(), "AddCompetidorDialog");
+
+        // filtrarCompetidores();
+
         res = dialogo.idCompetidor;
 
         return res;
@@ -167,5 +192,102 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
     public String getIdCompetidor(Competidores comp) {
         return comp.getId();
     }
+    //endregion
+
+    //region Filtrar Competidores
+    // Método que devuelve una lista con los competidores de una modalidad y una categoría determinadas (para un Campeonato determinado).
+    public void filtrarCompetidores(){
+
+        // Toast.makeText(this, "Filtrando Competidores", Toast.LENGTH_SHORT).show();
+        
+        List<Competidores> lista = new ArrayList<>();
+        // Los valores de los IDs para el Campeonato, Modalidad y Categoría actuales se han recuperado en el método onCreate de esta clase. idCamp, idMod e idCat.
+        // Categoría -> mCatDB --> edadCat, pesoCat y sexoCat
+        mCatDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    //final String catEdad = dataSnapshot.child(idMod).child(idCat).child("catEdad").getValue().toString();
+                    //final String catPeso = dataSnapshot.child(idMod).child(idCat).child("catPeso").getValue().toString();
+                    final String edad = dataSnapshot.child("edad").getValue().toString();
+                    final String peso = dataSnapshot.child("peso").getValue().toString();
+                    final String sexo = dataSnapshot.child("sexo").getValue().toString();
+
+                    /*Toast.makeText(AddCombateActivity.this,
+                            "Datos para la CONSULTA: Sexo --> " + sexo + " Edad --> " + edad + " Peso --> " + peso,
+                            Toast.LENGTH_SHORT).show();*/
+
+                    // Realizar la consulta en la lista de Competidores.
+                    Query consulta = mListaCompetidoresDB
+                            .orderByChild("id");
+
+                    consulta.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            /*if(dataSnapshot.exists()){
+                                Toast.makeText(AddCombateActivity.this, "La consulta devuelve algún resultado." + dataSnapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
+                            }*/
+                            mListaComp.clear();
+                            for(DataSnapshot competidorSnapshot: dataSnapshot.getChildren()){ // Recorrer los competidores de la lista obtenida en la consulta.
+                                Competidores comp = competidorSnapshot.getValue(Competidores.class);
+                               /* Toast.makeText(AddCombateActivity.this, "DNI del Competidor -> " + comp.getDni(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddCombateActivity.this, "SEXO --> " + comp.getSexo(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddCombateActivity.this, "CAT EDAD --> " + comp.getCatEdad(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddCombateActivity.this, "CAT PESO --> " + comp.getCatPeso(), Toast.LENGTH_SHORT).show();*/
+                                
+                                /*if(comp.getSexo().equals(sexo))
+                                    Toast.makeText(AddCombateActivity.this, "Sexo Coincide", Toast.LENGTH_SHORT).show();*/
+                                
+                                // Comprobación por sexo
+                                if((comp.getSexo().equals(sexo)) &&
+                                // Comprobaciones por edad y catEdad
+                                        (comp.getCatEdad().equals(edad)) &&
+                                // Comprobaciones por peso y catPeso
+                                        (comp.getCatPeso().equals(peso))){
+                                    // Si se cumplen los requisitos se añade al competidor a la lista de resultados.
+                                    mListaComp.add(comp);
+                                }
+                                // Asignar el adapter para mostrar la lista en un Listview
+                                CompetidoresList adapter = new CompetidoresList(AddCombateActivity.this, mListaComp);
+                                // Si supiera el nombre del ListView lo pondría de esta manera
+                                // nombreLisView.setAdapter(adapter);
+                                // Como el ListView se crea en el Dialog debo obtener el nombre del ListView en AddCompetidorDialog.
+                                // mListaCompView.setAdapter(adapter);
+                                mListViewPrueba.setAdapter(adapter);
+                                // Toast.makeText(AddCombateActivity.this, "Se ha asignado el ADAPTER a la ListView del Dialog", Toast.LENGTH_SHORT).show();
+                            }
+                            if (mListaComp.size() == 0){
+                                Toast.makeText(AddCombateActivity.this,
+                                        "No existe ningún competidor en la BD que cumpla esos requisitos. Sexo: " + sexo
+                                        + ", CatEdad: " + edad + ", CatPeso: " + peso,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // Recuperar la lista de competidores de una categoría de peso
+
+
+        // return lista;
+    }
+    //enregion
+
+    //region Cargar Datos Competidores
+
     //endregion
 }

@@ -59,8 +59,8 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
         mModDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idMod);
         mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(idMod).child(idCat);
 
-        Toast.makeText(DetalleCategoriaActivity.this, "ID MOD --> " + idMod, Toast.LENGTH_LONG).show();
-        Toast.makeText(DetalleCategoriaActivity.this, "ID CATEGORIA " + idCat, Toast.LENGTH_LONG).show();
+/*        Toast.makeText(DetalleCategoriaActivity.this, "ID MOD --> " + idMod, Toast.LENGTH_LONG).show();
+        Toast.makeText(DetalleCategoriaActivity.this, "ID CATEGORIA " + idCat, Toast.LENGTH_LONG).show();*/
 
         mCatDB.addValueEventListener(new ValueEventListener() {
             @Override

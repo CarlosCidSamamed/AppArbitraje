@@ -211,9 +211,9 @@ public class DetalleModalidadActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 catsOrdenadas = actualizarListaCategorias(mOrdenarSpinner.getSelectedItem().toString().toLowerCase());
-                Toast.makeText(DetalleModalidadActivity.this,
+                /*Toast.makeText(DetalleModalidadActivity.this,
                         "Spinner Filtro --> " + mOrdenarSpinner.getSelectedItem().toString().toLowerCase(),
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT).show();*/
                 catsOrdenadas.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
