@@ -17,16 +17,22 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.fervenzagames.apparbitraje.R;
 import com.fervenzagames.apparbitraje.Utils.DatePickerFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -48,6 +54,8 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
     private TextInputLayout mAp2;
     private TextInputLayout mDNI;
 
+    private Spinner mSexoSpinner;
+
     // Federación, Escuela / Club, País
     private TextInputLayout mFed;
     private TextInputLayout mEsc;
@@ -67,6 +75,8 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
     // Altura y Envergadura
     private TextInputLayout mAltura;
     private TextInputLayout mEnv;
+
+    private Spinner mGuardiaSpinner;
 
     // Imagen
     private CircleImageView mFoto;
@@ -99,6 +109,8 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
         mAp2 = (TextInputLayout) findViewById(R.id.add_comp_ap2Input);
         mDNI = (TextInputLayout) findViewById(R.id.add_comp_dniInput);
 
+        mSexoSpinner = (Spinner) findViewById(R.id.add_comp_sexoSpinner);
+
         mFed = (TextInputLayout) findViewById(R.id.add_comp_federacionInput);
         mEsc = (TextInputLayout) findViewById(R.id.add_comp_escuelaClubInput);
         mPais = (TextInputLayout) findViewById(R.id.add_comp_paisInput);
@@ -115,6 +127,8 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
 
         mAltura = (TextInputLayout) findViewById(R.id.add_comp_alturaInput);
         mEnv = (TextInputLayout) findViewById(R.id.add_comp_envergaduraInput);
+
+        mGuardiaSpinner = (Spinner) findViewById(R.id.add_comp_guardiaSpinner);
 
         mFoto = (CircleImageView) findViewById(R.id.add_comp_foto);
         mCambiarFotoBtn = (Button) findViewById(R.id.add_comp_elegirFotoBtn);
@@ -201,7 +215,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
         int edad = calcularEdad(anhoNac, mesNac, diaNac);
         String edadStr = Integer.toString(edad);
         mEdad.setText(edadStr);
-        asignarCategoriaEdad(edad, null);
+        asignarCategoriaEdad(edad -1); // Se asigna la categoría de edad para la edad - 1 porque las categorías se actualizan al principio del año, no en los cumpleaños.
     }
 
 
@@ -242,8 +256,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
     }
 
     // Una vez calculada la edad a partir de la fecha de Nacimiento se asignará al competidor la categoría de EDAD que le corresponde en el año actual.
-    // Dependiendo de la modalidad de competición existen edades mínimas. Por ejemplo, en Sanda, la categoría de edad mínima es Junior, es decir, de 15 a 17 años.
-    public void asignarCategoriaEdad(int edad, String modalidad){
+    public void asignarCategoriaEdad(int edad){
         String catEdad = "";
         if((edad <= 8) && (edad >= 4)){
             catEdad = "01_PreInfantil";
@@ -342,6 +355,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
                    final String nombreArchivo = dni;
                 } else {
                     Toast.makeText(this, "Es necesario que introduzca el DNI o el Pasaporte para poder añadir una FOTO al formulario.", Toast.LENGTH_SHORT).show();
+                    return; // Si no se ha escrito el dni no se guarda ninguna imagen.
                 }
 
                 final StorageReference filepath = mImagenStorage.child("fotosCompetidores").child(dni + ".jpg");
@@ -356,7 +370,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
                                 public void onSuccess(Uri uri) {
                                     String download_Url = uri.toString();
 
-                                    mCompetidorDB.child("foto").setValue(download_Url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    mCompetidorDB.child(dni).child("foto").setValue(download_Url).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()){
@@ -392,6 +406,67 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
     // Guardar los datos del formulario en la DB
     public void guardarDatosCompetidor(){
         Toast.makeText(this, "Guardando Datos del Competidor en la BD.", Toast.LENGTH_SHORT).show();
+
+        // Recuperar los datos del Competidor
+        // Datos personales
+        try {
+            String nombre = mNombre.getEditText().getText().toString();
+            String ap1 = mAp1.getEditText().getText().toString();
+            String ap2 = mAp2.getEditText().getText().toString();
+            final String dni = mDNI.getEditText().getText().toString();
+            String sexo = mSexoSpinner.getSelectedItem().toString();
+            //Datos físicos
+            String fechaNac = mFechaTextView.getText().toString();
+            String edadStr = mEdad.getText().toString();
+            Integer edad = Integer.parseInt(edadStr);
+            String catEdad = mCatEdad.getText().toString();
+            String pesoStr = mPeso.getEditText().getText().toString();
+            Float peso = Float.parseFloat(pesoStr);
+            String catPeso = mCatPeso.getText().toString();
+            String altStr = mAltura.getEditText().getText().toString();
+            Float alt = Float.parseFloat(altStr);
+            String envStr = mEnv.getEditText().getText().toString();
+            Float env = Float.parseFloat(envStr);
+            String guardia = mGuardiaSpinner.getSelectedItem().toString();
+            // Datos Federación...
+            String fed = mFed.getEditText().getText().toString();
+            String esc = mEsc.getEditText().getText().toString();
+            String pais = mPais.getEditText().getText().toString();
+            // En el método que se ejecuta al pulsar el botón de Guardar Datos se comprueba que los datos estén completos antes de invocar a este método para guardar en la BD.
+            // Por esa razón no será necesario comprobar el formulario en este método.
+
+            // Creamos un objeto de la clase Competidores.
+            final Competidores comp = new Competidores(dni, dni, nombre, ap1, ap2,
+                    fechaNac, sexo, edad, peso, catEdad, catPeso,
+                    alt, env, guardia, 0, 0,
+                    fed, esc, pais, null);
+
+            // Comprobar si existe ese competidor en la BD buscando por su ID, es decir, su DNI.
+            Query consulta = mCompetidorDB
+                    .orderByChild("id")
+                    .equalTo(comp.getDni())
+                    .limitToFirst(1);
+            
+            consulta.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){ // Ya existe ese Competidor
+                        Toast.makeText(AddCompetidorActivity.this, "Ya existe un Competidor con ese DNI en la BD. Compruebe los datos del formulario...", Toast.LENGTH_SHORT).show();
+                    } else { // Si no existe ese competidor se añade a la BD.
+                        mCompetidorDB.child(dni).setValue(comp);
+                        Toast.makeText(AddCompetidorActivity.this, "Se ha añadido el Competidor cuyo DNI es " + dni + " a la BD.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
     }
     
     // Métodos para comprobar todos los datos del formulario excepto la FOTO
