@@ -199,7 +199,7 @@
         app:layout_constraintTop_toBottomOf="@+id/add_comb_estado" />
 
     <ListView
-        android:id="@+id/add_comb_pruebaListView"
+        android:id="@+id/add_comb_RojoListView"
         android:layout_width="369dp"
         android:layout_height="252dp"
         android:layout_marginStart="8dp"
@@ -211,5 +211,19 @@
         app:layout_constraintHorizontal_bias="0.067"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_comb_Rojo_nombre" />
+
+    <ListView
+        android:id="@+id/add_comb_AzulListView"
+        android:layout_width="369dp"
+        android:layout_height="252dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_comb_Azul_nombre" />
 
 </android.support.constraint.ConstraintLayout>

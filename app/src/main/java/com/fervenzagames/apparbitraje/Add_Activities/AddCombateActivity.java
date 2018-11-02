@@ -1,12 +1,12 @@
 package com.fervenzagames.apparbitraje.Add_Activities;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,8 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
     private DatabaseReference mListaCompetidoresDB;
     private List<Competidores> mListaComp;
     private ListView mListaCompView;
-    private ListView mListViewPrueba;
+    private ListView mRojoListView;
+    private ListView mAzulListView;
 
 
     private String idCamp;
@@ -72,6 +74,7 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
     // poder localizar su nombre y apellidos en la DB y la imagen en el Storage de Firebase.
     private String idRojo;
     private String idAzul;
+    private int lado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,10 +115,14 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
         mListaCompetidoresDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Competidores"); // Referencia a la lista completa de Competidores de la BD.
         mListaComp = new ArrayList<>();
         mListaCompView = (ListView) findViewById(R.id.add_comp_dialog_listView);
-        mListViewPrueba = (ListView) findViewById(R.id.add_comb_pruebaListView);
+        mRojoListView = (ListView) findViewById(R.id.add_comb_RojoListView);
+        mAzulListView = (ListView) findViewById(R.id.add_comb_AzulListView);
+
+
 
         idRojo = "";
         idAzul = "";
+        lado = 0;
 
         //region Leer Datos DB para TextViews
         mCampDB.addValueEventListener(new ValueEventListener() {
@@ -159,18 +166,29 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
         mRojoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filtrarCompetidores();
+                lado = 0;
+                filtrarCompetidores(lado);
                 //idRojo = abrirDialogo();
+
+                if(mRojoListView != null) {
+                    cargarDatosCompetidor(lado);
+                }
             }
         });
 
         mAzulBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                idAzul = abrirDialogo();
+                //idAzul = abrirDialogo();
+                lado = 1;
+                filtrarCompetidores(lado);
+
+                if(mAzulListView != null) {
+                    cargarDatosCompetidor(lado);
+                }
             }
         });
-        //endregion
+
     }
 
     //region Método Abrir Diálogo Añadir Competidor
@@ -196,7 +214,7 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
 
     //region Filtrar Competidores
     // Método que devuelve una lista con los competidores de una modalidad y una categoría determinadas (para un Campeonato determinado).
-    public void filtrarCompetidores(){
+    public void filtrarCompetidores(final int lado){
 
         // Toast.makeText(this, "Filtrando Competidores", Toast.LENGTH_SHORT).show();
         
@@ -245,7 +263,14 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
                                 // Comprobaciones por peso y catPeso
                                         (comp.getCatPeso().equals(peso))){
                                     // Si se cumplen los requisitos se añade al competidor a la lista de resultados.
-                                    mListaComp.add(comp);
+                                    // Ahora debemos comprobar que el competidor no se haya añadido a la otra ranura.
+                                    // Es decir, no queremos que se pueda poner el mismo competidor en ambos lados, Rojo y Azul.
+                                    if((lado == 0) && (idAzul != comp.getId())){
+                                        mListaComp.add(comp);
+                                    } else if((lado == 1) && (idRojo != comp.getId())){
+                                        mListaComp.add(comp);
+                                    } // En caso contrario no se añade ese competidor a la lista de posibles candidatos.
+
                                 }
                                 // Asignar el adapter para mostrar la lista en un Listview
                                 CompetidoresList adapter = new CompetidoresList(AddCombateActivity.this, mListaComp);
@@ -253,8 +278,16 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
                                 // nombreLisView.setAdapter(adapter);
                                 // Como el ListView se crea en el Dialog debo obtener el nombre del ListView en AddCompetidorDialog.
                                 // mListaCompView.setAdapter(adapter);
-                                mListViewPrueba.setAdapter(adapter);
+                                if(lado == 0){
+                                    // ROJO
+                                    mRojoListView.setAdapter(adapter);
+                                    idRojo = comp.getId();
+                                } else if(lado == 1){
+                                    mAzulListView.setAdapter(adapter);
+                                    idAzul = comp.getId();
+                                }
                                 // Toast.makeText(AddCombateActivity.this, "Se ha asignado el ADAPTER a la ListView del Dialog", Toast.LENGTH_SHORT).show();
+
                             }
                             if (mListaComp.size() == 0){
                                 Toast.makeText(AddCombateActivity.this,
@@ -288,6 +321,29 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
     //enregion
 
     //region Cargar Datos Competidores
-
+    public void cargarDatosCompetidor(int lado){
+        if(lado == 0){
+            mRojoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // Obtener el competidor que se ha pulsado
+                    Competidores comp = mListaComp.get(position);
+                    Picasso.get().load(comp.getFoto()).into(mFotoRojo);
+                    mNombreRojo.setText(comp.getNombre() + " " + comp.getApellido1() + " " + comp.getApellido2());
+                }
+            });
+        } else if(lado == 1){
+            mAzulListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // Obtener el competidor que se ha pulsado
+                    Competidores comp = mListaComp.get(position);
+                    Picasso.get().load(comp.getFoto()).into(mFotoAzul);
+                    mNombreAzul.setText(comp.getNombre() + " " + comp.getApellido1() + " " + comp.getApellido2());
+                }
+            });
+        }
+    }
     //endregion
+
 }
