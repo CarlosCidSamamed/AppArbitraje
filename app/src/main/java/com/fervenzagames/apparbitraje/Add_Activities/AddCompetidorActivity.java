@@ -54,6 +54,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
     private TextInputLayout mAp1;
     private TextInputLayout mAp2;
     private TextInputLayout mDNI;
+    private Button mComprobarDNIBtn;
 
     private Spinner mSexoSpinner;
 
@@ -109,6 +110,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
         mAp1 = (TextInputLayout) findViewById(R.id.add_comp_ap1Input);
         mAp2 = (TextInputLayout) findViewById(R.id.add_comp_ap2Input);
         mDNI = (TextInputLayout) findViewById(R.id.add_comp_dniInput);
+        mComprobarDNIBtn = (Button) findViewById(R.id.add_comp_checkDNI_btn);
 
         mSexoSpinner = (Spinner) findViewById(R.id.add_comp_sexoSpinner);
 
@@ -133,6 +135,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
 
         mFoto = (CircleImageView) findViewById(R.id.add_comp_foto);
         mCambiarFotoBtn = (Button) findViewById(R.id.add_comp_elegirFotoBtn);
+
         mImagenStorage = FirebaseStorage.getInstance().getReference();
         mCompetidorDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Competidores");
 
@@ -169,11 +172,6 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
             }
         });
 
-        if(!TextUtils.isEmpty(mDNI.getEditText().getText().toString())){
-            mCambiarFotoBtn.setVisibility(View.INVISIBLE);
-        } else {
-            mCambiarFotoBtn.setVisibility(View.VISIBLE);
-        }
         mCambiarFotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,7 +195,27 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
             }
         });
 
+        mComprobarDNIBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    String dni = mDNI.getEditText().getText().toString();
+                    boolean dniOK = comprobarDNI(dni);
+                    if(dniOK){ // Si el DNI tiene el formato correcto se muestra el botón para Cambiar la Imagen
+                        mCambiarFotoBtn.setVisibility(View.VISIBLE);
+                        Toast.makeText(AddCompetidorActivity.this, "El DNI introducido es correcto.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mCambiarFotoBtn.setVisibility(View.INVISIBLE);
+                        Toast.makeText(AddCompetidorActivity.this, "El DNI introducido es INCORRECTO.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
+
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -413,6 +431,8 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
                         if(dataSnapshot.child(dni).exists()) { // Si existe esa foto en la DB se muestra...
                             String foto = dataSnapshot.child(dni).child("foto").getValue().toString();
                             Picasso.get().load(foto).into(mFoto);
+                        } else { // Si no se ha guardado ninguna imagen para este competidor se muestra el avatar por defecto
+                            Picasso.get().load(R.drawable.default_avatar).into(mFoto);
                         }
                     }
 
@@ -503,10 +523,18 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
             String nombre = mNombre.getEditText().getText().toString();
             String ap1 = mAp1.getEditText().getText().toString();
             String ap2 = mAp2.getEditText().getText().toString();
-            if(!TextUtils.isEmpty(nombre) && (!TextUtils.isEmpty(ap1)) && (!TextUtils.isEmpty(ap2))){
-                datosOK = true;
+            String dni = mDNI.getEditText().getText().toString();
+            if(!TextUtils.isEmpty(nombre) && (!TextUtils.isEmpty(ap1)) && (!TextUtils.isEmpty(ap2)) && (!TextUtils.isEmpty(dni))){
+                datosOK = true;                
             } else {
                 Toast.makeText(this, "Introduzca el nombre, ambos apellidos y el DNI antes de pulsar el botón de Guardar Datos.", Toast.LENGTH_SHORT).show();
+            }
+            boolean dniOK = comprobarDNI(dni);
+            if(dniOK){
+                datosOK = true;
+            } else {
+                datosOK = false;
+                Toast.makeText(this, "El DNI no tiene el formato correcto (8 cifras y una letra) o la letra no es la que le corresponde. Revise el DNI introducido.", Toast.LENGTH_SHORT).show();
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -562,5 +590,137 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
         }
 
         return datosOK;
+    }
+
+    // El proceso de cálculo de la LETRA del DNI se realiza mediante la normativa expuesta en la siguiente
+    // URL: http://www.interior.gob.es/web/servicios-al-ciudadano/dni/calculo-del-digito-de-control-del-nif-nie (Ministerio del Interior)
+
+    public boolean comprobarDNI(String dni){
+        boolean res = true;
+        
+        // El proceso consiste en separar la String del parámetro en 2 strings: Una para las cifras y otra para la letra.
+        // Previamente se comprueba la longitud de la cadena que se pasa como parámetro. Ha de ser igual a 9.
+        if(dni.length() != 9){
+            res = false;
+            Toast.makeText(this, "El campo del DNI tiene que estar compuesto por 8 cifras y una letra. Sin guión. ", Toast.LENGTH_SHORT).show();
+        } else { // Tamaño Correcto. Debemos comprobar el formato.
+            // Dividir en dos strings el DNI
+            String cifras = dni.substring(0, 8);
+            String letra = dni.substring(8);
+            Toast.makeText(this, "Cadena CIFRAS --> " + cifras, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "LETRA --> " + letra, Toast.LENGTH_SHORT).show();
+            // Convertir la cadena de cifras en un Integer
+            Integer num = Integer.parseInt(cifras);
+            int n = num;
+            Toast.makeText(this, "Número --> " + num, Toast.LENGTH_SHORT).show();
+            // Dividir el número obtenido entre 23 y obtener el resto
+            int resto = n % 23;
+            Toast.makeText(this, "Resto --> " + resto, Toast.LENGTH_SHORT).show();
+            String letraRes = "";
+            //region Swithc Letra
+            switch(resto){
+                case 0: {
+                    letraRes = "T";
+                    break;
+                }
+                case 1:{
+                    letraRes = "R";
+                    break;
+                }
+                case 2:{
+                    letraRes = "W";
+                    break;
+                }
+                case 3:{
+                    letraRes = "A";
+                    break;
+                }
+                case 4:{
+                    letraRes = "G";
+                    break;
+                }
+                case 5:{
+                    letraRes = "M";
+                    break;
+                }
+                case 6:{
+                    letraRes = "Y";
+                    break;
+                }
+                case 7:{
+                    letraRes = "F";
+                    break;
+                }
+                case 8:{
+                    letraRes = "P";
+                    break;
+                }
+                case 9:{
+                    letraRes = "D";
+                    break;
+                }
+                case 10:{
+                    letraRes = "X";
+                    break;
+                }
+                case 11:{
+                    letraRes = "B";
+                    break;
+                }
+                case 12:{
+                    letraRes = "N";
+                    break;
+                }
+                case 13:{
+                    letraRes = "J";
+                    break;
+                }
+                case 14:{
+                    letraRes = "Z";
+                    break;
+                }
+                case 15:{
+                    letraRes = "S";
+                    break;
+                }
+                case 16:{
+                    letraRes = "Q";
+                    break;
+                }
+                case 17:{
+                    letraRes = "V";
+                    break;
+                }
+                case 18:{
+                    letraRes = "H";
+                    break;
+                }
+                case 19:{
+                    letraRes = "L";
+                    break;
+                }
+                case 20:{
+                    letraRes = "C";
+                    break;
+                }
+                case 21:{
+                    letraRes = "K";
+                    break;
+                }
+                case 22:{
+                    letraRes = "E";
+                    break;
+                }
+            }
+            //endregion
+            Toast.makeText(this, "Letra RES --> " + letraRes, Toast.LENGTH_SHORT).show();
+            if(letra.equals(letraRes)){ // Si la letra introducida es la que le correponde
+                res = true;
+            } else {
+                res = false;
+            }
+        }
+        
+        return res;
     }
 }

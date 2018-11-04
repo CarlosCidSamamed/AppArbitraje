@@ -1,10 +1,13 @@
 package com.fervenzagames.apparbitraje.Add_Activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.CompetidoresList;
 import com.fervenzagames.apparbitraje.Dialogs.AddCompetidorDialog;
+import com.fervenzagames.apparbitraje.Models.Combates;
 import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.fervenzagames.apparbitraje.R;
 import com.google.firebase.database.DataSnapshot;
@@ -44,11 +48,16 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
     private CircleImageView mFotoRojo;
     private TextView mNombreRojo;
     private Button mRojoBtn;
+    private Button mRojoBorrarBtn;
 
     // Competidor Azul
     private CircleImageView mFotoAzul;
     private TextView mNombreAzul;
     private Button mAzulBtn;
+    private Button mAzulBorrarBtn;
+
+    //Número del Combate dentro de la categoría actual
+    private TextInputLayout mNumCombateInput;
 
     private Button mGuardarBtn;
 
@@ -59,11 +68,15 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
     private DatabaseReference mCombateDB;
     private DatabaseReference mCompRojoDB;
     private DatabaseReference mCompAzulDB;
+    private DatabaseReference mCombatesCatDB;
+
+    // Listas y ListViews para mostrar dichas Listas
     private DatabaseReference mListaCompetidoresDB;
     private List<Competidores> mListaComp;
     private ListView mListaCompView;
     private ListView mRojoListView;
     private ListView mAzulListView;
+
 
 
     private String idCamp;
@@ -94,10 +107,16 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
         mFotoRojo = (CircleImageView) findViewById(R.id.add_comb_Rojo);
         mNombreRojo = (TextView) findViewById(R.id.add_comb_Rojo_nombre);
         mRojoBtn = (Button) findViewById(R.id.add_comb_Rojo_btn);
+        mRojoBorrarBtn = (Button) findViewById(R.id.add_comb_Rojo_Borrar_btn);
+        mRojoBorrarBtn.setVisibility(View.INVISIBLE);
 
         mFotoAzul = (CircleImageView) findViewById(R.id.add_comb_Azul);
         mNombreAzul = (TextView) findViewById(R.id.add_comb_Azul_nombre);
         mAzulBtn = (Button) findViewById(R.id.add_comb_Azul_btn);
+        mAzulBorrarBtn = (Button) findViewById(R.id.add_comb_Azul_Borrar_btn);
+        mAzulBorrarBtn.setVisibility(View.INVISIBLE);
+
+        mNumCombateInput = (TextInputLayout) findViewById(R.id.add_comb_numCombateInput);
 
         mGuardarBtn = (Button) findViewById(R.id.add_comb_guardar_btn);
 
@@ -109,8 +128,9 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
         mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
         mModDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idCamp).child(idMod);
         mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(idMod).child(idCat);
+        mCombatesCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates").child(idCat); // Lista de Combates de la Categoría indicada.
 
-        mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates").child(idCat); // Los combates dependen de la categoría a la que pertenecen.
+        mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates");
 
         mListaCompetidoresDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Competidores"); // Referencia a la lista completa de Competidores de la BD.
         mListaComp = new ArrayList<>();
@@ -172,6 +192,7 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
 
                 if(mRojoListView != null) {
                     cargarDatosCompetidor(lado);
+                    mRojoBorrarBtn.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -185,10 +206,41 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
 
                 if(mAzulListView != null) {
                     cargarDatosCompetidor(lado);
+                    mAzulBorrarBtn.setVisibility(View.VISIBLE);
                 }
             }
         });
+        //endregion
+        //region Eliminar Competidores
+        mRojoBorrarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lado = 0;
+                eliminarDatosCompetidores(lado);
+                mRojoListView.setVisibility(View.INVISIBLE);
+                //filtrarCompetidores(lado);
+            }
+        });
 
+        mAzulBorrarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lado = 1;
+                eliminarDatosCompetidores(lado);
+                mAzulListView.setVisibility(View.INVISIBLE);
+                //filtrarCompetidores(lado);
+            }
+        });
+        //endregion
+
+        //region Guardar Datos
+        mGuardarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guardarCombate();
+            }
+        });
+        //endregion
     }
 
     //region Método Abrir Diálogo Añadir Competidor
@@ -242,6 +294,7 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
                     consulta.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                             /*if(dataSnapshot.exists()){
                                 Toast.makeText(AddCombateActivity.this, "La consulta devuelve algún resultado." + dataSnapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
                             }*/
@@ -266,6 +319,7 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
                                     // Ahora debemos comprobar que el competidor no se haya añadido a la otra ranura.
                                     // Es decir, no queremos que se pueda poner el mismo competidor en ambos lados, Rojo y Azul.
                                     if((lado == 0) && (idAzul != comp.getId())){
+                                        // Se añade el competidor si el Id no es mismo que el del contrario.
                                         mListaComp.add(comp);
                                     } else if((lado == 1) && (idRojo != comp.getId())){
                                         mListaComp.add(comp);
@@ -278,11 +332,14 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
                                 // nombreLisView.setAdapter(adapter);
                                 // Como el ListView se crea en el Dialog debo obtener el nombre del ListView en AddCompetidorDialog.
                                 // mListaCompView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
                                 if(lado == 0){
                                     // ROJO
+                                    mRojoListView.setVisibility(View.VISIBLE);
                                     mRojoListView.setAdapter(adapter);
                                     idRojo = comp.getId();
                                 } else if(lado == 1){
+                                    mAzulListView.setVisibility(View.VISIBLE);
                                     mAzulListView.setAdapter(adapter);
                                     idAzul = comp.getId();
                                 }
@@ -330,6 +387,8 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
                     Competidores comp = mListaComp.get(position);
                     Picasso.get().load(comp.getFoto()).into(mFotoRojo);
                     mNombreRojo.setText(comp.getNombre() + " " + comp.getApellido1() + " " + comp.getApellido2());
+                    idRojo = comp.getId();
+                    //Toast.makeText(AddCombateActivity.this, "Cargar Datos Competidor --> IdRojo: " + idRojo , Toast.LENGTH_SHORT).show();
                 }
             });
         } else if(lado == 1){
@@ -340,10 +399,103 @@ public class AddCombateActivity extends AppCompatActivity implements AddCompetid
                     Competidores comp = mListaComp.get(position);
                     Picasso.get().load(comp.getFoto()).into(mFotoAzul);
                     mNombreAzul.setText(comp.getNombre() + " " + comp.getApellido1() + " " + comp.getApellido2());
+                    idAzul = comp.getId();
+                    //Toast.makeText(AddCombateActivity.this, "Cargar Datos Competidor --> IdAzul: " + idAzul , Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
     //endregion
 
+    //region Eliminar Datos Competidores
+    public void eliminarDatosCompetidores(int lado){
+        if(lado == 0){
+            Resources res = getResources();
+            String str = res.getString(R.string.nombre_y_apellidos);
+            mNombreRojo.setText(str);
+            Picasso.get().load(R.drawable.default_avatar).into(mFotoRojo);
+            idRojo = "";
+            //Toast.makeText(this, "Eliminar Datos Competidor --> IdRojo: " + idRojo , Toast.LENGTH_SHORT).show();
+        } else if(lado == 1){
+            Resources res = getResources();
+            String str = res.getString(R.string.nombre_y_apellidos);
+            mNombreAzul.setText(str);
+            Picasso.get().load(R.drawable.default_avatar).into(mFotoAzul);
+            idAzul = "";
+            //Toast.makeText(this, "Eliminar Datos Competidor --> IdAzul: " + idAzul , Toast.LENGTH_SHORT).show();
+        }
+    }
+    //endregion
+
+    //region Guardar Combate
+
+    public void guardarCombate(){
+
+        boolean datosOK = false;
+        // Comprobar que se han añadido los competidores Rojo y Azul
+        if(!TextUtils.isEmpty(idRojo) && (!TextUtils.isEmpty(idAzul))){
+            datosOK = true;
+        } else {
+            Toast.makeText(this, "Introduzca a ambos competidores antes de pulsar el botón de Guardar Datos.", Toast.LENGTH_SHORT).show();
+        }
+        // Y el número de Combate se ha añadido y no existe en la BD para esta categoría.
+        /*try {
+            final String numCombate = mNumCombateInput.getEditText().getText().toString();
+            if(!TextUtils.isEmpty(numCombate)){
+                // Realizar una consulta a la BD para comprobar que no existe ningún combate con este número.
+                Query consulta = mCombatesCatDB
+                        .orderByChild("idCombate"); // Lista de los combates de esta categoría (ordenados por el idCombate).
+
+                consulta.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String numero = "";
+                        for(DataSnapshot combateSnapshot: dataSnapshot.getChildren()){ // Para cada uno de los combates
+                            if(dataSnapshot.exists()){
+                                try {
+                                    numero = dataSnapshot.child("numCombate").getValue().toString();
+                                    if(numero.equals(numCombate)){ // Ya existe un combate con ese número en la BD;
+                                        Toast.makeText(AddCombateActivity.this,
+                                                "Ya existe un combate con ese número para esta categoría en la BD. Revise el valor de Número de Combate...",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (NullPointerException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                numero = "1"; // Si no existe ningún combate en la lista...
+                            }
+
+                        }
+
+                        // Si no existe un combate con ese número en la BD se crea un objeto de tipo Combates
+                        String idCombate = mCombatesCatDB.child(idCat).push().getKey();
+                        // if(numero.equals("")) numero = "1";
+                        Integer num = Integer.parseInt(numero);
+                        int n = num;
+                        Combates comb = new Combates(idCombate, n,
+                               "ganador", "motivo","enlaceVideo" ,
+                                idRojo, idAzul, null,
+                                idMod, idCat, idCamp,
+                                Combates.EstadoCombate.Pendiente);
+                        // Y se añade a la BD.
+                        mCombatesCatDB.child(idCat).child(idCombate).setValue(comb);
+                        Toast.makeText(AddCombateActivity.this, "Se ha añadido el Combate a la BD.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Introduzca el Número del Combate antes de pulsar el botón de Guardar Datos.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }*/
+
+    }
+
+    //endregion
 }

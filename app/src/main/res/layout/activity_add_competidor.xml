@@ -218,7 +218,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="14dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -231,7 +231,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="@string/altura"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -240,7 +240,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -253,7 +253,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="@string/envergadura"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal" />
     </android.support.design.widget.TextInputLayout>
 
     <Spinner
@@ -363,6 +363,7 @@
         android:paddingRight="8dp"
         android:text="@string/cambiar_imagen"
         android:textColor="@android:color/white"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.477"
         app:layout_constraintStart_toEndOf="@+id/add_comp_foto"
@@ -377,7 +378,7 @@
         android:layout_marginTop="192dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="->"
+        android:text="@string/asignarPeso"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.767"
         app:layout_constraintStart_toStartOf="parent"
@@ -400,6 +401,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.979"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_competidor_app_bar" />
+
+    <Button
+        android:id="@+id/add_comp_checkDNI_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="280dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/boton_capsula_gris"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/comprobar"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toStartOf="@+id/add_comp_alturaInput"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/add_comp_dniInput"
         app:layout_constraintTop_toBottomOf="@+id/add_competidor_app_bar" />
 
 </android.support.constraint.ConstraintLayout>

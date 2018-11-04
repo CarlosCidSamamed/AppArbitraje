@@ -17,7 +17,7 @@ public class Combates {
     private String modalidad;
     private String categoria;
     private String campeonato;
-    private enum EstadoCombate {Pendiente, Finalizado, Cancelado};
+    public enum EstadoCombate {Pendiente, Finalizado, Cancelado};
     private EstadoCombate estadoCombate;
 
     public Combates() {
