@@ -114,6 +114,7 @@
     <string name="numero_de_combate">Número de Combate</string>
     <string name="asignarPeso"><![CDATA[->]]></string>
     <string name="comprobar">Comprobar</string>
+    <string name="generar">Generar</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">
@@ -229,6 +230,12 @@
     <array name="guardias">
         <item>Diestra</item>
         <item>Zurda</item>
+    </array>
+
+    <array name="tipoCompeticion">
+        <item>Tipo de Competición</item>
+        <item>Eliminatoria</item>
+        <item>Round-Robin</item>
     </array>
 
 </resources>

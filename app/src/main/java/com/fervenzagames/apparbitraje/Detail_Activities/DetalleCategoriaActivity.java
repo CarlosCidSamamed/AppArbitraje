@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Add_Activities.AddCombateActivity;
+import com.fervenzagames.apparbitraje.GenerarEmparejamientosActivity;
 import com.fervenzagames.apparbitraje.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +29,8 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
     private TextView mPeso;
     private ListView mListaCombates;
     private Button mAddCombateBtn;
+
+    private Button mGenerarEmpBtn;
 
     private DatabaseReference mCampDB;
     private DatabaseReference mModDB;
@@ -51,9 +54,11 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
         mListaCombates = (ListView) findViewById(R.id.cat_detalle_listaCombatesView);
         mAddCombateBtn = (Button) findViewById(R.id.cat_detalle_addCombate_btn);
 
-        String idCamp = getIntent().getExtras().getString("idCamp");
-        String idMod = getIntent().getExtras().getString("idMod");
-        String idCat = getIntent().getExtras().getString("idCat");
+        mGenerarEmpBtn = (Button) findViewById(R.id.cat_detalle_generarEmp_btn);
+
+        final String idCamp = getIntent().getExtras().getString("idCamp");
+        final String idMod = getIntent().getExtras().getString("idMod");
+        final String idCat = getIntent().getExtras().getString("idCat");
 
         mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
         mModDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idMod);
@@ -101,6 +106,39 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
                 Intent addCombateIntent = new Intent(DetalleCategoriaActivity.this, AddCombateActivity.class);
                 addCombateIntent.putExtras(extras);
                 startActivity(addCombateIntent);
+            }
+        });
+
+        mGenerarEmpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent generarIntent = new Intent(DetalleCategoriaActivity.this, GenerarEmparejamientosActivity.class);
+                Bundle extras = new Bundle();
+                extras.putString("idCamp", idCamp);
+                extras.putString("idMod", idMod);
+                extras.putString("idCat", idCat);
+
+                mCatDB.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mNombreCat.setText(dataSnapshot.child("nombre").getValue().toString());
+                        mSexo.setText(dataSnapshot.child("sexo").getValue().toString());
+                        mEdad.setText(dataSnapshot.child("edad").getValue().toString());
+                        mPeso.setText(dataSnapshot.child("peso").getValue().toString());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                extras.putString("sexo", mSexo.getText().toString());
+                extras.putString("edad", mEdad.getText().toString());
+                extras.putString("peso", mPeso.getText().toString());
+
+                generarIntent.putExtras(extras);
+                startActivity(generarIntent);
             }
         });
 
