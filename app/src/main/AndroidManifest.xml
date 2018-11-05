@@ -80,13 +80,19 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".Add_Activities.AddCombateActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".Detail_Activities.DetalleCombateActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".Add_Activities.AddCompetidorActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".GenerarEmparejamientosActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MostrarEmparejamientosActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
