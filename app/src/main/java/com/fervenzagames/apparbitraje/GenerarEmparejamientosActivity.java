@@ -1,13 +1,17 @@
 package com.fervenzagames.apparbitraje;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +42,8 @@ public class GenerarEmparejamientosActivity extends AppCompatActivity {
     private List<Competidores> mListaComp;
     private ListView mListaCompView;
     private TextView mNumCompetidores;
+
+    private Spinner mTipoSpinner;
 
     private Button mGenerarBtn;
 
@@ -73,6 +79,8 @@ public class GenerarEmparejamientosActivity extends AppCompatActivity {
         mListaComp = new ArrayList<>();
         mListaCompView = (ListView) findViewById(R.id.generar_emp_listaCompetidores);
         mNumCompetidores = (TextView) findViewById(R.id.generar_emp_numCompetidores);
+
+        mTipoSpinner =(Spinner) findViewById(R.id.generar_emp_tipoCompeticionSpinner);
 
         mGenerarBtn = (Button) findViewById(R.id.generar_emp_btn);
 
@@ -116,7 +124,7 @@ public class GenerarEmparejamientosActivity extends AppCompatActivity {
 
         //endregion
 
-        //region Mostrar Lista Competidores
+         //region Mostrar Lista Competidores
 
         Query consulta = mCompDB.orderByChild("id");
 
@@ -159,6 +167,81 @@ public class GenerarEmparejamientosActivity extends AppCompatActivity {
         });
 
         //endregion
+
+        mGenerarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Dependiendo del número de competidores de la categoría y del tipo de competición seleccionado se cargará el layout correspondiente
+                // con LayoutInflater
+                String tipo = mTipoSpinner.getSelectedItem().toString();
+                // Si no se ha seleccionado ningún tipo de competición...
+                if(tipo.equals("Tipo de Competición")){
+                    Toast.makeText(GenerarEmparejamientosActivity.this, "Seleccione el tipo de competición...", Toast.LENGTH_SHORT).show();
+                }
+                String numComp = mNumCompetidores.getText().toString();
+                int num = Integer.parseInt(numComp);
+
+                // En el Bundle de extras se incluyen el ID del layout a cargar. Además del idCamp, idMod e idCat.
+                final Bundle extras = extr;
+
+                switch (tipo){
+                    case "Eliminatoria":{
+                        // Una vez que se ha determinado el tipo de competición se evaluará el número de Competidores de la Categoría.
+                        switch(num){
+                            case 0:{
+                                Toast.makeText(GenerarEmparejamientosActivity.this,
+                                        "No existe ningún competidor en esta categoría por lo que no se pueden generar los emparejamientos...",
+                                        Toast.LENGTH_SHORT).show();
+                                break; 
+                            }
+                            case 1:{
+                                Toast.makeText(GenerarEmparejamientosActivity.this,
+                                        "Solamente existe 1 competidor en esta categoría por lo que no se pueden generar los emparejamientos...",
+                                        Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case 2:{ // Prueba
+                                Intent empIntent = new Intent(GenerarEmparejamientosActivity.this, MostrarEmparejamientosActivity.class);
+                                Bundle ext = extras;
+                                String nombreLayout = "";
+                                extr.putInt("layout", R.layout.emparejamientos_2_competidores_layout);
+                                empIntent.putExtras(extras);
+                                startActivity(empIntent);
+                                break;
+                            }
+                            case 3:{
+                                break;
+                            }
+                            case 4:{
+                                break;
+                            }
+                            case 5:{
+                                break;
+                            }
+                            case 6:{
+                                break;
+                            }
+                            case 7:{
+                                break;
+                            }
+                            case 8:{
+                                Intent empIntent = new Intent(GenerarEmparejamientosActivity.this, MostrarEmparejamientosActivity.class);
+                                Bundle ext = extras;
+                                String nombreLayout = "";
+                                extr.putInt("layout", R.layout.emparejamientos_8_competidores_layout);
+                                empIntent.putExtras(extras);
+                                startActivity(empIntent);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case "Round-Robin":{
+                        break;
+                    }
+                }
+            }
+        });
 
 
     }

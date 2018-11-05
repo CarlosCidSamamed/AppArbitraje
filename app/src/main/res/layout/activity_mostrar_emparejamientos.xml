@@ -6,4 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MostrarEmparejamientosActivity">
 
+    <include layout="@layout/app_bar_layout" android:id="@+id/mostrar_emp_app_bar"/>
+
 </android.support.constraint.ConstraintLayout>
