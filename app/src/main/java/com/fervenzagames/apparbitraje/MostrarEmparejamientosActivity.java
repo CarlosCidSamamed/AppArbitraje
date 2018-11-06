@@ -19,10 +19,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MostrarEmparejamientosActivity extends AppCompatActivity {
 
@@ -37,17 +40,19 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
 
     private Integer[] array;
 
+    private int idLayout = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_mostrar_emparejamientos);
 
         Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
+        final Bundle extras = intent.getExtras();
         final String idCamp = extras.getString("idCamp");
         final String idMod = extras.getString("idMod");
         final String idCat = extras.getString("idCat");
-        int idLayout = extras.getInt("layout");
+        idLayout = extras.getInt("layout");
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ConstraintLayout layout = (ConstraintLayout) inflater.inflate(idLayout, null);
@@ -62,6 +67,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                 mNombreCat = (TextView) findViewById(R.id.dos_comp_nombreCat);
                 mPruebaArray = (TextView) findViewById(R.id.pruebaArray);
                 array = sorteoCompetidores(2);
+                asignarCompetidores(array);
                 break;
             }
             case R.layout.emparejamientos_8_competidores_layout:{
@@ -134,15 +140,22 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
     //region Asignar Competidores
     // Lee la lista de competidores de la BD y le asigna a cada competidor el número que se ha almacenado en el array de Integer
     // que se pasa como parámetro.
-    public void asignarCompetidores(Integer[] array){
+    public void asignarCompetidores(final Integer[] array){
 
         final List<Competidores> listaComp = new ArrayList<>();
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        String idMod = extras.getString("idMod");
+        String idCat = extras.getString("idCat");
+
+        mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(idMod).child(idCat);
 
         mCatDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    final String sexo = dataSnapshot.child("nombre").getValue().toString();
+                    final String sexo = dataSnapshot.child("sexo").getValue().toString();
                     final String peso = dataSnapshot.child("peso").getValue().toString();
                     final String edad = dataSnapshot.child("edad").getValue().toString();
 
@@ -167,9 +180,42 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                                         "No existe ningún competidor en la BD que cumpla esos requisitos. Sexo: " + sexo
                                                 + ", CatEdad: " + edad + ", CatPeso: " + peso,
                                         Toast.LENGTH_SHORT).show();
+                                return;
                             }
 
                             // Una vez que tenemos el array de números aleatorios y la lista de Competidores debemos asignar su número a cada competidor.
+                            // Recorrer el array para comprobar el número aleatorio que se ha almacenado en cada una de sus posiciones.
+                            // Con ese número se decidirá la ranura en la que se cargarán los datos del competidor de la lista.
+                            switch (idLayout){
+                                case R.layout.emparejamientos_2_competidores_layout:{
+                                    CircleImageView fotoUno = (CircleImageView) findViewById(R.id.dos_comp_foto_1);
+                                    TextView nombreUno = (TextView) findViewById(R.id.dos_comp_nombre_1);
+                                    TextView paisUno = (TextView) findViewById(R.id.dos_comp_pais_1);
+
+                                    CircleImageView fotoDos = (CircleImageView) findViewById(R.id.dos_comp_foto_2);
+                                    TextView nombreDos = (TextView) findViewById(R.id.dos_comp_nombre_2);
+                                    TextView paisDos = (TextView) findViewById(R.id.dos_comp_pais_2);
+
+                                    // Recorrer el array
+                                    for(int i = 0; i < array.length; i++){
+                                        if(array[i] == 0){ // Cargar datos en Competidor 1
+                                            String nombreCompleto = listaComp.get(i).getNombre() + " " + listaComp.get(i).getApellido1() + " " + listaComp.get(i).getApellido2();
+                                            nombreUno.setText(nombreCompleto);
+                                            paisUno.setText(listaComp.get(i).getPais());
+                                            Picasso.get().load(listaComp.get(i).getFoto()).into(fotoUno);
+                                        } if(array[i] == 1){ // Cargar datos en Competidor 2
+                                            String nombreCompleto = listaComp.get(i).getNombre() + " " + listaComp.get(i).getApellido1() + " " + listaComp.get(i).getApellido2();
+                                            nombreDos.setText(nombreCompleto);
+                                            paisDos.setText(listaComp.get(i).getPais());
+                                            Picasso.get().load(listaComp.get(i).getFoto()).into(fotoDos);
+                                        }
+                                    }
+                                    break;
+                                }
+                                case R.layout.emparejamientos_8_competidores_layout:{
+
+                                }
+                            }
                         }
 
                         @Override

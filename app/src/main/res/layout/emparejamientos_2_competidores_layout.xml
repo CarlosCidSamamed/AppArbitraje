@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/foto_ganador"
+        android:id="@+id/dos_comp_foto_ganador"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginStart="8dp"
@@ -37,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar" />
 
     <TextView
-        android:id="@+id/pais_9"
+        android:id="@+id/dos_comp_pais_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -48,8 +48,8 @@
         android:text="@string/pais"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.156"
-        app:layout_constraintStart_toEndOf="@+id/foto_1"
-        app:layout_constraintTop_toBottomOf="@+id/nombre_" />
+        app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
+        app:layout_constraintTop_toBottomOf="@+id/dos_comp_nombre_1" />
 
     <include layout="@layout/app_bar_layout" android:id="@+id/emparejamientos_dos_app_bar" />
 
@@ -65,11 +65,11 @@
         android:background="@drawable/fondo_gris"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.01"
-        app:layout_constraintStart_toEndOf="@+id/foto_1"
-        app:layout_constraintTop_toBottomOf="@+id/nombre_" />
+        app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
+        app:layout_constraintTop_toBottomOf="@+id/dos_comp_nombre_1" />
 
     <TextView
-        android:id="@+id/nombre_"
+        android:id="@+id/dos_comp_nombre_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -80,7 +80,7 @@
         android:text="@string/nombre_y_apellidos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.11"
-        app:layout_constraintStart_toEndOf="@+id/foto_1"
+        app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar" />
 
     <View
@@ -93,13 +93,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:background="@drawable/fondo_gris"
-        app:layout_constraintEnd_toStartOf="@+id/foto_9"
+        app:layout_constraintEnd_toStartOf="@+id/dos_comp_foto_2"
         app:layout_constraintHorizontal_bias="0.99"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombre_9" />
+        app:layout_constraintTop_toBottomOf="@+id/dos_comp_nombre_2" />
 
     <TextView
-        android:id="@+id/numeroCompetidor_2"
+        android:id="@+id/dos_comp_numeroCompetidor_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -114,7 +114,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar" />
 
     <TextView
-        android:id="@+id/nombre_9"
+        android:id="@+id/dos_comp_nombre_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -129,7 +129,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/foto_1"
+        android:id="@+id/dos_comp_foto_1"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginStart="8dp"
@@ -141,10 +141,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.117"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar"
+        app:civ_border_width="4dp"
+        app:civ_border_color="@color/colorRojo"/>
 
     <TextView
-        android:id="@+id/numeroCompetidor_1"
+        android:id="@+id/dos_comp_numeroCompetidor_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -159,7 +161,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar" />
 
     <TextView
-        android:id="@+id/pais_"
+        android:id="@+id/dos_comp_pais_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -171,10 +173,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.702"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombre_9" />
+        app:layout_constraintTop_toBottomOf="@+id/dos_comp_nombre_2" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/foto_9"
+        android:id="@+id/dos_comp_foto_2"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginStart="8dp"
@@ -186,7 +188,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.89"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar"
+        app:civ_border_width="4dp"
+        app:civ_border_color="@color/colorAccent2"/>
 
     <Button
         android:id="@+id/dos_comp_asignar_puestos_btn"
@@ -202,7 +206,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/foto_ganador" />
+        app:layout_constraintTop_toBottomOf="@+id/dos_comp_foto_ganador" />
 
     <TextView
         android:id="@+id/pruebaArray"

@@ -181,7 +181,7 @@
         android:id="@+id/grupo1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="linea_horizontal_1,numeroCompetidor_1,pais_1,nombre_1,foto_1" />
+        app:constraint_referenced_ids="linea_horizontal_1,numeroCompetidor_1,pais_1,nombre_1,dos_comp_foto_1" />
 
     <android.support.constraint.Group
         android:id="@+id/grupo8"
@@ -217,13 +217,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="1"
-        app:layout_constraintEnd_toStartOf="@+id/foto_1"
+        app:layout_constraintEnd_toStartOf="@+id/dos_comp_foto_1"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/foto_1"
+        android:id="@+id/dos_comp_foto_1"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginStart="92dp"
@@ -245,7 +245,7 @@
         android:text="@string/nombre_y_apellidos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.014"
-        app:layout_constraintStart_toEndOf="@+id/foto_1"
+        app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
 
     <TextView
@@ -260,7 +260,7 @@
         android:text="@string/pais"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.064"
-        app:layout_constraintStart_toEndOf="@+id/foto_1"
+        app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
         app:layout_constraintTop_toBottomOf="@+id/nombre_1" />
 
     <View
@@ -277,7 +277,7 @@
         app:layout_constraintBottom_toTopOf="@+id/pais_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/foto_1"
+        app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
         app:layout_constraintTop_toBottomOf="@+id/nombre_1"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -295,7 +295,7 @@
         app:layout_constraintBottom_toTopOf="@+id/pais_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/foto_1"
+        app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
         app:layout_constraintTop_toBottomOf="@+id/nombre_8"
         app:layout_constraintVertical_bias="0.0" />
 
