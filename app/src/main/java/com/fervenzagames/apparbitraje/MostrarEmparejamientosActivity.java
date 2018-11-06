@@ -100,7 +100,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
         Integer[] array = new Integer[numCompetidores];
 
         for(int i = 0; i < numCompetidores; i++){
-            int num = r.nextInt(numCompetidores);
+            int num = r.nextInt(numCompetidores-1);
             array[i] = num;
         }
         // Corrección de duplicados para 2 competidores. El generador de números no funciona bien cuando el número máximo es 2.
@@ -109,7 +109,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                 if(array[0] == 1) {
                     array[1] = 0;
                 } else if(array[0] == 0){
-                    array[0] = 0;
+                    array[0] = 1;
                 }
             }
         }
@@ -120,7 +120,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
             for(int j = 0; j < numCompetidores; j ++){
                 if(i != j){
                     if(array[i] == array[j]){
-                        array[i] = r.nextInt(numCompetidores);
+                        array[i] = r.nextInt(numCompetidores-1);
                     }
                 }
             }

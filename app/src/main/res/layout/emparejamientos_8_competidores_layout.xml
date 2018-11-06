@@ -6,6 +6,466 @@
     android:layout_height="match_parent">
 
     <View
+        android:id="@+id/ocho_comp_ganadorJ_linea_horizontal"
+        android:layout_width="75dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="516dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_ganadorH_linea_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_ganadorK_linea_horizontal"
+        android:layout_width="75dp"
+        android:layout_height="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="464dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_RojoK_linea_vertical"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_ganadorH_linea_horizontal"
+        android:layout_width="75dp"
+        android:layout_height="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="444dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorB_linea_horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_RojoK_linea_vertical"
+        android:layout_width="5dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="400dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorE_linea_horizontal"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_ganadorI_linea_vertical"
+        android:layout_width="5dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="472dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_ganadorI_linea_horizontal"
+        app:layout_constraintHorizontal_bias="0.991"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_AzulJ_linea_vertical"
+        android:layout_width="5dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="524dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorF_linea_horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_ganadorH_linea_vertical"
+        android:layout_width="5dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="452dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_ganadorH_linea_horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorC_pais"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginRight="76dp"
+        android:text="@string/pais"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorC_foto"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorC_nombre" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="588dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/_0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_perdedorC_foto"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="548dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.934"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorC_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="548dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginRight="28dp"
+        android:text="@string/nombre_y_apellidos"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorC_foto"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_perdedorC_linea_horizontal"
+        android:layout_width="150dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorC_foto"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorC_nombre" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorD_pais"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/pais"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorD_foto"
+        app:layout_constraintHorizontal_bias="0.917"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorD_nombre" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="484dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/_0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorD_foto"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_perdedorD_foto"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="448dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorD_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="448dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/nombre_y_apellidos"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorD_foto"
+        app:layout_constraintHorizontal_bias="0.974"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_perdedorD_linea_horizontal"
+        android:layout_width="150dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorD_foto"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorD_nombre" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorE_pais"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/pais"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorE_foto"
+        app:layout_constraintHorizontal_bias="0.916"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorE_nombre" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="384dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/_0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorE_foto"
+        app:layout_constraintTop_toTopOf="@+id/ocho_comp_nombreCat" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_perdedorE_foto"
+        android:layout_width="70dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="364dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.934"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorE_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="364dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/nombre_y_apellidos"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorE_foto"
+        app:layout_constraintHorizontal_bias="0.969"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_perdedorE_linea_horizontal"
+        android:layout_width="235dp"
+        android:layout_height="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorE_foto"
+        app:layout_constraintHorizontal_bias="0.981"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorE_nombre" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorF_pais"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="696dp"
+        android:layout_marginRight="696dp"
+        android:text="@string/pais"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.427"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorF_foto"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorF_nombre" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="588dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/_0"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorF_foto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_perdedorF_foto"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="548dp"
+        android:layout_marginEnd="852dp"
+        android:layout_marginRight="852dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.893"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorF_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="548dp"
+        android:layout_marginEnd="700dp"
+        android:layout_marginRight="700dp"
+        android:text="@string/nombre_y_apellidos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorF_foto"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_perdedorF_linea_horizontal"
+        android:layout_width="235dp"
+        android:layout_height="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorF_foto"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorF_nombre" />
+
+    <View
+        android:id="@+id/ocho_comp_perdedorA_linea_horizontal"
+        android:layout_width="150dp"
+        android:layout_height="5dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorA_foto"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorA_nombre" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorA_pais"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="704dp"
+        android:layout_marginRight="704dp"
+        android:text="@string/pais"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.455"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorA_foto"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorA_nombre" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorA_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="456dp"
+        android:layout_marginEnd="704dp"
+        android:layout_marginRight="704dp"
+        android:text="@string/nombre_y_apellidos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.413"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorA_foto"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorB_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="364dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/nombre_y_apellidos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.016"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedor_B_foto"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorB_pais"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/pais"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedor_B_foto"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorB_nombre" />
+
+    <View
+        android:id="@+id/ocho_comp_perdedorB_linea_horizontal"
+        android:layout_width="150dp"
+        android:layout_height="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.005"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedor_B_foto"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_perdedorB_nombre" />
+
+    <View
         android:id="@+id/linea_horizontal_14"
         android:layout_width="75dp"
         android:layout_height="5dp"
@@ -84,15 +544,11 @@
         android:id="@+id/linea_vertical_16"
         android:layout_width="5dp"
         android:layout_height="80dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginTop="92dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="616dp"
+        android:layout_marginRight="616dp"
         android:background="@drawable/fondo_gris"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/linea_horizontal_18"
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
 
     <View
@@ -181,13 +637,17 @@
         android:id="@+id/grupo1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="linea_horizontal_1,numeroCompetidor_1,pais_1,nombre_1,dos_comp_foto_1" />
+        app:constraint_referenced_ids="ocho_comp_linea_horizontal_1,
+        ocho_comp_numeroCompetidor_1,
+        ocho_comp_pais_1,
+        ocho_comp_nombre_1,
+        ocho_comp_foto_1" />
 
     <android.support.constraint.Group
         android:id="@+id/grupo8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="linea_horizontal_8,foto_8,numeroCompetidor_8,nombre_8,pais_8" />
+        app:constraint_referenced_ids="ocho_comp_linea_horizontal_8,foto_8,numeroCompetidor_8,nombre_8,pais_8" />
 
     <android.support.constraint.Group
         android:id="@+id/grupo5"
@@ -208,12 +668,12 @@
         app:constraint_referenced_ids="linea_horizontal_3,numeroCompetidor_3,pais_3,foto_3,nombre_3" />
 
     <TextView
-        android:id="@+id/numeroCompetidor_1"
+        android:id="@+id/ocho_comp_numeroCompetidor_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="1"
@@ -223,7 +683,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/dos_comp_foto_1"
+        android:id="@+id/ocho_comp_foto_1"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginStart="92dp"
@@ -234,14 +694,14 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
 
     <TextView
-        android:id="@+id/nombre_1"
+        android:id="@+id/ocho_comp_nombre_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="720dp"
+        android:layout_marginRight="720dp"
         android:text="@string/nombre_y_apellidos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.014"
@@ -249,55 +709,47 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
 
     <TextView
-        android:id="@+id/pais_1"
+        android:id="@+id/ocho_comp_pais_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="772dp"
+        android:layout_marginRight="772dp"
         android:text="@string/pais"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.064"
         app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
-        app:layout_constraintTop_toBottomOf="@+id/nombre_1" />
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_nombre_1" />
 
     <View
-        android:id="@+id/linea_horizontal_1"
+        android:id="@+id/ocho_comp_linea_horizontal_1"
         android:layout_width="150dp"
         android:layout_height="5dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="14dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         android:background="@drawable/fondo_gris"
-        app:layout_constraintBottom_toTopOf="@+id/pais_1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
-        app:layout_constraintTop_toBottomOf="@+id/nombre_1"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_foto_1"
+        app:layout_constraintTop_toBottomOf="@+id/ocho_comp_nombre_1" />
 
     <View
-        android:id="@+id/linea_horizontal_8"
+        android:id="@+id/ocho_comp_linea_horizontal_8"
         android:layout_width="150dp"
         android:layout_height="5dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
         android:layout_marginTop="14dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="696dp"
+        android:layout_marginRight="696dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/fondo_gris"
         app:layout_constraintBottom_toTopOf="@+id/pais_8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
+        app:layout_constraintStart_toEndOf="@+id/foto_8"
         app:layout_constraintTop_toBottomOf="@+id/nombre_8"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.6" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/foto_8"
@@ -802,12 +1254,16 @@
         android:id="@+id/linea_vertical_1"
         android:layout_width="5dp"
         android:layout_height="40dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:background="@drawable/fondo_gris"
-        app:layout_constraintStart_toEndOf="@+id/nombre_1"
-        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.01"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_nombre_1"
+        app:layout_constraintTop_toTopOf="@+id/ocho_comp_nombreCat" />
 
     <View
         android:id="@+id/linea_vertical_8"
@@ -887,6 +1343,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_campeon_foto"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginStart="8dp"
@@ -913,6 +1370,168 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <!-- CUADRO INFERIOR -->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_perdedor_B_foto"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="364dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.089"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <TextView
+        android:id="@+id/ocho_comp_perdedorB_numCompetidor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="396dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/_0"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedor_B_foto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_perdedorA_foto"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="448dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.089"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ocho_comp_nombreCat" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="492dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/_0"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorA_foto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ocho_comp_nombreCat" />
+
+    <View
+        android:id="@+id/ocho_comp_linea_vertical_1_H"
+        android:layout_width="5dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="400dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorB_nombre"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_linea_vertical_2_H"
+        android:layout_width="5dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="450dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintStart_toEndOf="@+id/ocho_comp_perdedorA_nombre"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="5dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="484dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorD_nombre"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="5dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="540dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toStartOf="@+id/ocho_comp_perdedorC_nombre"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <View
+        android:id="@+id/ocho_comp_ganadorI_linea_horizontal"
+        android:layout_width="75dp"
+        android:layout_height="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="532dp"
+        android:background="@drawable/fondo_gris"
+        app:layout_constraintEnd_toStartOf="@+id/view2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_terceroJ_foto"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="524dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintStart_toStartOf="@+id/ocho_comp_ganadorJ_linea_horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_terceroK_foto"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="392dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="@+id/ocho_comp_ganadorK_linea_horizontal"
+        app:layout_constraintHorizontal_bias="0.942"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ocho_comp_subcampeon_foto"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="232dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_ocho_app_bar" />
 
