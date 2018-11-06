@@ -24,8 +24,8 @@ public class Combates {
     }
 
     public Combates(String id, int numCombate, String ganador, String motivo, String enlaceVideo,
-                    String idRojo, String idAzul, List<Asaltos> listaAsaltos,
-                    String modalidad, String categoria, String campeonato, EstadoCombate estadoCombate) {
+                    String idRojo, String idAzul, List<Asaltos> listaAsaltos, String campeonato,
+                    String modalidad, String categoria, EstadoCombate estadoCombate) {
         this.id = id;
         this.numCombate = numCombate;
         this.ganador = ganador;

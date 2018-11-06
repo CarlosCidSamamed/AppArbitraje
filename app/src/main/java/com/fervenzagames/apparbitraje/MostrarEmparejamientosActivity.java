@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.CompetidoresList;
+import com.fervenzagames.apparbitraje.Models.Combates;
 import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,8 +36,13 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
 
     private TextView mPruebaArray;
 
+    private DatabaseReference mCampeonatoDB;
+    private DatabaseReference mModDB;
     private DatabaseReference mCatDB;
     private DatabaseReference mCompDB;
+    private DatabaseReference mCombatesDB;
+    private DatabaseReference mEmparejamientosDB;
+
 
     private Integer[] array;
 
@@ -76,8 +82,12 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
             }
         }
 
-        mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(idMod).child(idCat);
-        mCompDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Competidores");
+        mCampeonatoDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);        // Campeonato Actual.
+        mModDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idMod);                // Modalidad Actual.
+        mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(idMod).child(idCat);    // Categoría Actual.
+        mCompDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Competidores");                           // Lista de Competidores en la BD.
+        mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates");                           // Lista de Combates en la BD.
+        mEmparejamientosDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Emparejamientos");             // Rama con la información de los emparejamientos en la BD.
 
         mCatDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -234,6 +244,81 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
             }
         });
 
+    }
+    //endregion
+
+    //region Añadir Combates de los Emparejamientos
+    // A este método se le pasan como parámetros el array del sorteo y la lista de competidores para saber en qué posición del cuadro se encuentra cada uno de los competidores.
+    public void addCombatesEmparejamientos(Integer[] array, List<Competidores> listaComp){
+        // Se recorre el array y la lista y se generan un array bidimensional con el índice del array y el id del Competidor que le corresponde en la lista.
+        // Ejemplo --> arrayBidimensional[0] = array[0], listaComp.get(0)
+        // Para poder mantener el String del idComp el array será de String y se convertirá en String el índice del array de Integer.
+        int tamano = listaComp.size();
+        String[][] arrayBidim = new String[tamano][2];
+
+        for(int i = 0; i < tamano; i++){
+            arrayBidim[i][0] = array[i].toString();
+            arrayBidim[i][1] = listaComp.get(i).getDni();
+        }
+
+        // Bucle Añadir Combates a la BD (desde i = 0 hasta listaComp.size --> tamano)
+
+        // Buscar en la BD los datos sobre los competidores
+
+        // Añadir combate a la BD y sus Asaltos
+        // addCombate(parámetros);
+
+        // Fin bucle añadir combates
+
+        // Bucle Añadir los Combates a los Emparejamientos
+    }
+
+
+    public void addCombate(String idCamp, String idMod, final String idCat, String idRojo, String idAzul, int numCombate){
+        // La raíz para insertar datos será mCombatesDB
+        // Crear un objeto de tipo Combates cuyo idCombate será el generado por la BD al insertarlo bajo el idCat de la Categoría a la que pertenece el combate.
+        final String idCombate = mCombatesDB.child(idCat).push().getKey();
+        final Combates combate = new Combates(idCombate, numCombate,
+                "", "", "",
+                idRojo, idAzul, null,
+                idCamp, idMod, idCat, Combates.EstadoCombate.Pendiente);
+
+        // Añadir el combate a la rama de Combates. La lista de Combates depende de la categoría, es decir, raíz de la BD de Combates para esta categoría es mCatDB.
+        mCatDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //Comprobar duplicados
+                Query consulta = mCombatesDB
+                        .orderByChild("idCombate");
+
+                consulta.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot combateSnapShot: dataSnapshot.getChildren()){
+                            Combates comb = dataSnapshot.getValue(Combates.class);
+                            if(comb.getId().equals(idCombate)){ // Existe algún combate con ese ID
+                                Toast.makeText(MostrarEmparejamientosActivity.this, "Ya existe un Combate con ese ID en la BD. Compruebe los datos...", Toast.LENGTH_SHORT).show();
+                                return;
+                            } else { // Si no existe ningún combate con ese ID se añade
+                                mCombatesDB.child(idCat).child(idCombate).setValue(combate);
+                                // Añadir los Asaltos de este Combate
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     //endregion
 }
