@@ -9,6 +9,7 @@ public class Combates {
     private String id;
     private int numCombate; // Número de ese combate dentro de un Campeonato.
     private String ganador;
+    private String perdedor;
     private String motivo;
     private String enlaceVideo;
     private String idRojo;
@@ -23,12 +24,13 @@ public class Combates {
     public Combates() {
     }
 
-    public Combates(String id, int numCombate, String ganador, String motivo, String enlaceVideo,
+    public Combates(String id, int numCombate, String ganador, String perdedor,String motivo, String enlaceVideo,
                     String idRojo, String idAzul, List<Asaltos> listaAsaltos, String campeonato,
                     String modalidad, String categoria, EstadoCombate estadoCombate) {
         this.id = id;
         this.numCombate = numCombate;
         this.ganador = ganador;
+        this.perdedor = perdedor;
         this.motivo = motivo;
         this.enlaceVideo = enlaceVideo;
         this.idRojo = idRojo;
@@ -63,6 +65,10 @@ public class Combates {
     public void setGanador(String ganador) {
         this.ganador = ganador;
     }
+
+    public String getPerdedor() { return perdedor; }
+
+    public void setPerdedor(String perdedor) { this.perdedor = perdedor; }
 
     public String getMotivo() {
         return motivo;
