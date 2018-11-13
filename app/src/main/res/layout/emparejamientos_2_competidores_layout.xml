@@ -6,6 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/emparejamientos_dos_app_bar"
+        layout="@layout/app_bar_layout" />
+
     <TextView
         android:id="@+id/dos_comp_nombreCat"
         android:layout_width="wrap_content"
@@ -51,10 +55,8 @@
         app:layout_constraintStart_toEndOf="@+id/dos_comp_foto_1"
         app:layout_constraintTop_toBottomOf="@+id/dos_comp_nombre_1" />
 
-    <include layout="@layout/app_bar_layout" android:id="@+id/emparejamientos_dos_app_bar" />
-
     <View
-        android:id="@+id/linea_horizontal_"
+        android:id="@+id/dos_comp_linea_horizontal_Rojo"
         android:layout_width="250dp"
         android:layout_height="5dp"
         android:layout_marginStart="8dp"
@@ -84,7 +86,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emparejamientos_dos_app_bar" />
 
     <View
-        android:id="@+id/linea_horizontal_10"
+        android:id="@+id/dos_comp_linea_horizontal_Azul"
         android:layout_width="250dp"
         android:layout_height="5dp"
         android:layout_marginStart="8dp"
@@ -239,4 +241,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dos_comp_foto_ganador" />
+
+    <Button
+        android:id="@+id/dos_comp_gana_Rojo_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@color/colorRojo"
+        android:text="Gana Rojo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dos_comp_foto_1" />
+
+    <Button
+        android:id="@+id/dos_comp_gana_Azul_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@color/colorAccent2"
+        android:text="Gana Azul"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dos_comp_foto_2" />
 </android.support.constraint.ConstraintLayout>

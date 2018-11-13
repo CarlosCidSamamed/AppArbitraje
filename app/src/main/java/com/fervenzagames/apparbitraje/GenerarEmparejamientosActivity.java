@@ -210,6 +210,11 @@ public class GenerarEmparejamientosActivity extends AppCompatActivity {
                                 break;
                             }
                             case 3:{
+                                Intent empIntent = new Intent(GenerarEmparejamientosActivity.this, MostrarEmparejamientosActivity.class);
+                                Bundle ext = extras;
+                                extr.putInt("layout", R.layout.emparejamientos_3_competidores_layout);
+                                empIntent.putExtras(ext);
+                                startActivity(empIntent);
                                 break;
                             }
                             case 4:{

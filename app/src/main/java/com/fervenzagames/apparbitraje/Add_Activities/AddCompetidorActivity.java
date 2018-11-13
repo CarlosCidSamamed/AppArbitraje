@@ -428,7 +428,7 @@ public class AddCompetidorActivity extends AppCompatActivity implements DatePick
                 mCompetidorDB.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.child(dni).exists()) { // Si existe esa foto en la DB se muestra...
+                        if(dataSnapshot.child(dni).child("foto").exists()) { // Si existe esa foto en la DB se muestra...
                             String foto = dataSnapshot.child(dni).child("foto").getValue().toString();
                             Picasso.get().load(foto).into(mFoto);
                         } else { // Si no se ha guardado ninguna imagen para este competidor se muestra el avatar por defecto
