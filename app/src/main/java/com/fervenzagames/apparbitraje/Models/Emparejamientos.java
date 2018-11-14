@@ -2,6 +2,7 @@ package com.fervenzagames.apparbitraje.Models;
 
 
 public class Emparejamientos{
+    private String id;
     private String numeroCombate;
     private String idRojo;
     private String idAzul;
@@ -15,7 +16,8 @@ public class Emparejamientos{
     public Emparejamientos() {
     }
 
-    public Emparejamientos(String numeroCombate, String idRojo, String idAzul, String sigCombateGanador, String sigCombatePerdedor, EsFinal esFinal, String idGanador, String idPerdedor) {
+    public Emparejamientos(String id, String numeroCombate, String idRojo, String idAzul, String sigCombateGanador, String sigCombatePerdedor, EsFinal esFinal, String idGanador, String idPerdedor) {
+        this.id = id;
         this.numeroCombate = numeroCombate;
         this.idRojo = idRojo;
         this.idAzul = idAzul;
@@ -24,6 +26,14 @@ public class Emparejamientos{
         this.esFinal = esFinal;
         this.idGanador = idGanador;
         this.idPerdedor = idPerdedor;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNumeroCombate() {

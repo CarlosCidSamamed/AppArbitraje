@@ -18,7 +18,7 @@ public class Asaltos {
     private String duracion;
     private List<Puntuaciones> listaPuntuaciones;
     private List<Incidencias> listaIncidencias;
-    private enum EstadoAsalto {Pendiente, Finalizado, Cancelado};
+    public enum EstadoAsalto {Pendiente, Finalizado, Cancelado};
     private EstadoAsalto estado;
 
     public Asaltos() {

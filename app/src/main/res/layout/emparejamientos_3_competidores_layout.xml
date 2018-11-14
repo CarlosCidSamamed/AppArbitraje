@@ -424,4 +424,22 @@
         app:layout_constraintStart_toEndOf="@+id/tres_comp_numeroCompetidor_2"
         app:layout_constraintTop_toBottomOf="@+id/tres_comp_app_bar" />
 
+    <Button
+        android:id="@+id/tres_comp_comenzar_1_btn"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:text="->"
+        app:layout_constraintBottom_toTopOf="@+id/tres_comp_foto_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.137"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tres_comp_foto_1"
+        app:layout_constraintVertical_bias="0.0" />
+
 </android.support.constraint.ConstraintLayout>
