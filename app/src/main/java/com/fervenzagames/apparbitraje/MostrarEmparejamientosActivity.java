@@ -442,32 +442,35 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
         // CUADRO INFERIOR
         List<Emparejamientos> cuadroInferior = new ArrayList<>();
 
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+
+        String numCombate = "";
+
         switch (numEmparejamientosSup){
             case 1: { // Final Directa, 2 Competidores
 
-                Intent intent = getIntent();
-                Bundle extras = intent.getExtras();
-
-                String numCombate = "001";
+                numCombate = "001";
                 addCombate(numCombate, extras, arrayBidim[0][1], arrayBidim[1][1], " ", " ", SI, cuadroSuperior);
 
                 break;
             }
-            /*case 2: { // Uno se clasifica directo a la final y los otros dos hacen semifinal, 3 Competidores
+            case 2: { // Uno se clasifica directo a la final y los otros dos hacen semifinal, 3 Competidores
                 // Semi
-                Emparejamientos emp001 = new Emparejamientos("001", arrayBidim[1][1], arrayBidim[2][1],
-                        "002-A", null, NO, null, null);
-                cuadroSuperior.add(emp001);
+                numCombate = "001";
+                addCombate(numCombate, extras, arrayBidim[1][1], arrayBidim[2][1], "002-A", null, NO, cuadroSuperior);
+
                 // Final
-                Emparejamientos emp002 = new Emparejamientos("002", arrayBidim[0][1], emp001.getIdGanador(), // El id del ganador del combate emp001
-                        null, null, Emparejamientos.EsFinal.SI, null, null);
+                numCombate = "002";
+                addCombate(numCombate, extras, arrayBidim[0][1], cuadroSuperior.get(0).getIdGanador(), null, null, SI, cuadroSuperior);
+
                 break;
             }
             case 3: { // Semis y final, 4 Competidores
 
                 // Cuadro Superior
                 // Semis
-                String numCombate = "001";
+                numCombate = "001";
                 addCombate(numCombate, extras, arrayBidim[0][1], arrayBidim[3][1],
                         "003-R", "004-A", NO, cuadroSuperior);
 
@@ -484,303 +487,346 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                 addCombate(numCombate, extras, cuadroSuperior.get(0).getIdPerdedor(), cuadroSuperior.get(1).getIdPerdedor(),
                         "", "", TERCEROS, cuadroInferior);
 
-                // Semi 1
-                Emparejamientos emp001 = new Emparejamientos("001", arrayBidim[0][1], arrayBidim[3][1], // 1 vs 4
-                         "003-R", "004-A", NO, null, null);
-                cuadroSuperior.add(emp001);
-                // Semi 2
-                Emparejamientos emp002 = new Emparejamientos("002", arrayBidim[2][1], arrayBidim[1][2], // 3 vs 2
-                        "003-A", "004-R", NO, null, null);
-                cuadroSuperior.add(emp002);
-                // Final
-                Emparejamientos emp003 = new Emparejamientos("003", emp001.getIdGanador(), emp002.getIdGanador(), // ganador de emp001 vs ganador de emp002
-                         null, null, SI, null, null);
-                cuadroSuperior.add(emp003);
 
-                // Cuadro Inferior
-                Emparejamientos emp004 = new Emparejamientos("004", emp001.getIdPerdedor(), emp002.getIdPerdedor(),
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp004);
-                break;
             }
             case 4: { // 1 combate de cuartos, dos semis y final, 5 Competidores
                 // Cuartos
-                Emparejamientos emp001 = new Emparejamientos("001", arrayBidim[0][1], arrayBidim[4][1], // 1 vs 5
-                        "002-R", "006-R", NO, null, null);
-                cuadroSuperior.add(emp001);
+                numCombate = "001";
+                addCombate(numCombate, extras, arrayBidim[0][1], arrayBidim[4][1], // 1 vs 5
+                        "002-R", "006-R", NO, cuadroSuperior);
+
                 // Semi 1
-                Emparejamientos emp002 = new Emparejamientos("002", emp001.getIdGanador(), arrayBidim[2][1], // ganador de 001 vs 3
-                        "004-R", "005-A", NO, null, null);
-                cuadroSuperior.add(emp002);
+                numCombate = "002";
+                addCombate(numCombate, extras, cuadroSuperior.get(0).getIdGanador(), arrayBidim[2][1], // ganador001 vs 3
+                        "004-R", "005-A", NO, cuadroSuperior);
+
                 // Semi 2
-                Emparejamientos emp003 = new Emparejamientos("003", arrayBidim[3][1], arrayBidim[1][1], // 4 vs 2
-                        "004-A", "005-R", NO, null, null);
-                cuadroSuperior.add(emp003);
+                numCombate = "003";
+                addCombate(numCombate, extras, arrayBidim[3][1], arrayBidim[1][1], // 4 vs 2
+                        "004-A", "005-A", NO, cuadroSuperior);
+
                 // Final
-                Emparejamientos emp004 = new Emparejamientos("004", emp002.getIdGanador(), emp003.getIdGanador(), // ganador de emp002 vs ganador de emp003
-                        null, null, SI, null, null);
-                cuadroSuperior.add(emp004);
+                numCombate = "004";
+                addCombate(numCombate, extras, cuadroSuperior.get(1).getIdGanador(), cuadroSuperior.get(2).getIdGanador(), // ganador002 vs ganador003
+                        "", "", SI, cuadroSuperior);
+
                 // Cuadro Inferior
-                // 1
-                Emparejamientos emp005 = new Emparejamientos("005", emp003.getIdPerdedor(), emp002.getIdPerdedor(), // perdedor de emp003 vs perdedor de emp002
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp005);
-                // 2 -- El perdedor del emp001 es tercero --> Hace cuartos y semis en el cuadro superior
-                Emparejamientos emp006 = new Emparejamientos("006", emp001.getIdPerdedor(), null, // No hay rival para este combate.
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp006);
+                // Repesca 1
+                numCombate = "005";
+                addCombate(numCombate, extras, cuadroSuperior.get(2).getIdPerdedor(), cuadroSuperior.get(0).getIdPerdedor(), // perdedor003 vs perdedor001
+                        "", "", TERCEROS, cuadroInferior);
+
+                // Repesca 2 -- El perdedor del emp002 es tercero --> Hace cuartos y semis en el cuadro superior
+                numCombate = "006";
+                addCombate(numCombate, extras, cuadroSuperior.get(1).getIdPerdedor(), "",
+                        "", "", TERCEROS, cuadroInferior);
+
                 break;
             }
             case 5: { // 2 cuartos, 2 semis y final , 6 Competidores
                 // Cuartos 1
-                Emparejamientos emp001 = new Emparejamientos("001", arrayBidim[0][1], arrayBidim[5][1], // 1 vs 6
-                        "003-R", "006-A", NO, null, null);
-                cuadroSuperior.add(emp001);
+                numCombate = "001";
+                addCombate(numCombate, extras, arrayBidim[0][1], arrayBidim[5][1], // 1 vs 6
+                        "003-R", "006-A", NO, cuadroSuperior);
+
                 // Cuartos 2
-                Emparejamientos emp002 = new Emparejamientos("002", arrayBidim[1][1], arrayBidim[4][1], // 5 vs 2
-                        "004-A", "007-R", NO, null, null);
-                cuadroSuperior.add(emp002);
+                numCombate = "002";
+                addCombate(numCombate, extras, arrayBidim[4][1], arrayBidim[1][1],// 5 vs 2
+                        "004-A", "007-R", NO, cuadroSuperior);
+
                 // Semis 1
-                Emparejamientos emp003 = new Emparejamientos("003", emp001.getIdGanador(), arrayBidim[2][1], // ganador001 vs 3
-                        "005-R", "007-A", NO, null, null);
-                cuadroSuperior.add(emp003);
+                numCombate ="003";
+                addCombate(numCombate, extras, cuadroSuperior.get(0).getIdGanador(), arrayBidim[2][1], // ganador001 vs 3
+                        "005-R", "007-A", NO, cuadroSuperior);
+
                 // Semis 2
-                Emparejamientos emp004 = new Emparejamientos("004", arrayBidim[3][1], emp002.getIdGanador(), // 4 vs ganador002
-                        "005-A", "006-R", NO, null, null);
-                cuadroSuperior.add(emp004);
+                numCombate = "004";
+                addCombate(numCombate, extras, arrayBidim[3][1], cuadroSuperior.get(1).getIdGanador(), // 4 vs ganador002
+                        "005-A", "006-R", NO, cuadroSuperior);
+
                 // Final
-                Emparejamientos emp005 = new Emparejamientos("005", emp003.getIdGanador(), emp004.getIdGanador(), // ganador003 vs ganador004
-                        null, null, SI, null, null);
-                cuadroSuperior.add(emp005);
+                numCombate = "005";
+                addCombate(numCombate, extras, cuadroSuperior.get(2).getIdGanador(), cuadroSuperior.get(3).getIdGanador(), // ganador003 vs ganador004
+                        "", "", SI, cuadroSuperior);
+
                 // Cuadro Inferior
                 // 1
-                Emparejamientos emp006 = new Emparejamientos("006", emp004.getIdPerdedor(), emp001.getIdPerdedor(), // perdedor004 vs perdedor001
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp006);
+                numCombate = "006";
+                addCombate(numCombate, extras, cuadroSuperior.get(3).getIdPerdedor(), cuadroSuperior.get(0).getIdPerdedor(), // perdedor004 vs perdedor001
+                        "", "", TERCEROS, cuadroInferior);
+
                 // 2
-                Emparejamientos emp007 = new Emparejamientos("007", emp002.getIdPerdedor(), emp003.getIdPerdedor(), // perdedor002 vs perdedor003
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp007);
+                numCombate = "007";
+                addCombate(numCombate, extras, cuadroSuperior.get(1).getIdPerdedor(), cuadroSuperior.get(2).getIdPerdedor(), // perdedor002 vs perdedor003
+                        "", "", TERCEROS, cuadroInferior);
                 break;
             }
             case 6: { // 3 cuartos, 2 semis y 1 final 7 Competidores
                 // Cuartos
                 // 1
-                Emparejamientos emp001 = new Emparejamientos("001", arrayBidim[4][1], arrayBidim[3][1], // 5 vs 4
-                        "004-A", "007-R", NO, null, null);
-                cuadroSuperior.add(emp001);
+                numCombate = "001";
+                addCombate(numCombate, extras, arrayBidim[4][1], arrayBidim[3][1], // 5 vs 4
+                        "004-A", "007-R", NO, cuadroSuperior);
+
                 // 2
-                Emparejamientos emp002 = new Emparejamientos("002", arrayBidim[2][1], arrayBidim[5][1], // 3 vs 6
-                        "005-R", "008-A", NO, null, null);
-                cuadroSuperior.add(emp002);
+                numCombate = "002";
+                addCombate(numCombate, extras, arrayBidim[2][1], arrayBidim[5][1], // 3 vs 6
+                        "005-R", "008-A", NO, cuadroSuperior);
+
                 // 3
-                Emparejamientos emp003 = new Emparejamientos("003", arrayBidim[6][1], arrayBidim[1][1], // 7 vs 2
-                        "005-A", "008-R", NO, null, null);
-                cuadroSuperior.add(emp003);
+                numCombate = "003";
+                addCombate(numCombate, extras, arrayBidim[6][1], arrayBidim[1][1], // 7 vs 2
+                        "005-A", "008-R", NO, cuadroSuperior);
+
                 // Semis
                 // 1
-                Emparejamientos emp004 = new Emparejamientos("004", arrayBidim[0][1], emp001.getIdGanador(), // 1 vs ganador001
-                        "006-R", "009-A", NO, null, null);
-                cuadroSuperior.add(emp004);
+                numCombate = "004";
+                addCombate(numCombate, extras, arrayBidim[0][1], cuadroSuperior.get(0).getIdGanador(), // 1 vs ganador001
+                        "006-R", "009-A", NO, cuadroSuperior);
+
                 // 2
-                Emparejamientos emp005 = new Emparejamientos("005", emp002.getIdGanador(), emp003.getIdGanador(), // ganador002 vs ganador003
-                        "006-A", "007-A", NO, null, null);
-                cuadroSuperior.add(emp005);
+                numCombate = "005";
+                addCombate(numCombate, extras, cuadroSuperior.get(1).getIdGanador(), cuadroSuperior.get(2).getIdGanador(), // ganador002 vs ganador003
+                        "006-A", "007-A", NO, cuadroSuperior);
+
                 // Final
-                Emparejamientos emp006 = new Emparejamientos("006", emp004.getIdGanador(), emp005.getIdGanador(), // ganador004 vs ganador005
-                        null, null, SI, null, null);
-                cuadroSuperior.add(emp006);
+                numCombate = "006";
+                addCombate(numCombate, extras, cuadroSuperior.get(3).getIdGanador(), cuadroSuperior.get(4).getIdGanador(), // ganador004 vs ganador005
+                        "", "", SI, cuadroSuperior);
+
                 // Cuadro Inferior
                 // 1
-                Emparejamientos emp007 = new Emparejamientos("007", emp001.getIdPerdedor(), emp005.getIdPerdedor(), // perdedor001 vs perdedor005
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp007);
+                numCombate = "007";
+                addCombate(numCombate, extras, cuadroSuperior.get(0).getIdPerdedor(), cuadroSuperior.get(4).getIdPerdedor(), // perdedor001 vs perdedor005
+                        "", "", TERCEROS, cuadroInferior);
+
                 // 2
-                Emparejamientos emp008 = new Emparejamientos("008", emp003.getIdPerdedor(), emp002.getIdPerdedor(), // perdedor003 vs perdedor002
-                        "009-R", null, NO, null, null);
-                cuadroSuperior.add(emp008);
+                numCombate = "008";
+                addCombate(numCombate, extras, cuadroSuperior.get(2).getIdPerdedor(), cuadroSuperior.get(1).getIdPerdedor(), // perdedor003 vs perdedor002
+                        "009-R", "", NO, cuadroInferior);
+
                 // 3
-                Emparejamientos emp009 = new Emparejamientos("009", emp008.getIdGanador(), emp004.getIdPerdedor(), // ganador008 vs perdedor004
-                        null, null, TERCEROS, null, null);
-                cuadroSuperior.add(emp009);
+                numCombate = "009";
+                addCombate(numCombate, extras, cuadroInferior.get(1).getIdGanador(), cuadroSuperior.get(3).getIdPerdedor(), // ganador008 vs perdedor004
+                        "", "", TERCEROS, cuadroInferior);
+
                 break;
             }
             case 7: { // 4 cuartos, 2 semis y final 8 Competidores
                 // Cuartos
                 // 1
-                Emparejamientos emp001 = new Emparejamientos("001", arrayBidim[0][1], arrayBidim[7][1], // 1 vs 8
-                            "005-R", "008-A", NO, null, null);
-                cuadroSuperior.add(emp001);
+                numCombate = "001";
+                addCombate(numCombate, extras, arrayBidim[0][1], arrayBidim[7][1], // 1 vs 8
+                        "005-R", "008-A", NO, cuadroSuperior);
+
                 // 2
-                Emparejamientos emp002 = new Emparejamientos("002", arrayBidim[4][1], arrayBidim[3][1], // 5 vs 4
-                            "005-A", "008-R", NO, null, null);
-                cuadroSuperior.add(emp002);
+                numCombate = "002";
+                addCombate(numCombate, extras, arrayBidim[4][1], arrayBidim[3][1], // 5 vs 4
+                        "005-A", "008-R", NO, cuadroSuperior);
+
                 // 3
-                Emparejamientos emp003 = new Emparejamientos("003", arrayBidim[2][1], arrayBidim[5][1], // 3 vs 6
-                            "006-R", "009-A", NO, null, null);
-                cuadroSuperior.add(emp003);
+                numCombate = "003";
+                addCombate(numCombate, extras, arrayBidim[2][1], arrayBidim[5][1], // 3 vs 6
+                        "006-R", "009-A", NO, cuadroSuperior);
+
                 // 4
-                Emparejamientos emp004 = new Emparejamientos("004", arrayBidim[6][1], arrayBidim[1][1], // 7 vs 2
-                            "006-A", "009-R", NO, null, null);
-                cuadroSuperior.add(emp004);
+                numCombate = "004";
+                addCombate(numCombate, extras, arrayBidim[6][1], arrayBidim[1][1], // 7 vs 2
+                        "006-A", "009-R", NO, cuadroSuperior);
+
                 // Semis
                 // 1
-                Emparejamientos emp005 = new Emparejamientos("005", emp001.getIdGanador(), emp002.getIdGanador(), // ganador001 vs ganador002
-                        "007-R", "011-R", NO, null, null);
-                cuadroSuperior.add(emp005);
+                numCombate = "005";
+                addCombate(numCombate, extras, cuadroSuperior.get(0).getIdGanador(), cuadroSuperior.get(1).getIdGanador(), // ganador001 vs ganador002
+                        "007-R", "011-R", NO, cuadroSuperior);
+
                 // 2
-                Emparejamientos emp006 = new Emparejamientos("006", emp003.getIdGanador(), emp004.getIdGanador(), // ganador003 vs ganador004
-                        "007-A", "010-A", NO, null, null);
-                cuadroSuperior.add(emp006);
+                numCombate = "006";
+                addCombate(numCombate, extras, cuadroSuperior.get(2).getIdGanador(), cuadroSuperior.get(3).getIdGanador(), // ganador003 vs ganador004
+                        "007-A", "010-A", NO, cuadroSuperior);
+
                 // Final
-                Emparejamientos emp007 = new Emparejamientos("007", emp005.getIdGanador(), emp006.getIdGanador(), // ganador005 vs ganador006
-                        null, null, SI, null, null);
-                cuadroSuperior.add(emp007);
+                numCombate = "007";
+                addCombate(numCombate, extras, cuadroSuperior.get(4).getIdGanador(), cuadroSuperior.get(5).getIdGanador(), // ganador005 vs ganador006
+                        "", "", SI, cuadroSuperior);
+
                 // Cuadro Inferior
                 // 1
-                Emparejamientos emp008 = new Emparejamientos("008", emp002.getIdPerdedor(), emp001.getIdPerdedor(), // perdedor002 vs perdedor001
-                         "010-R", null, NO, null, null);
-                cuadroInferior.add(emp008);
-                // 2
-                Emparejamientos emp009 = new Emparejamientos("009", emp004.getIdPerdedor(), emp003.getIdPerdedor(), // perdedor004 vs perdedor003
-                        "011-A", null, NO, null, null);
-                cuadroInferior.add(emp009);
-                // 3
-                Emparejamientos emp010 = new Emparejamientos("010", emp008.getIdGanador(), emp006.getIdPerdedor(), // ganador008 vs perdedor006
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp010);
-                // 4
-                Emparejamientos emp011 = new Emparejamientos("011", emp005.getIdPerdedor(), emp009.getIdGanador(), // perdedor005 vs ganador009
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp011);
+                numCombate = "008";
+                addCombate(numCombate, extras, cuadroSuperior.get(1).getIdPerdedor(), cuadroSuperior.get(0).getIdPerdedor(), // perdedor002 vs perdedor001
+                        "010-R", "", NO, cuadroInferior);
 
+                // 2
+                numCombate = "009";
+                addCombate(numCombate, extras, cuadroSuperior.get(3).getIdPerdedor(), cuadroSuperior.get(2).getIdPerdedor(), // perdedor004 vs perdedor003
+                        "011-A", "", NO, cuadroInferior);
+
+                // 3
+                numCombate = "010";
+                addCombate(numCombate, extras, cuadroInferior.get(0).getIdGanador(), cuadroSuperior.get(5).getIdPerdedor(), // ganador008 vs perdedor006
+                        "","", TERCEROS, cuadroInferior);
+
+                // 4
+                numCombate = "011";
+                addCombate(numCombate, extras, cuadroSuperior.get(4).getIdPerdedor(), cuadroInferior.get(1).getIdGanador(), // perdedor005 vs ganador009
+                        "", "", TERCEROS, cuadroInferior);
+
+                break;
             }
             case 8: { // 1 octavo, 4 cuartos, 2 semis y final 9 Competidores
                 // Octavos
                 // 1
-                Emparejamientos emp001 = new Emparejamientos("001", arrayBidim[8][1], arrayBidim[7][1], // 9 vs 8
-                        "002-A", "009-R", NO, null, null);
-                cuadroSuperior.add(emp001);
+                numCombate = "001";
+                addCombate(numCombate, extras, arrayBidim[8][1], arrayBidim[7][1], // 9 vs 8
+                        "002-A", "009-R", NO, cuadroSuperior);
+
                 // Cuartos
                 // 1
-                Emparejamientos emp002 = new Emparejamientos("002", arrayBidim[0][1], emp001.getIdGanador(), // 1 vs ganador001
-                        "006-R", "011-A", NO, null, null);
-                cuadroSuperior.add(emp002);
+                numCombate = "002";
+                addCombate(numCombate, extras, arrayBidim[0][1], cuadroSuperior.get(0).getIdGanador(), // 1 vs ganador001
+                        "006-R", "011-A", NO, cuadroSuperior);
+
                 // 2
-                Emparejamientos emp003 = new Emparejamientos("003", arrayBidim[4][1], arrayBidim[3][1], // 5 vs 4
-                        "006-A", "009-A", NO, null, null);
-                cuadroSuperior.add(emp003);
+                numCombate = "003";
+                addCombate(numCombate, extras, arrayBidim[4][1], arrayBidim[3][1], // 5 vs 4
+                        "006-A", "009-A", NO, cuadroSuperior);
+
                 // 3
-                Emparejamientos emp004 = new Emparejamientos("004", arrayBidim[2][1], arrayBidim[5][1], // 3 vs 6
-                        "007-R", "012-A", NO, null, null);
-                cuadroSuperior.add(emp004);
+                numCombate = "004";
+                addCombate(numCombate, extras, arrayBidim[2][1], arrayBidim[5][1], // 3 vs 6
+                        "007-R", "010-A", NO, cuadroSuperior);
+
                 // 4
-                Emparejamientos emp005 = new Emparejamientos("005", arrayBidim[6][1], arrayBidim[1][1], // 7 vs 2
-                        "007-A", "010-A", NO, null, null);
-                cuadroSuperior.add(emp005);
+                numCombate = "005";
+                addCombate(numCombate, extras, arrayBidim[6][1], arrayBidim[1][1], // 7 vs 2
+                        "007-A", "010-R", NO, cuadroSuperior);
+
                 // Semis
                 // 1
-                Emparejamientos emp006 = new Emparejamientos("006", emp002.getIdGanador(), emp003.getIdGanador(), // ganador002 vs ganador003
-                        "008-R", "013-A", NO, null, null);
-                cuadroSuperior.add(emp006);
+                numCombate = "006";
+                addCombate(numCombate, extras, cuadroSuperior.get(1).getIdGanador(), cuadroSuperior.get(2).getIdGanador(), // ganador002 vs ganador003
+                        "008-R", "012-A", NO, cuadroSuperior);
+
                 // 2
-                Emparejamientos emp007 = new Emparejamientos("007", emp004.getIdGanador(), emp005.getIdGanador(), // ganador004 vs ganador005
-                        "008-A", "012-A", NO, null, null);
-                cuadroSuperior.add(emp007);
+                numCombate = "007";
+                addCombate(numCombate, extras, cuadroSuperior.get(3).getIdGanador(), cuadroSuperior.get(4).getIdGanador(), // ganador004 vs ganador005
+                        "008-A", "013-A", NO, cuadroSuperior);
+
                 // Final
-                Emparejamientos emp008 = new Emparejamientos("008", emp006.getIdGanador(), emp007.getIdGanador(), // ganador006 vs ganador007
-                        null, null, SI, null, null);
-                cuadroSuperior.add(emp008);
+                numCombate = "008";
+                addCombate(numCombate, extras, cuadroSuperior.get(5).getIdGanador(), cuadroSuperior.get(6).getIdGanador(), // ganador006 vs ganador007
+                        "", "", SI, cuadroSuperior);
+
                 // Cuadro Inferior
                 // 1
-                Emparejamientos emp009 = new Emparejamientos("009", emp001.getIdPerdedor(), emp003.getIdPerdedor(), // perdedor001 vs perdedor003
-                        "011-R", null, NO, null, null);
-                cuadroInferior.add(emp009);
+                numCombate = "009";
+                addCombate(numCombate, extras, cuadroSuperior.get(0).getIdPerdedor(), cuadroSuperior.get(2).getIdPerdedor(), // perdedor001 vs perdedor003
+                        "011-R","", NO, cuadroInferior);
+
                 // 2
-                Emparejamientos emp010 = new Emparejamientos("010", emp009.getIdGanador(), emp002.getIdPerdedor(),// ganador009 vs perdedor002
-                        "011-R", null, NO, null, null);
-                cuadroInferior.add(emp010);
+                numCombate = "010";
+                addCombate(numCombate, extras, cuadroSuperior.get(4).getIdPerdedor(), cuadroSuperior.get(3).getIdPerdedor(), // perdedor005 vs perdedor004
+                        "012-R","", NO, cuadroInferior);
+
                 // 3
-                Emparejamientos emp011 = new Emparejamientos("011", emp010.getIdGanador(), emp007.getIdPerdedor(), // ganador010 vs perdedor007
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp011);
+                numCombate = "011";
+                addCombate(numCombate, extras, cuadroInferior.get(0).getIdGanador(), cuadroSuperior.get(1).getIdPerdedor(), // ganador009 vs perdedor002
+                        "013-R", "", NO, cuadroInferior);
+
                 // 4
-                Emparejamientos emp012 = new Emparejamientos("012", emp005.getIdPerdedor(), emp004.getIdPerdedor(), // perdedor005 vs perdedor004
-                        "013-R", null, NO, null, null);
-                cuadroInferior.add(emp012);
+                numCombate = "012";
+                addCombate(numCombate, extras, cuadroInferior.get(1).getIdGanador(), cuadroSuperior.get(5).getIdPerdedor(), // ganador010 vs perdedor006
+                        "", "", TERCEROS, cuadroInferior);
+
                 // 5
-                Emparejamientos emp013 = new Emparejamientos("013", emp012.getIdGanador(), emp006.getIdPerdedor(), // ganador012 vs perdedor006
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp013);
+                numCombate = "013";
+                addCombate(numCombate, extras, cuadroInferior.get(2).getIdPerdedor(), cuadroSuperior.get(6).getIdPerdedor(), // ganador011 vs perdedor006
+                        "", "", TERCEROS, cuadroInferior);
+
                 break;
             }
             case 9: { // 2 octavos, 4 cuartos, 2 semis y 1 final 10 Competidores
                 // Octavos
                 // 1
-                Emparejamientos emp001 = new Emparejamientos("001", arrayBidim[8][1], arrayBidim[7][1], // 9 vs 8
-                        "003-A", "010-R", NO, null, null);
-                cuadroSuperior.add(emp001);
+                numCombate = "001";
+                addCombate(numCombate, extras, arrayBidim[8][1], arrayBidim[7][1], // 9 vs 8
+                        "003-A", "010-R", NO, cuadroSuperior);
+
                 // 2
-                Emparejamientos emp002 = new Emparejamientos("002", arrayBidim[6][1], arrayBidim[9][1], // 7 vs 10
-                        "006-R", "011-R", NO, null, null);
-                cuadroSuperior.add(emp002);
+                numCombate = "002";
+                addCombate(numCombate, extras, arrayBidim[6][1], arrayBidim[9][1], // 7 vs 10
+                        "006-R", "011-R", NO, cuadroSuperior);
+
                 // Cuartos
                 // 1
-                Emparejamientos emp003 = new Emparejamientos("003", arrayBidim[0][1], emp001.getIdGanador(), // 1 vs ganador001
-                        "007-R", "012-A", NO, null, null);
-                cuadroSuperior.add(emp003);
+                numCombate = "003";
+                addCombate(numCombate, extras, arrayBidim[0][1], cuadroSuperior.get(0).getIdGanador(), // 1 vs ganador001
+                        "007-R", "012-A", NO, cuadroSuperior);
+
                 // 2
-                Emparejamientos emp004 = new Emparejamientos("004", arrayBidim[4][1], arrayBidim[3][1], // 5 vs 4
-                        "007-A", "010-A", NO, null, null);
-                cuadroSuperior.add(emp004);
+                numCombate = "004";
+                addCombate(numCombate, extras, arrayBidim[4][1], arrayBidim[3][1], // 5 vs 4
+                        "007-A", "010-A", NO, cuadroSuperior);
+
                 // 3
-                Emparejamientos emp005 = new Emparejamientos("005", arrayBidim[2][1], arrayBidim[5][1], // 3 vs 6
-                        "008-R", "011-A", NO, null, null);
-                cuadroSuperior.add(emp005);
+                numCombate = "005";
+                addCombate(numCombate, extras, arrayBidim[2][1], arrayBidim[5][1], // 3 vs 6
+                        "008-R", "011-A", NO, cuadroSuperior);
+
                 // 4
-                Emparejamientos emp006 = new Emparejamientos("006", emp002.getIdGanador(), arrayBidim[5][1], // ganador001 vs 6
-                        "008-A", "013-R", NO, null, null);
-                cuadroSuperior.add(emp006);
+                numCombate = "006";
+                addCombate(numCombate, extras, cuadroSuperior.get(1).getIdGanador(), arrayBidim[5][1], // ganador001 vs 6
+                        "008-A", "013-R", NO, cuadroSuperior);
+
                 // Semis
                 // 1
-                Emparejamientos emp007 = new Emparejamientos("007", emp003.getIdGanador(), emp004.getIdGanador(), // ganador003 vs ganador004
-                        "009-R", "015-A", NO, null, null);
-                cuadroSuperior.add(emp007);
+                numCombate = "007";
+                addCombate(numCombate, extras, cuadroSuperior.get(2).getIdGanador(), cuadroSuperior.get(3).getIdGanador(), // ganador003 vs ganador004
+                        "009-R", "015-A", NO, cuadroSuperior);
+
                 // 2
-                Emparejamientos emp008 = new Emparejamientos("008", emp005.getIdGanador(), emp006.getIdGanador(), // ganador005 vs ganador006
-                        "009-A", "014-A", NO, null, null);
-                cuadroSuperior.add(emp008);
+                numCombate = "008";
+                addCombate(numCombate, extras,  cuadroSuperior.get(4).getIdGanador(), cuadroSuperior.get(5).getIdGanador(), // ganador005 vs ganador006
+                        "009-A", "014-A", NO, cuadroSuperior);
+
                 // Final
-                Emparejamientos emp009 = new Emparejamientos("009", emp007.getIdGanador(), emp008.getIdGanador(), // ganador007 vs ganador008
-                        null, null, SI, null, null);
-                cuadroSuperior.add(emp009);
+                numCombate = "009";
+                addCombate(numCombate, extras, cuadroSuperior.get(6).getIdGanador(), cuadroSuperior.get(7).getIdGanador(), // ganador007 vs ganador008
+                        "", "", SI, cuadroSuperior);
+
                 // Cuadro inferior
                 // 1
-                Emparejamientos emp010 = new Emparejamientos("010", emp001.getIdPerdedor(), emp004.getIdPerdedor(), // perdedor001 vs perdedor004
-                        "012-R", null, NO, null, null);
-                cuadroInferior.add(emp010);
+                numCombate = "010";
+                addCombate(numCombate, extras, cuadroSuperior.get(0).getIdPerdedor(), cuadroSuperior.get(3).getIdPerdedor(), // perdedor001 vs perdedor004
+                        "012-R", "", NO, cuadroInferior);
+
                 // 2
-                Emparejamientos emp011 = new Emparejamientos("011", emp002.getIdPerdedor(), emp005.getIdPerdedor(), // perdedor002 vs perdedor005
-                        "013-A", null, NO, null, null);
-                cuadroInferior.add(emp011);
+                numCombate = "011";
+                addCombate(numCombate, extras, cuadroSuperior.get(1).getIdPerdedor(), cuadroSuperior.get(4).getIdPerdedor(), // perdedor002 vs perdedor005
+                        "013-A", "", NO, cuadroInferior);
+
                 // 3
-                Emparejamientos emp012 = new Emparejamientos("012", emp010.getIdGanador(), emp003.getIdPerdedor(), // ganador010 vs perdedor003
-                        "014-R", null, NO, null, null);
-                cuadroInferior.add(emp012);
+                numCombate = "012";
+                addCombate(numCombate, extras, cuadroInferior.get(0).getIdGanador(), cuadroSuperior.get(2).getIdPerdedor(), // ganador010 vs perdedor003
+                        "014-R", "", NO, cuadroInferior);
+
                 // 4
-                Emparejamientos emp013 = new Emparejamientos("013", emp006.getIdPerdedor(), emp011.getIdGanador(), // perdedor006 vs ganador011
-                        "015-R", null, NO, null, null);
-                cuadroInferior.add(emp013);
+                numCombate = "013";
+                addCombate(numCombate, extras, cuadroSuperior.get(5).getIdPerdedor(), cuadroInferior.get(1).getIdGanador(), // perdedor006 vs ganador011
+                        "015-R", "", NO, cuadroInferior);
+
                 // 5
-                Emparejamientos emp014 = new Emparejamientos("014", emp012.getIdGanador(), emp008.getIdPerdedor(), // ganador012 vs perdedor008
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp014);
+                numCombate = "014";
+                addCombate(numCombate, extras, cuadroInferior.get(2).getIdGanador(), cuadroSuperior.get(7).getIdPerdedor(), // ganador012 vs perdedor008
+                        "", "", TERCEROS, cuadroInferior);
+
                 // 6
-                Emparejamientos emp015 = new Emparejamientos("015", emp013.getIdGanador(), emp007.getIdPerdedor(), // ganador013 vs perdedor007
-                        null, null, TERCEROS, null, null);
-                cuadroInferior.add(emp015);
+                numCombate = "015";
+                addCombate(numCombate, extras, cuadroInferior.get(3).getIdGanador(), cuadroSuperior.get(6).getIdPerdedor(), // gaandor013 vs perdedor007
+                        "", "", TERCEROS, cuadroInferior);
+
                 break;
-            }*/
+            }
             // El resto de casos, es decir, cuando haya más de 10 competidores en una categoría.
         }
 
@@ -985,7 +1031,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
     }
     //endregion
 
-    // region Añadir Combate
+    // region Añadir Combate BD
     public void addCombate(final String numCombate, Bundle extras, final String idRojo, final String idAzul,
                            final String sigCombGanador, final String sigCombPerdedor, final Emparejamientos.EsFinal esFinal, final List<Emparejamientos> cuadro){
         // Evitar duplicados comprobando el número del combate. No puede haber dos combates con el mismo número en una categoría
