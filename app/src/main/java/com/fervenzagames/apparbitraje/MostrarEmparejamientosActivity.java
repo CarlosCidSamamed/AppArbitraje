@@ -448,59 +448,8 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 Bundle extras = intent.getExtras();
 
-                String idCat = extras.getString("idCat");
-                String idMod = extras.getString("idMod");
-                String idCamp = extras.getString("idCamp");
-
-                // Añadir el Emparejamiento a la BD.
-                String idEmp = mEmparejamientosDB.child(idCat).push().getKey();
-                Emparejamientos emp001 = new Emparejamientos(idEmp, "001", arrayBidim[0][1],arrayBidim[1][1],
-                        null, null, Emparejamientos.EsFinal.SI, null, null);
-                cuadroSuperior.add(emp001);
-                mEmparejamientosDB.child(idCat).child(idEmp).setValue(emp001);
-
-                // Añadir el combate en cuestión a la BD
-
-                String idCombate = mCombatesDB.child(idCat).push().getKey(); // La lista de combates depende de una Categoría.
-                List<Asaltos> listaAsaltos = new ArrayList<>();
-                Integer num = Integer.parseInt(emp001.getNumeroCombate());
-                // Crear objeto de tipo Combates
-                Combates comb = new Combates(idCombate, num,
-                        "", "", "", "",
-                        emp001.getIdRojo(), emp001.getIdAzul(),
-                        listaAsaltos,
-                        idCamp, idMod, idCat,
-                        Combates.EstadoCombate.Pendiente);
-                // Insertar dicho objeto en la BD.
-                mCombatesDB.child(idCat).child(idCombate).setValue(comb);
-                Toast.makeText(this, "Se ha añadido el combate correspondiente al emparejamiento " + num, Toast.LENGTH_SHORT).show();
-
-                // Añadir sus Asaltos y actualizar listaAsaltos del combate que acabamos de crear.
-                // Por defecto añadimos tres asaltos para cada combate. Si son necesarios se usan y si no se marcan como cancelados.
-                // La lista de Asaltos depende del combate al que pertenecen.
-                for(int i = 0; i < 3; i++){
-                    // Crear dos listas vacías para Puntuaciones e Incidencias
-                    List<Puntuaciones> listaPunt = new ArrayList<>();
-                    List<Incidencias> listaInc = new ArrayList<>();
-                    // Generar el id del Asalto con el push de la BD.
-                    String idAsalto = mAsaltosDB.child(idCombate).push().getKey();
-                    // Crear objeto tipo Asaltos
-                    Asaltos asalto = new Asaltos(idAsalto, i+1,
-                            "", "", "",
-                            0, 0, "",
-                            listaPunt, listaInc,
-                            Asaltos.EstadoAsalto.Pendiente);
-                    // Añadir los asaltos a la lista de Asaltos que hemos creado en este bloque de código, es decir, en la variable listaAsaltos.
-                    listaAsaltos.add(asalto);
-                    // Insertar los Asaltos en la BD.
-                    mAsaltosDB.child(idCombate).child(idAsalto).setValue(asalto);
-                    Toast.makeText(this, "Añadido el asalto nº " + String.valueOf(i+1) + " al combate cuyo ID es " + idCombate, Toast.LENGTH_SHORT).show();
-                }
-
-                // Actualizar la lista de Asaltos del Combate que acabamos de crear.
-                comb.setListaAsaltos(listaAsaltos);
-                mCombatesDB.child(idCat).child(idCombate).setValue(comb);
-                Toast.makeText(this, "Actualizada la lista de Asaltos del Combate cuyo ID es " + idCombate, Toast.LENGTH_SHORT).show();
+                String numCombate = "001";
+                addCombate(numCombate, extras, arrayBidim[0][1], arrayBidim[1][1], " ", " ", SI, cuadroSuperior);
 
                 break;
             }
@@ -515,6 +464,26 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                 break;
             }
             case 3: { // Semis y final, 4 Competidores
+
+                // Cuadro Superior
+                // Semis
+                String numCombate = "001";
+                addCombate(numCombate, extras, arrayBidim[0][1], arrayBidim[3][1],
+                        "003-R", "004-A", NO, cuadroSuperior);
+
+                numCombate = "002";
+                addCombate(numCombate, extras, arrayBidim[2][1], arrayBidim[1][1],
+                        "003-A", "004-R", NO, cuadroSuperior);
+                // Final
+                numCombate = "003";
+                addCombate(numCombate, extras, cuadroSuperior.get(0).getIdGanador(), cuadroSuperior.get(1).getIdGanador(),
+                        "", "", SI, cuadroSuperior);
+                // Cuadro Inferior
+                // Repesca 1
+                numCombate = "004";
+                addCombate(numCombate, extras, cuadroSuperior.get(0).getIdPerdedor(), cuadroSuperior.get(1).getIdPerdedor(),
+                        "", "", TERCEROS, cuadroInferior);
+
                 // Semi 1
                 Emparejamientos emp001 = new Emparejamientos("001", arrayBidim[0][1], arrayBidim[3][1], // 1 vs 4
                          "003-R", "004-A", NO, null, null);
@@ -818,7 +787,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
     }
 
 
-    public void addCombate(String idCamp, String idMod, final String idCat, String idRojo, String idAzul, final int numCombate){
+    /*public void addCombate(String idCamp, String idMod, final String idCat, String idRojo, String idAzul, final int numCombate){
         // La raíz para insertar datos será mCombatesDB
         // Crear un objeto de tipo Combates cuyo idCombate será el generado por la BD al insertarlo bajo el idCat de la Categoría a la que pertenece el combate.
         final String idCombate = mCombatesDB.child(idCat).push().getKey();
@@ -863,7 +832,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
     //endregion
 
     //region Simular Emparejamientos y actualizar UI
@@ -1017,20 +986,105 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
     //endregion
 
     // region Añadir Combate
-    public void addCombate(){
+    public void addCombate(final String numCombate, Bundle extras, final String idRojo, final String idAzul,
+                           final String sigCombGanador, final String sigCombPerdedor, final Emparejamientos.EsFinal esFinal, final List<Emparejamientos> cuadro){
         // Evitar duplicados comprobando el número del combate. No puede haber dos combates con el mismo número en una categoría
+        // Los emparejamientos dependen de una categoría. El idCat lo obtenemos del Bundle extras.
+        final String idCat = extras.getString("idCat");
+        final String idMod = extras.getString("idMod");
+        final String idCamp = extras.getString("idCamp");
+
+        Query consulta = mEmparejamientosDB.child(idCat);
+
+        consulta.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot empSnapshot: dataSnapshot.getChildren()){
+                    Emparejamientos emparejamiento = empSnapshot.getValue(Emparejamientos.class);
+                    if(emparejamiento.getNumeroCombate().equals(numCombate)){
+                        // Ya existe un combate con ese número en esta categoría.
+                        Toast.makeText(MostrarEmparejamientosActivity.this,
+                                "Ya existe un combate con el número " + numCombate + " en la categoría cuyo ID es " + idCat,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    } else { // Se guarda el combate en la BD.
+                        // Generar el ID único.
+                        String idEmp = mEmparejamientosDB.child(idCat).push().getKey();
+                        // Invocar al método que trabaja con la BD.
+                        crearEmparejamiento(cuadro, idEmp, numCombate, idRojo, idAzul, esFinal,
+                                sigCombGanador, sigCombPerdedor, idCamp, idMod, idCat);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public Emparejamientos crearEmparejamiento(List<Emparejamientos> cuadro, String idEmp, String numCombate,
+                                    String idRojo, String idAzul, Emparejamientos.EsFinal esFinal,
+                                    String sigCombGanador, String sigCombPerdedor, String idCamp, String idMod, String idCat){
+
 
         // Añadir el Combate si no existe
+
+        // Añadir el Emparejamiento a la BD.
+
+        Emparejamientos emp = new Emparejamientos(idEmp, numCombate, idRojo, idAzul, sigCombGanador, sigCombPerdedor, esFinal, "", "");
+        cuadro.add(emp);
+
+        mEmparejamientosDB.child(idCat).child(idEmp).setValue(emp);
+
+        // Añadir el combate en cuestión a la BD
+
+        String idCombate = mCombatesDB.child(idCat).push().getKey(); // La lista de combates depende de una Categoría.
+        List<Asaltos> listaAsaltos = new ArrayList<>();
+        //Integer num = Integer.parseInt(emp.getNumeroCombate());
+        // Crear objeto de tipo Combates
+        Combates comb = new Combates(idCombate, numCombate,
+                "", "", "", "",
+                emp.getIdRojo(), emp.getIdAzul(),
+                listaAsaltos,
+                idCamp, idMod, idCat,
+                Combates.EstadoCombate.Pendiente);
+        // Insertar dicho objeto en la BD.
+        mCombatesDB.child(idCat).child(idCombate).setValue(comb);
+        Toast.makeText(MostrarEmparejamientosActivity.this, "Se ha añadido el combate correspondiente al emparejamiento " + numCombate, Toast.LENGTH_SHORT).show();
+
+        // Añadir sus Asaltos y actualizar listaAsaltos del combate que acabamos de crear.
+        // Por defecto añadimos tres asaltos para cada combate. Si son necesarios se usan y si no se marcan como cancelados.
+        // La lista de Asaltos depende del combate al que pertenecen.
+        for(int i = 0; i < 3; i++){
+            // Crear dos listas vacías para Puntuaciones e Incidencias
+            List<Puntuaciones> listaPunt = new ArrayList<>();
+            List<Incidencias> listaInc = new ArrayList<>();
+            // Generar el id del Asalto con el push de la BD.
+            String idAsalto = mAsaltosDB.child(idCombate).push().getKey();
+            // Crear objeto tipo Asaltos
+            Asaltos asalto = new Asaltos(idAsalto, i+1,
+                    "", "", "",
+                    0, 0, "",
+                    listaPunt, listaInc,
+                    Asaltos.EstadoAsalto.Pendiente);
+            // Añadir los asaltos a la lista de Asaltos que hemos creado en este bloque de código, es decir, en la variable listaAsaltos.
+            listaAsaltos.add(asalto);
+            // Insertar los Asaltos en la BD.
+            mAsaltosDB.child(idCombate).child(idAsalto).setValue(asalto);
+            Toast.makeText(MostrarEmparejamientosActivity.this, "Añadido el asalto nº " + String.valueOf(i+1) + " al combate cuyo ID es " + idCombate, Toast.LENGTH_SHORT).show();
+        }
+
+        // Actualizar la lista de Asaltos del Combate que acabamos de crear.
+        comb.setListaAsaltos(listaAsaltos);
+        mCombatesDB.child(idCat).child(idCombate).setValue(comb);
+        Toast.makeText(MostrarEmparejamientosActivity.this, "Actualizada la lista de Asaltos del Combate cuyo ID es " + idCombate, Toast.LENGTH_SHORT).show();
+
+        return  emp;
+
     }
 
-    public void updateListaAsaltos(int idCombate, List<Asaltos> lista){
-
-    }
-    // endregion
-
-    // region Añadir Asalto
-    public void addAsalto(int idCombate){
-
-    }
     // endregion
 }

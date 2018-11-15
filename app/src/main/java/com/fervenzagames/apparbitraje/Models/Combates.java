@@ -7,7 +7,7 @@ import java.util.List;
 public class Combates {
 
     private String id;
-    private int numCombate; // Número de ese combate dentro de un Campeonato.
+    private String numCombate; // Número de ese combate dentro de un Campeonato.
     private String ganador;
     private String perdedor;
     private String motivo;
@@ -24,7 +24,7 @@ public class Combates {
     public Combates() {
     }
 
-    public Combates(String id, int numCombate, String ganador, String perdedor,String motivo, String enlaceVideo,
+    public Combates(String id, String numCombate, String ganador, String perdedor,String motivo, String enlaceVideo,
                     String idRojo, String idAzul, List<Asaltos> listaAsaltos, String campeonato,
                     String modalidad, String categoria, EstadoCombate estadoCombate) {
         this.id = id;
@@ -50,11 +50,11 @@ public class Combates {
         this.id = id;
     }
 
-    public int getNumCombate() {
+    public String getNumCombate() {
         return numCombate;
     }
 
-    public void setNumCombate(int numCombate) {
+    public void setNumCombate(String numCombate) {
         this.numCombate = numCombate;
     }
 
