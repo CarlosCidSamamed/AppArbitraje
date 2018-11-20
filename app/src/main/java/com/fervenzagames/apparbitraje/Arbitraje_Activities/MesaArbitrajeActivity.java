@@ -3,6 +3,7 @@ package com.fervenzagames.apparbitraje.Arbitraje_Activities;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,13 +16,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.CampeonatosActivity;
+import com.fervenzagames.apparbitraje.Models.Combates;
+import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.fervenzagames.apparbitraje.R;
 import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.fervenzagames.apparbitraje.StartActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MesaArbitrajeActivity extends AppCompatActivity {
 
@@ -52,8 +64,13 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
     private Button mFinCombate;
     //endregion
 
+    //region Database References
+    private DatabaseReference mCombatesDB;
+    private DatabaseReference mCompetidoresDB;
+    //endregion
+
     //region Atributos UI ROJO
-    private ImageView mFotoRojo;
+    private CircleImageView mFotoRojo;
     private TextView mNombreRojo;
         //region Botones
         private Button mAmRojoBtn;
@@ -88,7 +105,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
     //endregion
 
     //region Atributos UI AZUL
-    private ImageView mFotoAzul;
+    private CircleImageView mFotoAzul;
     private TextView mNombreAzul;
         //region Botones
         private Button mAmAzulBtn;
@@ -218,11 +235,61 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         actualizarCrono();
         //endregion
 
+        //region Datos Bundle Extra y DBref
+        Intent intent =  getIntent();
+        Bundle extras = intent.getExtras();
+        String idCamp = extras.getString("idCamp");
+        String idMod = extras.getString("idMod");
+        String idCat = extras.getString("idCat");
+        mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates").child("idCat");   // Lista de Combates de esta Categoría.
+        mCompetidoresDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Competidores");          // Lista de Compatidores de la BD.
+        //endregion
+
         //region UI ROJO
+        // Cargar foto Rojo y Nombre Rojo
+        mFotoRojo = (CircleImageView) findViewById(R.id.foto_rojo);
+        mNombreRojo = (TextView) findViewById(R.id.nombre_rojo);
+        String idRojo = extras.getString("idRojo");
+        Toast.makeText(this, "MesaArbitraje --- DNI Rojo --> " + idRojo, Toast.LENGTH_SHORT).show();
+        Query consulta = mCompetidoresDB.child(idRojo);
+        consulta.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Competidores comp = dataSnapshot.getValue(Competidores.class);
+                Picasso.get().load(comp.getFoto()).into(mFotoRojo);
+                String nombreCompleto = comp.getNombre() + " " + comp.getApellido1() + " " + comp.getApellido2();
+                mNombreRojo.setText(nombreCompleto);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         //endregion
 
         //region UI AZUL
+        mFotoAzul = (CircleImageView) findViewById(R.id.foto_azul);
+        mNombreAzul = (TextView) findViewById(R.id.nombre_azul);
+        String idAzul = extras.getString("idAzul");
+        Query consulta2 = mCompetidoresDB.child(idAzul);
+        consulta2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Competidores comp = dataSnapshot.getValue(Competidores.class);
+                Picasso.get().load(comp.getFoto()).into(mFotoAzul);
+                String nombreCompleto = comp.getNombre() + " " + comp.getApellido1() + " " + comp.getApellido2();
+                mNombreAzul.setText(nombreCompleto);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         //endregion
+
+
     }
 
     //region CRONO Comportamiento y Definición
@@ -319,6 +386,15 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
     //region Trabajo con la DB
 
     //region Cargar Datos desde la BD
+
+    // Vamos a localizar el combate en cuestión mediante su Número de Combate dentro de la Categoría y la Modalidad indicadas.
+    // En el Bundle se le pasan el idCamp, idMod e idCat.
+    public Combates buscarCombate(Bundle extras, String numCombate){
+
+        Combates combate = new Combates();
+        return combate;
+
+    }
 
     //endregion
 

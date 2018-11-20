@@ -13,7 +13,7 @@
 
     <!-- ROJO -->
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/foto_rojo"
         android:layout_width="75dp"
         android:layout_height="75dp"
@@ -27,7 +27,9 @@
         app:layout_constraintHorizontal_bias="0.035"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mesa_arbitraje_bar"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        app:civ_border_color="@color/colorRojo"
+        app:civ_border_width="4dp"/>
 
     <TextView
         android:id="@+id/nombre_rojo"
@@ -383,7 +385,7 @@
 
     <!-- AZUL -->
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/foto_azul"
         android:layout_width="75dp"
         android:layout_height="75dp"
@@ -397,7 +399,9 @@
         app:layout_constraintHorizontal_bias="0.959"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mesa_arbitraje_bar"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        app:civ_border_color="@color/colorAccent2"
+        app:civ_border_width="4dp"/>
 
     <TextView
         android:id="@+id/nombre_azul"
