@@ -9,6 +9,9 @@
         android:id="@+id/main_account_settings"
         android:title="@string/cuenta_de_usuario" />
     <item
+        android:id="@+id/main_lista_arbitros"
+        android:title="@string/lista_de_arbitros" />
+    <item
         android:id="@+id/main_arbitrar_combate"
         android:title="@string/arbitrar" />
     <item
