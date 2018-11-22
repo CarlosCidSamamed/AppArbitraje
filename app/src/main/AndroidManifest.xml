@@ -93,6 +93,15 @@
         <activity
             android:name=".MostrarEmparejamientosActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".Edit_Activities.EditArbitroActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Detail_Activities.DetalleArbitroActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ArbitrosActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

@@ -12,7 +12,7 @@ public class Campeonatos {
 
     public List<Arbitros> listaArbitros; // Lista de los árbitros asignados al Campeonato en cuestión.
     // Esta lista se usará para limitar el acceso y login a los árbitros que estén registrados en la app (o se registren como nuevos usuarios)
-    // y no estén en lal lista de árbitros asignados al campeonato. En el caso de que no estén en dicha lista e inicien sesión
+    // y no estén en la lista de árbitros asignados al campeonato. En el caso de que no estén en dicha lista e inicien sesión
     // se les mostrará un mensaje en pantalla informándoles de que no podrán acceder a los datos de la BD al no estar en la lista de
     // usuarios con los permisos necesarios.
 

@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.MainActivity;
+import com.fervenzagames.apparbitraje.Models.Arbitros;
+import com.fervenzagames.apparbitraje.Models.Combates;
 import com.fervenzagames.apparbitraje.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,7 +28,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -89,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void register_user(final String display_name, String email, String password) {
+    private void register_user(final String display_name, final String email, final String password) {
 
         mAuth.createUserWithEmailAndPassword(email, password).
                 addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -98,6 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         if(task.isSuccessful()){
 
+                            // Añadir los datos en la rama Usuarios
                             FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
                             String uid = current_user.getUid();
                             mDatabase = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(uid);
@@ -108,6 +113,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userMap.put("nivel", "Nivel 1");
                             userMap.put("imagen", "default");
                             userMap.put("imagen_thumb", "default");
+                            userMap.put("email", email);
 
                             mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -115,6 +121,26 @@ public class RegisterActivity extends AppCompatActivity {
                                     if (task.isSuccessful())
                                     {
                                         mRegProgress.dismiss();
+                                        /* Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+                                        // Para asegurarnos de que no se puede volver a la StartActivity al pulsar el botón BACK (flecha atrás) de la barra de botones en el fondo de la pantalla (ANDROID)
+                                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(mainIntent);
+                                        finish(); */
+                                    }
+                                }
+                            });
+
+                            // Añadir los datos en la rama Arbitros
+                            mDatabase = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Arbitros").child(uid);
+                            // Los datos de cada Árbitro se almacenan en una rama cuyo ID es el ID del Usuario correspondiente.
+                            // Se crea un nuevo Árbitro
+                            List<Combates> lista = new ArrayList<>();
+                            Arbitros arbi = new Arbitros(uid, display_name, "DNI", email, password, "default", "Nivel 1", "Silla", 0, "", false,  lista);
+                            // Se guardan los datos del árbitro en la BD.
+                            mDatabase.setValue(arbi).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
                                         Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
                                         /* Para asegurarnos de que no se puede volver a la StartActivity al pulsar el botón BACK (flecha atrás) de la barra de botones en el fondo de la pantalla (ANDROID)*/
                                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -123,7 +149,6 @@ public class RegisterActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
 
 
                         } else {

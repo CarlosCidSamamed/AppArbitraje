@@ -289,6 +289,8 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                                     int tamano = listaComp.size();
                                     String[][] arrayBidim = new String[tamano][2];
                                     arrayBidim = addCombatesEmparejamientos(array, listaComp);
+                                    final String idRojo = arrayBidim[0][1];
+                                    final String idAzul = arrayBidim[1][1];
 
                                     // Click sobre el botón Empezar Combate
                                     Button comenzarBtn = (Button) findViewById(R.id.dos_comp_emmpezar_combate_btn);
@@ -301,8 +303,8 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                                             // Pasarle datos del Bundle al intent.
                                             Intent intent = getIntent();
                                             Bundle ext = intent.getExtras();
-                                            ext.putString("idRojo", listaComp.get(0).getDni());
-                                            ext.putString("idAzul", listaComp.get(1).getDni());
+                                            ext.putString("idRojo", idRojo);
+                                            ext.putString("idAzul", idAzul);
                                             arbitrarIntent.putExtras(ext);
                                             // Lanzar intent arbitraje (Mesa)
                                             startActivity(arbitrarIntent);
@@ -366,7 +368,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                                             Intent empezarUnoIntent = new Intent(MostrarEmparejamientosActivity.this, MesaArbitrajeActivity.class);
                                             Intent intent = getIntent();
                                             Bundle ext = intent.getExtras();
-                                            Toast.makeText(MostrarEmparejamientosActivity.this, "MostrarEmparejamientos --- DNI Rojo --> " + listaComp.get(0).getDni(), Toast.LENGTH_SHORT).show();
+                                            // Toast.makeText(MostrarEmparejamientosActivity.this, "MostrarEmparejamientos --- DNI Rojo --> " + listaComp.get(0).getDni(), Toast.LENGTH_SHORT).show();
                                             ext.putString("idRojo", idRojo);
                                             ext.putString("idAzul", idAzul);
                                             empezarUnoIntent.putExtras(ext);
@@ -497,7 +499,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
             case 2: { // Uno se clasifica directo a la final y los otros dos hacen semifinal, 3 Competidores
                 // Semi
                 numCombate = "001";
-                addCombate(numCombate, extras, arrayBidim[0][1], arrayBidim[2][1], "002-A", "", NO, cuadroSuperior);
+                addCombate(numCombate, extras, arrayBidim[0][1], arrayBidim[2][1], "002-R", "", NO, cuadroSuperior);
 
                 // Toast.makeText(this, "Tamaño de CuadroSuperior ----> " + cuadroSuperior.size(), Toast.LENGTH_SHORT).show();
 

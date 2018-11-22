@@ -14,9 +14,12 @@ import android.widget.Toast;
 import com.fervenzagames.apparbitraje.Add_Activities.AddCompetidorActivity;
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.MesaArbitrajeActivity;
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.SillaArbitrajeActivity;
+import com.fervenzagames.apparbitraje.User_Activities.LoginActivity;
 import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
     private int tipo;
 
+    private String uid;
+    private DatabaseReference mArbitrosDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("AppArbitraje");
+
 
         // Tabs
         mViewPager = (ViewPager) findViewById(R.id.main_tabPager);
@@ -72,7 +79,13 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         //Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+/*
+        uid = currentUser.getUid();
+*/
         //updateUI(currentUser);
+
+/*        mArbitrosDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Arbitros").child(uid);
+        // Referencia a los datos del Árbitro correspondiente al usuario que ha iniciado sesión en este dispositivo.*/
 
         // Si el usuario no ha iniciado sesión deberemos abrir la pantalla de LOGIN
         if(currentUser == null){
@@ -109,7 +122,14 @@ public class MainActivity extends AppCompatActivity {
         {
             case R.id.main_logout_btn:{
                 // Vamos a incluir el código para cerrar la sesión.
+
+                // Modificar el campo conectado del Árbitro en la BD. CONECTADO --> FALSE
+
+
+                // Cerrar Sesión
                 FirebaseAuth.getInstance().signOut(); // Cerrar sesión con Firebase Auth.
+
+
                 sendToStart(); // Redirigir al inicio de la app.
                 break;
             }
@@ -144,10 +164,17 @@ public class MainActivity extends AppCompatActivity {
                     Intent arbitrarIntent = new Intent(MainActivity.this, MesaArbitrajeActivity.class);
                     startActivity(arbitrarIntent);
                 }
+                break;
             }
             case R.id.main_competidor:{ // Prueba de la Actividad para Añadir un Competidor a la BD.
                 Intent competidorIntent = new Intent(MainActivity.this, AddCompetidorActivity.class);
                 startActivity(competidorIntent);
+                break;
+            }
+            case R.id.main_lista_arbitros:{
+                Intent listArbitrosIntent = new Intent(MainActivity.this, ArbitrosActivity.class);
+                startActivity(listArbitrosIntent);
+                break;
             }
         }
 
