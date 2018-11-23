@@ -72,6 +72,8 @@ public class DetalleArbitroActivity extends AppCompatActivity {
         mCargo = findViewById(R.id.arb_detalle_cargo);
         mZona = findViewById(R.id.arb_detalle_zonaCombate);
         mConectado = findViewById(R.id.arb_detalle_conectado);
+        midCamp = findViewById(R.id.arb_detalle_idCamp);
+        mNombreCamp = findViewById(R.id.arb_detalle_nombreCamp);
 
         mArbitroDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -103,7 +105,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
 
 
                     // Zona de combate
-                    mZona.setText(zona);
+                    mZona.setText("Zona de Combate : " + zona);
 
                     Toast.makeText(DetalleArbitroActivity.this, "Valor de CONECTADO --> " + conectado, Toast.LENGTH_SHORT).show();
 
@@ -116,18 +118,17 @@ public class DetalleArbitroActivity extends AppCompatActivity {
 
                     // Buscar el nombre del Campeonato a partir de su idCamp.
 
-                    Query consulta = mCampDB
-                            .orderByChild("idCamp")
-                            .equalTo(idCamp)
-                            .limitToFirst(1);
+                    Query consulta = mCampDB.child(idCamp);
 
-                    consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+                    consulta.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                             Campeonatos camp = dataSnapshot.getValue(Campeonatos.class);
+
                             try {
                                 String nombreCamp = camp.getNombre();
-                                mNombreCamp.setText(nombreCamp);
+                                if(nombreCamp != null) mNombreCamp.setText(nombreCamp);
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                             }
