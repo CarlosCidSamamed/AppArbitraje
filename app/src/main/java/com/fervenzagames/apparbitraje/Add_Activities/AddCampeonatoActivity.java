@@ -86,8 +86,9 @@ public class AddCampeonatoActivity extends AppCompatActivity {
             final String id = campsDB.push().getKey();
             List<Arbitros> listaArbitros = null;
             List<Modalidades> listaModalidades = null;
+            int numZonas = 0;
 
-            final Campeonatos camp = new Campeonatos(id, nombre, fecha, lugar, tipo, listaArbitros, listaModalidades);
+            final Campeonatos camp = new Campeonatos(id, nombre, fecha, lugar, tipo, listaArbitros, listaModalidades, numZonas);
 
             // Comprobar si existe este campeonato en la BD
             // Creamos la consulta que nos devuelve el primer campeonato que encuentre con ese nombre.

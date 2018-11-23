@@ -18,10 +18,12 @@ public class Campeonatos {
 
     public List<Modalidades> listaModalidades; // Firebase Database --> Rama Camp_Mod almacena las modalidades para un campeonato dado.
 
+    public int numZonasCombate; // Número de zonas de combate para cada uno de los campeonatos.
+
     public Campeonatos() {
     }
 
-    public Campeonatos(String idCamp, String nombre, String fecha, String lugar, String tipo, List<Arbitros> listaArbitros, List<Modalidades> listaModalidades) {
+    public Campeonatos(String idCamp, String nombre, String fecha, String lugar, String tipo, List<Arbitros> listaArbitros, List<Modalidades> listaModalidades, int numZonasCombate) {
         this.idCamp = idCamp;
         this.nombre = nombre;
         this.fecha = fecha;
@@ -29,6 +31,7 @@ public class Campeonatos {
         this.tipo = tipo;
         this.listaArbitros = listaArbitros;
         this.listaModalidades = listaModalidades;
+        this.numZonasCombate = numZonasCombate;
     }
 
     public String getIdCamp() {
@@ -85,5 +88,13 @@ public class Campeonatos {
 
     public void setListaModalidades(List<Modalidades> listaModalidades) {
         this.listaModalidades = listaModalidades;
+    }
+
+    public int getNumZonasCombate() {
+        return numZonasCombate;
+    }
+
+    public void setNumZonasCombate(int numZonasCombate) {
+        this.numZonasCombate = numZonasCombate;
     }
 }

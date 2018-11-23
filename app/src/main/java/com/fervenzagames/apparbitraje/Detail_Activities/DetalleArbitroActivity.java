@@ -48,6 +48,8 @@ public class DetalleArbitroActivity extends AppCompatActivity {
     private DatabaseReference mArbitroDB;
     private DatabaseReference mCampDB;
 
+    private Bundle extras;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,8 @@ public class DetalleArbitroActivity extends AppCompatActivity {
         midCamp = findViewById(R.id.arb_detalle_idCamp);
         mNombreCamp = findViewById(R.id.arb_detalle_nombreCamp);
 
+        extras = new Bundle();
+
         mArbitroDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -91,6 +95,8 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                     String zona = String.valueOf(arbi.getZonaCombate());
                     String conectado = String.valueOf(arbi.isConectado());
 
+                    extras.putString("idArbitro", arbi.getIdArbitro());
+
                     mNombre.setText(nombre);
                     if(foto.equals("default")){
                         Picasso.get().load(R.drawable.default_avatar).into(mFoto); // Por defecto default_avatar.
@@ -101,11 +107,13 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                     mEmail.setText(email);
                     mNivel.setText(nivel);
                     mCargo.setText(cargo);
-                    midCamp.setText(idCamp);
+                    String idC = "ID Campeonato" + " : " + idCamp;
+                    midCamp.setText(idC);
 
 
                     // Zona de combate
-                    mZona.setText("Zona de Combate : " + zona);
+                    String z = "Zona de Combate" + " : " + zona;
+                    mZona.setText(z);
 
                     Toast.makeText(DetalleArbitroActivity.this, "Valor de CONECTADO --> " + conectado, Toast.LENGTH_SHORT).show();
 
@@ -159,6 +167,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent editarArbIntent = new Intent(DetalleArbitroActivity.this, EditArbitroActivity.class);
+                editarArbIntent.putExtras(extras);
                 startActivity(editarArbIntent);
             }
         });
