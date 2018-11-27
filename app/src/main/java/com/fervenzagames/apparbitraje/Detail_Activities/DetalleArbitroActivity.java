@@ -7,11 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Adapters.CampeonatosList;
 import com.fervenzagames.apparbitraje.Edit_Activities.EditArbitroActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
@@ -23,6 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -40,13 +46,16 @@ public class DetalleArbitroActivity extends AppCompatActivity {
     private TextView mEmail;
     private TextView mNivel;
     private TextView mCargo;
-    private TextView midCamp;
+    /*private TextView midCamp;
     private TextView mNombreCamp;
-    private TextView mZona;
+    private TextView mZona;*/
+    private Spinner mListaCampsSpinner;
     private ImageView mConectado;
 
     private DatabaseReference mArbitroDB;
     private DatabaseReference mCampDB;
+
+    private List<Campeonatos> mListaCamps;
 
     private Bundle extras;
 
@@ -66,16 +75,19 @@ public class DetalleArbitroActivity extends AppCompatActivity {
         mArbitroDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Arbitros").child(mIdArbi); // Referencia al árbitro deseado.
         mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos"); // Lista de Campeonatos.
 
+        mListaCamps = new ArrayList<>();
+
         mFoto = findViewById(R.id.arb_detalle_foto);
         mNombre = findViewById(R.id.arb_detalle_nombre);
         mDNI = findViewById(R.id.arb_detalle_dni);
         mEmail = findViewById(R.id.arb_detalle_email);
         mNivel = findViewById(R.id.arb_detalle_nivel);
         mCargo = findViewById(R.id.arb_detalle_cargo);
-        mZona = findViewById(R.id.arb_detalle_zonaCombate);
+        // mZona = findViewById(R.id.arb_detalle_zonaCombate);
+        mListaCampsSpinner = findViewById(R.id.arb_detalle_listaCampeonatosSpinner);
         mConectado = findViewById(R.id.arb_detalle_conectado);
-        midCamp = findViewById(R.id.arb_detalle_idCamp);
-        mNombreCamp = findViewById(R.id.arb_detalle_nombreCamp);
+/*        midCamp = findViewById(R.id.arb_detalle_idCamp);
+        mNombreCamp = findViewById(R.id.arb_detalle_nombreCamp);*/
 
         extras = new Bundle();
 
@@ -108,12 +120,12 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                     mNivel.setText(nivel);
                     mCargo.setText(cargo);
                     String idC = "ID Campeonato" + " : " + idCamp;
-                    midCamp.setText(idC);
+                    // midCamp.setText(idC);
 
 
-                    // Zona de combate
+                    /*// Zona de combate
                     String z = "Zona de Combate" + " : " + zona;
-                    mZona.setText(z);
+                    mZona.setText(z);*/
 
                     Toast.makeText(DetalleArbitroActivity.this, "Valor de CONECTADO --> " + conectado, Toast.LENGTH_SHORT).show();
 
@@ -124,30 +136,36 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                         mConectado.setImageResource(R.drawable.punto_rojo);
                     }
 
-                    // Buscar el nombre del Campeonato a partir de su idCamp.
+                    // Recorrer la lista de Campeonatos en los que ha participado este árbitro para recuperar la info de dichos campeonatos y mostrarla
+                    // en el spinner.
 
-                    Query consulta = mCampDB.child(idCamp);
+                    List<String> lista = arbi.getListaCamps();
 
-                    consulta.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(int i = 0; i < lista.size(); i++){
+                        Query consulta = mCampDB.child(lista.get(i));
 
-                            Campeonatos camp = dataSnapshot.getValue(Campeonatos.class);
+                        consulta.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            try {
-                                String nombreCamp = camp.getNombre();
-                                if(nombreCamp != null) mNombreCamp.setText(nombreCamp);
-                            } catch (NullPointerException e) {
-                                e.printStackTrace();
+                                Campeonatos camp = dataSnapshot.getValue(Campeonatos.class); // Recuperar el objeto de tipo Campeonatos
+                                mListaCamps.add(camp);                                       // Añadir el objeto a la lista de Campeonatos que vamos a mostrar en el Spinner
+
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
 
+                    // Una vez que hemos recorrido la lista de IDs de Campeonatos y creado la lista de Campeonatos podemos cargar esta última lista en el Spinner.
+                    // Crear el Adapter
+                    ArrayAdapter adapter = new CampeonatosList(DetalleArbitroActivity.this, mListaCamps);
+                    adapter.setDropDownViewResource(R.layout.camp_single_layout); // Asignar el layout
+                    // Asignar el Adapter al Spinner
+                    mListaCampsSpinner.setAdapter(adapter);
 
                 } catch (NullPointerException e) {
                     e.printStackTrace();

@@ -25,6 +25,10 @@ public class Arbitros {
     private String idCamp; // ID del Campeonato al que están asignados. Al añadir a un Árbitro a la lista correspondiente en un campeonato
                            // se actualizará este campo para que indique el campeonato a cuya lista se ha añadido.
 
+    private List<String> listaCamps; // Lista de Campeonatos en los que ha arbitrado este árbitro. Almacena los IDs de los Campeonatos en orden cronológico,
+                                     // es decir, el más reciente será el último de la lista.
+                                     // Al asignar a este árbitro a un nuevo Campeonato deberemos actualizar el idCamp para que muestre el ID de ese campeonato, así como añadir dicho ID a la lista.
+
     // Usando los datos del idCamp y la zonaCombate se podrá identificar de manera clar si un árbitro está asignado a un campeonato y, en caso afirmativo,
     // determinar la zona de combate que le corresponde. A partir de la zona de combate se le podrá asignar la lista de combates correspondientes a dicha zona de combate.
 
@@ -43,6 +47,10 @@ public class Arbitros {
         this.cargo = cargo;
         this.zonaCombate = zonaCombate;
         this.idCamp = idCamp;
+
+        // Añadir el ID del Campeonato a la lista de Campeonatos que en este caso está vacía al crear el registro del Árbitro.
+        this.listaCamps.add(this.idCamp);
+
         this.conectado = conectado;
         this.listaCombates = listaCombates;
     }
@@ -129,6 +137,10 @@ public class Arbitros {
     public void setIdCamp(String idCamp) {
         this.idCamp = idCamp;
     }
+
+    public List<String> getListaCamps() { return listaCamps; }
+
+    public void setListaCamps(List<String> listaCamps) { this.listaCamps = listaCamps; }
 
     public List<Combates> getListaCombates() {
         return listaCombates;

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.ModalidadesList;
 import com.fervenzagames.apparbitraje.Add_Activities.AddModalidadActivity;
+import com.fervenzagames.apparbitraje.Add_Activities.AsignarArbitroActivity;
 import com.fervenzagames.apparbitraje.CampeonatosActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Modalidades;
@@ -40,6 +41,8 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
     private TextView mLugar;
     private TextView mFecha;
     private TextView mTipo;
+
+    private String numZonasCombate;
 
     private ListView mListaArbitrosView;
     private ListView mListaModalidadesView;
@@ -109,6 +112,9 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
                 mLugar.setText(lugar);
                 mFecha.setText(fecha);
                 mTipo.setText(tipo);
+
+                numZonasCombate = dataSnapshot.child("numZonasCombate").getValue().toString();
+
             }
 
             @Override
@@ -127,7 +133,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         mAddArbitroBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //addArbitro();
+                addArbitro();
             }
         });
 
@@ -257,6 +263,18 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         addModIntent.putExtra("IdCamp", idCamp);
         startActivity(addModIntent);
 
+    }
+
+    private void addArbitro(){
+        //Obtener el nombre del campeonato seleccionado
+        String nombre = mNombre.getText().toString();
+        String idCamp = getIntent().getStringExtra("idCamp");
+
+        Intent addArbIntent = new Intent(DetalleCampeonatoActivity.this, AsignarArbitroActivity.class);
+        addArbIntent.putExtra("NombreCampeonato", nombre);
+        addArbIntent.putExtra("IdCamp", idCamp);
+        addArbIntent.putExtra("numZonasCombate", numZonasCombate);
+        startActivity(addArbIntent);
     }
 
     /*------------------------------- MENU PRINCIPAL -----------------------------------------------------------------------------------------------------------------*/

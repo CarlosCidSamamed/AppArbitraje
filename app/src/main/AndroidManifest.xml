@@ -102,6 +102,10 @@
         <activity
             android:name=".ArbitrosActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".Add_Activities.AsignarArbitroActivity"
+            android:parentActivityName=".Add_Activities.AddCampeonatoActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
