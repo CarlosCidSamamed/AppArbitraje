@@ -211,19 +211,34 @@ public class AsignarArbitroActivity extends AppCompatActivity {
                     // Comprobar que el Árbitro no se haya asignado con anterioridad a este Campeonato. Comprobar el valor de Árbitro.idCamp. Ese campo pasará a almacenar
                     // el valor correspondiente al ID de este Campeonato cuando se complete el proceso de guardarDatos.
 
-                    if(arbi.getIdCamp().equals(idCamp)){
-                        Toast.makeText(AsignarArbitroActivity.this,
-                                "El Árbitro seleccionado ya se ha asignado a este Campeonato. Compruebe que su selección es correcta.",
-                                Toast.LENGTH_SHORT).show();
-                    } else { // En caso contrario se procede a guardar los datos para asignar al Árbitro seleccionado a la zona seleccionada para este Campeonato.
-                        mBarraProgreso.setVisibility(View.VISIBLE);
-                        guardarDatos(mIdZonaCombate, mIdArbi);
-                        // Ocultar Barra de Progreso
-                        // mBarraProgreso.setVisibility(View.INVISIBLE);
-                        // Mostrar mensaje de Éxito
-                        Toast.makeText(AsignarArbitroActivity.this,
-                                "Se ha asignado al Árbitro cuyo ID es " + mIdArbi + " seleccionado a la Zona de Combate " + mIdZonaCombate + " de este Campeonato",
-                                Toast.LENGTH_SHORT).show();
+
+                    // Revisar si el árbitro ya se ha asignado a este campeonato leyendo el dato de idCamp, es decir, el campeonato más reciente
+                    // al que se le ha asignado (Campeonato pasado o pendiente de celebración)
+                    // De la misma manera ha de comprobarse que el id del campeonato actual no se encuentra en la lista de campeonatos a los que se le ha asignado con anterioridad,
+                    // es decir, deberemos recorrer la listaCamps de este árbitro.
+                    if(arbi.getIdCamp().equals(idCamp)) // Último campeonato
+                    {
+                        List<String> lista = arbi.getListaCamps();
+                        boolean asignado = false;
+                        for(int i =  0; i < lista.size(); i++){
+
+                            if(lista.get(i).equals(idCamp)) asignado = true;
+                        }
+                        if(asignado) { // Si se encuentra el idCamp en la lista de campeonatos anteriores...
+                            Toast.makeText(AsignarArbitroActivity.this,
+                                    "El Árbitro seleccionado ya se ha asignado a este Campeonato. Compruebe que su selección es correcta.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else { // En caso contrario se procede a guardar los datos para asignar al Árbitro seleccionado a la zona seleccionada para este Campeonato.
+                                mBarraProgreso.setVisibility(View.VISIBLE);
+                                guardarDatos(mIdZonaCombate, mIdArbi);
+                                // Ocultar Barra de Progreso
+                                // mBarraProgreso.setVisibility(View.INVISIBLE);
+                                // Mostrar mensaje de Éxito
+                                Toast.makeText(AsignarArbitroActivity.this,
+                                        "Se ha asignado al Árbitro cuyo ID es " + mIdArbi + " seleccionado a la Zona de Combate " + mIdZonaCombate + " de este Campeonato",
+                                        Toast.LENGTH_SHORT).show();
+
+                        }
                     }
                 }
             }

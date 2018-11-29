@@ -22,13 +22,13 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ArbitrosList extends ArrayAdapter<Arbitros> {
+public class ArbitrosMiniList extends ArrayAdapter<Arbitros> {
 
     private Activity context;
     private List<Arbitros> listArbis;
 
-    public ArbitrosList(Activity context, List<Arbitros> lista){
-        super(context, R.layout.arbitro_single_layout, lista);
+    public ArbitrosMiniList(Activity context, List<Arbitros> lista){
+        super(context, R.layout.arbitro_single_layout_mini, lista);
         this.context = context;
         this.listArbis = lista;
     }
@@ -39,14 +39,12 @@ public class ArbitrosList extends ArrayAdapter<Arbitros> {
 
         Arbitros arbi = getItem(position);
 
-        convertView = LayoutInflater.from(context).inflate(R.layout.arbitro_single_layout, null);
+        convertView = LayoutInflater.from(context).inflate(R.layout.arbitro_single_layout_mini, null);
 
-        ImageView foto = convertView.findViewById(R.id.arbitro_single_foto);
-        ImageView estado = convertView.findViewById(R.id.arbitro_single_conectado);
-        TextView nombre = convertView.findViewById(R.id.arbitro_single_nombre);
-        TextView nivel = convertView.findViewById(R.id.arbitro_single_nivel);
-        TextView cargo = convertView.findViewById(R.id.arbitro_single_cargo);
-        TextView zona = convertView.findViewById(R.id.arbitro_single_zonaCombate);
+        CircleImageView foto = convertView.findViewById(R.id.arb_single_mini_foto);
+        TextView nombre = convertView.findViewById(R.id.arb_single_mini_nombre);
+        TextView zona = convertView.findViewById(R.id.arb_single_mini_zona);
+        ImageView estado = convertView.findViewById(R.id.arb_single_mini_estado);
 
         if(arbi.getFoto().equals("default")){
             Picasso.get().load(R.drawable.default_avatar).into(foto);
@@ -55,16 +53,12 @@ public class ArbitrosList extends ArrayAdapter<Arbitros> {
         }
 
         if(arbi.isConectado() == true){
-            // Picasso.get().load(R.drawable.punto_verde).into(estado);
-            estado.setImageResource(R.drawable.punto_verde);
+            Picasso.get().load(R.drawable.punto_verde).into(estado);
         } else {
-            //Picasso.get().load(R.drawable.punto_rojo).into(estado);
-            estado.setImageResource(R.drawable.punto_rojo);
+            Picasso.get().load(R.drawable.punto_rojo).into(estado);
         }
 
         nombre.setText(arbi.getNombre());
-        nivel.setText(arbi.getNivel());
-        cargo.setText(arbi.getCargo());
         String z = String.valueOf(arbi.getZonaCombate());
         zona.setText("Zona de Combate:  " + z);
 
@@ -83,3 +77,4 @@ public class ArbitrosList extends ArrayAdapter<Arbitros> {
         return listArbis.get(position);
     }
 }
+

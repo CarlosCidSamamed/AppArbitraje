@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.fervenzagames.apparbitraje.Adapters.ArbitrosList;
+import com.fervenzagames.apparbitraje.Adapters.ArbitrosMiniList;
 import com.fervenzagames.apparbitraje.Adapters.ModalidadesList;
 import com.fervenzagames.apparbitraje.Add_Activities.AddModalidadActivity;
 import com.fervenzagames.apparbitraje.Add_Activities.AsignarArbitroActivity;
@@ -48,6 +50,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
     private ListView mListaModalidadesView;
 
     private ModalidadesList mModAdapter;
+    private ArbitrosMiniList mArbAdapter;
 
     private List<Arbitros> mListaArbitros;
     private List<Modalidades> mListaModalidades;
@@ -57,6 +60,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
 
     private DatabaseReference campDB;
     private DatabaseReference modsDB;
+    private DatabaseReference arbisDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         mListaModalidadesView = (ListView) findViewById(R.id.camp_detalle_listaModalidades);
 
         mModAdapter = new ModalidadesList(DetalleCampeonatoActivity.this, mListaModalidades);
+        mArbAdapter = new ArbitrosMiniList(DetalleCampeonatoActivity.this, mListaArbitros);
 
         mListaArbitros = new ArrayList<>();
         mListaModalidades = new ArrayList<>();
@@ -87,6 +92,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         String idCamp = getIntent().getStringExtra("idCamp");
         campDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
         modsDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idCamp);
+        arbisDB = campDB.child("listaArbitros");
 
         campDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -163,6 +169,15 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
                 startActivity(modIntent);
             }
         });
+
+        mListaArbitrosView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mArbAdapter.notifyDataSetChanged();
+
+                // Mostrar el detalle del Árbitro...
+            }
+        });
     }
 
     // Selecionar el menú principal que deseamos y mostrarlo.
@@ -182,7 +197,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         campDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //mListaArbitros.clear();
+                mListaArbitros.clear();
                 mListaModalidades.clear();
                 String idCamp = getIntent().getStringExtra("idCamp");
                 // Localizar las modalidades de este campeonato con modsDB
@@ -203,6 +218,27 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
 
                     }
                 });
+
+                // Mostrar listaArbitros
+                arbisDB.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mListaArbitros.clear();
+                        for(DataSnapshot arbiSnapshot:dataSnapshot.getChildren()){
+                            Arbitros arbi = arbiSnapshot.getValue(Arbitros.class);
+                            mListaArbitros.add(arbi);
+                        }
+                        ArbitrosMiniList adapter = new ArbitrosMiniList(DetalleCampeonatoActivity.this, mListaArbitros);
+                        mListaArbitrosView.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 /*for(DataSnapshot campSnapshot: dataSnapshot.child(idCamp).getChildren()){
                     //Arbitros arb = campSnapshot.getValue(Arbitros.class);
                     //mListaArbitros.add(arb);
