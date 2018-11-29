@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Actualizamos los datos del Árbitro en la BD con el nuevo estado de conexión.
                 Map<String, Object> nuevoArbi = arbi.toMap();
                 Map<String, Object> updates = new HashMap<>();
-                updates.put("/arbitraje/arbitros/" + id, nuevoArbi);
+                updates.put("/Arbitraje/Arbitros/" + id, nuevoArbi);
                 mArbitrosDB.updateChildren(updates);
             }
 

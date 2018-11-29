@@ -272,7 +272,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
 
         Intent addArbIntent = new Intent(DetalleCampeonatoActivity.this, AsignarArbitroActivity.class);
         addArbIntent.putExtra("NombreCampeonato", nombre);
-        addArbIntent.putExtra("IdCamp", idCamp);
+        addArbIntent.putExtra("idCamp", idCamp);
         addArbIntent.putExtra("numZonasCombate", numZonasCombate);
         startActivity(addArbIntent);
     }

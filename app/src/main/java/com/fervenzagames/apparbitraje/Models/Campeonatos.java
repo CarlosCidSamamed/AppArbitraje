@@ -1,6 +1,9 @@
 package com.fervenzagames.apparbitraje.Models;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Campeonatos {
 
@@ -82,6 +85,14 @@ public class Campeonatos {
        this.listaArbitros = listaArbitros;
     }
 
+    public void addToListaArbitros(Arbitros arbi){
+        if(this.listaArbitros == null){
+            List<Arbitros> nuevaLista = new ArrayList<>();
+            this.listaArbitros = nuevaLista;
+        }
+        this.listaArbitros.add(arbi);
+    }
+
     public List<Modalidades> getListaModalidades() {
         return listaModalidades;
     }
@@ -96,5 +107,20 @@ public class Campeonatos {
 
     public void setNumZonasCombate(int numZonasCombate) {
         this.numZonasCombate = numZonasCombate;
+    }
+
+    public Map<String, Object> toMap(){
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("idCamp", idCamp);
+        result.put("nombre", nombre);
+        result.put("fecha", fecha);
+        result.put("lugar",lugar);
+        result.put("tipo", tipo);
+        result.put("listaArbitros", listaArbitros);
+        result.put("listaModalidades", listaModalidades);
+        result.put("numZonasCombate" ,numZonasCombate);
+
+        return result;
     }
 }

@@ -2,6 +2,7 @@ package com.fervenzagames.apparbitraje.Models;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,9 @@ public class Arbitros {
         this.idCamp = idCamp;
 
         // Añadir el ID del Campeonato a la lista de Campeonatos que en este caso está vacía al crear el registro del Árbitro.
-        this.listaCamps.add(this.idCamp);
+        List<String> nuevaLista = new ArrayList<>();
+        nuevaLista.add(this.idCamp);
+        this.listaCamps = nuevaLista;
 
         this.conectado = conectado;
         this.listaCombates = listaCombates;
@@ -142,6 +145,15 @@ public class Arbitros {
 
     public void setListaCamps(List<String> listaCamps) { this.listaCamps = listaCamps; }
 
+    public void addToListaCamps(String idCamp){
+        if(this.listaCamps == null)
+        {
+            List<String> nuevaLista = new ArrayList<>();
+            this.listaCamps = nuevaLista;
+        }
+        this.listaCamps.add(idCamp);
+    }
+
     public List<Combates> getListaCombates() {
         return listaCombates;
     }
@@ -160,17 +172,23 @@ public class Arbitros {
 
     public Map<String, Object> toMap(){
 
+        String nivel_cargo = nivel + "_" + cargo;
+
         HashMap<String, Object> result = new HashMap<>();
         result.put("nombre", nombre);
         result.put("dni", dni);
+        result.put("idArbitro", idArbitro);
         result.put("email", email);
         result.put("password", password);
         result.put("foto", foto);
         result.put("nivel", nivel);
         result.put("cargo", cargo);
+        result.put("nivel_cargo", nivel_cargo);
         result.put("zonaCombate", zonaCombate);
         result.put("listaCombates", listaCombates);
         result.put("conectado", conectado);
+        result.put("idCamp", idCamp);
+        result.put("listaCamps", listaCamps);
 
         return result;
     }
