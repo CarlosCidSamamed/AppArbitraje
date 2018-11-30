@@ -176,6 +176,11 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
                 mArbAdapter.notifyDataSetChanged();
 
                 // Mostrar el detalle del Árbitro...
+                Arbitros arbi = mListaArbitros.get(position);
+                Intent detalleArbi = new Intent(DetalleCampeonatoActivity.this, DetalleArbitroActivity.class);
+                String idArbi = arbi.getIdArbitro();
+                detalleArbi.putExtra("idArbitro", idArbi);
+                startActivity(detalleArbi);
             }
         });
     }

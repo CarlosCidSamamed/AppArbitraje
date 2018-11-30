@@ -122,6 +122,7 @@
     <string name="cambiar_password">Cambiar Password</string>
     <string name="buscador_de_arbitros">Buscador de Árbitros</string>
     <string name="aplicar_filtro">Aplicar Filtro</string>
+    <string name="lista_de_campeonatos">Lista de Campeonatos</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">

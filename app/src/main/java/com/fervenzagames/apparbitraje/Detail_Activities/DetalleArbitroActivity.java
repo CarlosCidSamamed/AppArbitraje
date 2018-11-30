@@ -7,14 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.CampeonatosList;
+import com.fervenzagames.apparbitraje.Adapters.CampeonatosMiniList;
 import com.fervenzagames.apparbitraje.Edit_Activities.EditArbitroActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
@@ -49,11 +52,12 @@ public class DetalleArbitroActivity extends AppCompatActivity {
     /*private TextView midCamp;
     private TextView mNombreCamp;
     private TextView mZona;*/
-    private Spinner mListaCampsSpinner;
+    private ListView mListaCampsListView;
     private ImageView mConectado;
 
     private DatabaseReference mArbitroDB;
     private DatabaseReference mCampDB;
+    private DatabaseReference mCombatesDB;
 
     private List<Campeonatos> mListaCamps;
 
@@ -84,7 +88,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
         mNivel = findViewById(R.id.arb_detalle_nivel);
         mCargo = findViewById(R.id.arb_detalle_cargo);
         // mZona = findViewById(R.id.arb_detalle_zonaCombate);
-        mListaCampsSpinner = findViewById(R.id.arb_detalle_listaCampeonatosSpinner);
+        mListaCampsListView = findViewById(R.id.arb_detalle_listaCampeonatosListView);
         mConectado = findViewById(R.id.arb_detalle_conectado);
 /*        midCamp = findViewById(R.id.arb_detalle_idCamp);
         mNombreCamp = findViewById(R.id.arb_detalle_nombreCamp);*/
@@ -127,7 +131,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                     String z = "Zona de Combate" + " : " + zona;
                     mZona.setText(z);*/
 
-                    Toast.makeText(DetalleArbitroActivity.this, "Valor de CONECTADO --> " + conectado, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(DetalleArbitroActivity.this, "Valor de CONECTADO --> " + conectado, Toast.LENGTH_SHORT).show();
 
                     // Estado de conexión
                     if(conectado.equals("true")){
@@ -142,15 +146,27 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                     List<String> lista = arbi.getListaCamps();
 
                     for(int i = 0; i < lista.size(); i++){
-                        Query consulta = mCampDB.child(lista.get(i));
+                        Query consulta = mCampDB.orderByChild("idCamp");
 
-                        consulta.addValueEventListener(new ValueEventListener() {
+                        final String id = lista.get(i);
+
+                        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                Campeonatos camp = dataSnapshot.getValue(Campeonatos.class); // Recuperar el objeto de tipo Campeonatos
-                                mListaCamps.add(camp);                                       // Añadir el objeto a la lista de Campeonatos que vamos a mostrar en el Spinner
-
+                                mListaCamps.clear();
+                                for(DataSnapshot campSnapshot:dataSnapshot.getChildren()){
+                                    Campeonatos camp = campSnapshot.getValue(Campeonatos.class);
+                                    try {
+                                        if(camp.getIdCamp().equals(id)){
+                                            mListaCamps.add(camp);
+                                        }
+                                    } catch (NullPointerException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                ArrayAdapter adapter = new CampeonatosMiniList(DetalleArbitroActivity.this, mListaCamps);
+                                adapter.setDropDownViewResource(R.layout.camp_single_layout);
+                                mListaCampsListView.setAdapter(adapter);
                             }
 
                             @Override
@@ -159,13 +175,6 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                             }
                         });
                     }
-
-                    // Una vez que hemos recorrido la lista de IDs de Campeonatos y creado la lista de Campeonatos podemos cargar esta última lista en el Spinner.
-                    // Crear el Adapter
-                    ArrayAdapter adapter = new CampeonatosList(DetalleArbitroActivity.this, mListaCamps);
-                    adapter.setDropDownViewResource(R.layout.camp_single_layout); // Asignar el layout
-                    // Asignar el Adapter al Spinner
-                    mListaCampsSpinner.setAdapter(adapter);
 
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -187,6 +196,18 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                 Intent editarArbIntent = new Intent(DetalleArbitroActivity.this, EditArbitroActivity.class);
                 editarArbIntent.putExtras(extras);
                 startActivity(editarArbIntent);
+            }
+        });
+
+        mListaCampsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Obtener el campeonato que se ha pulsado
+                Campeonatos camp = mListaCamps.get(position);
+                // El id de ese Campeonato
+                String idCamp = camp.getIdCamp();
+                // Y buscar sus combates ordenados por modalidad.
+                Query consulta = mCombatesDB;
             }
         });
 
