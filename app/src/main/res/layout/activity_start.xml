@@ -11,8 +11,9 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/start_logo"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="51dp"
         android:text="@string/MensajeBienvenida"
         android:textColor="@android:color/white"
         android:textSize="24sp" />
@@ -44,4 +45,15 @@
         android:text="@string/iniciar_sesion"
         android:textColor="@android:color/white"
         android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/start_logo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="233dp"
+        android:contentDescription="@string/app_logo"
+        android:visibility="visible"
+        app:srcCompat="@drawable/logo_app1" />
 </RelativeLayout>
