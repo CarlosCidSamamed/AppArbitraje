@@ -23,6 +23,9 @@ public class Campeonatos {
 
     public int numZonasCombate; // Número de zonas de combate para cada uno de los campeonatos.
 
+    private List<ZonasCombate> listaZonasCombate;
+
+
     public Campeonatos() {
     }
 
@@ -35,6 +38,7 @@ public class Campeonatos {
         this.listaArbitros = listaArbitros;
         this.listaModalidades = listaModalidades;
         this.numZonasCombate = numZonasCombate;
+        this.listaZonasCombate = new ArrayList<>();
     }
 
     public String getIdCamp() {
@@ -93,6 +97,14 @@ public class Campeonatos {
         this.listaArbitros.add(arbi);
     }
 
+    public void removeFromListaArbitros(int posicion){
+        if(this.listaArbitros == null){
+            return;
+        } else {
+            this.listaArbitros.remove(posicion);
+        }
+    }
+
     public List<Modalidades> getListaModalidades() {
         return listaModalidades;
     }
@@ -109,6 +121,48 @@ public class Campeonatos {
         this.numZonasCombate = numZonasCombate;
     }
 
+    public List<ZonasCombate> getListaZonasCombate() {
+        return listaZonasCombate;
+    }
+
+    public void setListaZonasCombate(List<ZonasCombate> listaZonasCombate) {
+        this.listaZonasCombate = listaZonasCombate;
+    }
+
+    public void addToListaZonasCombate(ZonasCombate zona){
+        if(this.listaZonasCombate == null){
+            List<ZonasCombate> nuevaLista = new ArrayList<>();
+            nuevaLista.add(zona);
+            this.listaZonasCombate = nuevaLista;
+        } else {
+            this.listaZonasCombate.add(zona);
+        }
+    }
+
+    public void removeFromListaZonasCombate(int posicion){
+        if(this.listaZonasCombate == null){
+            return;
+        } else {
+            this.listaZonasCombate.remove(posicion);
+        }
+    }
+
+    public HashMap<String, List<String>> getHashMapZonasCombate(Campeonatos camp){
+
+        HashMap<String, List<String>> hashMapZonas = new HashMap<>();
+
+        // Recuperar el número de las zonas de combate
+        List<String> zonas = new ArrayList<>();
+        for(int i = 0; i < camp.getNumZonasCombate(); i++){
+            String numero = String.valueOf(camp.getListaZonasCombate().get(i).getNumZona());
+            zonas.add(numero);
+        }
+
+        hashMapZonas.put(camp.getNombre(), zonas);
+
+        return hashMapZonas;
+    }
+
     public Map<String, Object> toMap(){
 
         HashMap<String, Object> result = new HashMap<>();
@@ -120,6 +174,7 @@ public class Campeonatos {
         result.put("listaArbitros", listaArbitros);
         result.put("listaModalidades", listaModalidades);
         result.put("numZonasCombate" ,numZonasCombate);
+        result.put("listaZonasCombate", listaZonasCombate);
 
         return result;
     }

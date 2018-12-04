@@ -1,7 +1,5 @@
 package com.fervenzagames.apparbitraje.Models;
 
-import android.widget.ListView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +11,13 @@ public class DatosExtraZonasCombate {
     // listaIDsArbis --> Lista con los IDs de los árbitros asignados en un momento dado al combate en cuestión.
 
     private String idCombate;
+    private String numCombate;
     private int numArbisAsignados;
     private List<String> listaIDsArbis;
 
-    public DatosExtraZonasCombate(String idCombate, int numArbisAsignados, List<String> listaIDsArbis) {
+    public DatosExtraZonasCombate(String idCombate, String numCombate, int numArbisAsignados, List<String> listaIDsArbis) {
         this.idCombate = idCombate;
+        this.numCombate = numCombate;
         this.numArbisAsignados = numArbisAsignados;
         this.listaIDsArbis = listaIDsArbis;
     }
@@ -31,6 +31,14 @@ public class DatosExtraZonasCombate {
 
     public void setIdCombate(String idCombate) {
         this.idCombate = idCombate;
+    }
+
+    public String getNumCombate() {
+        return numCombate;
+    }
+
+    public void setNumCombate(String numCombate) {
+        this.numCombate = numCombate;
     }
 
     public int getNumArbisAsignados() {

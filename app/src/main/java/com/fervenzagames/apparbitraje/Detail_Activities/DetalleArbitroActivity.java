@@ -10,17 +10,24 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Adapters.CampeonatosExpandableListAdapter;
 import com.fervenzagames.apparbitraje.Adapters.CampeonatosList;
 import com.fervenzagames.apparbitraje.Adapters.CampeonatosMiniList;
+import com.fervenzagames.apparbitraje.Adapters.CombatesList;
 import com.fervenzagames.apparbitraje.Edit_Activities.EditArbitroActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
+import com.fervenzagames.apparbitraje.Models.Combates;
+import com.fervenzagames.apparbitraje.Models.DatosExtraZonasCombate;
+import com.fervenzagames.apparbitraje.Models.ZonasCombate;
 import com.fervenzagames.apparbitraje.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -52,12 +60,22 @@ public class DetalleArbitroActivity extends AppCompatActivity {
     /*private TextView midCamp;
     private TextView mNombreCamp;
     private TextView mZona;*/
-    private ListView mListaCampsListView;
+    // private ListView mListaCampsListView;
+
+    private ExpandableListView mListaCampeonatosZonas;
+    private ExpandableListAdapter mListaCampZonasAdapter;
+    private List<String> mListaTitulos; // Nombre de los Campeonatos
+    private HashMap<String, List<String>> mListaDetalle; // Lista con las zonas de combate
+
+    private List<Combates> mListaCombates;
+    private ListView mListaCombatesListView;
+
     private ImageView mConectado;
 
     private DatabaseReference mArbitroDB;
     private DatabaseReference mCampDB;
     private DatabaseReference mCombatesDB;
+    private DatabaseReference mZonasDB;
 
     private List<Campeonatos> mListaCamps;
 
@@ -78,6 +96,8 @@ public class DetalleArbitroActivity extends AppCompatActivity {
 
         mArbitroDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Arbitros").child(mIdArbi); // Referencia al árbitro deseado.
         mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos"); // Lista de Campeonatos.
+        mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates");
+        mZonasDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("ZonasCombate");
 
         mListaCamps = new ArrayList<>();
 
@@ -88,7 +108,15 @@ public class DetalleArbitroActivity extends AppCompatActivity {
         mNivel = findViewById(R.id.arb_detalle_nivel);
         mCargo = findViewById(R.id.arb_detalle_cargo);
         // mZona = findViewById(R.id.arb_detalle_zonaCombate);
-        mListaCampsListView = findViewById(R.id.arb_detalle_listaCampeonatosListView);
+        // mListaCampsListView = findViewById(R.id.arb_detalle_listaCampeonatosListView);
+
+        mListaCampeonatosZonas = findViewById(R.id.arb_detalle_listaCampsZonas);
+        mListaTitulos = new ArrayList<>();
+        mListaDetalle = new HashMap<>();
+
+        mListaCombates = new ArrayList<>();
+        mListaCombatesListView = findViewById(R.id.arb_detalle_listaCombates);
+
         mConectado = findViewById(R.id.arb_detalle_conectado);
 /*        midCamp = findViewById(R.id.arb_detalle_idCamp);
         mNombreCamp = findViewById(R.id.arb_detalle_nombreCamp);*/
@@ -153,20 +181,70 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                         consulta.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                mListaCamps.clear();
+                                mListaTitulos.clear();
                                 for(DataSnapshot campSnapshot:dataSnapshot.getChildren()){
                                     Campeonatos camp = campSnapshot.getValue(Campeonatos.class);
                                     try {
                                         if(camp.getIdCamp().equals(id)){
-                                            mListaCamps.add(camp);
+                                            mListaTitulos.add(camp.getNombre()); // Obtener cabecera (header)
+                                            mListaDetalle = camp.getHashMapZonasCombate(camp); // Obtener detalle (detail)
                                         }
                                     } catch (NullPointerException e) {
                                         e.printStackTrace();
                                     }
                                 }
-                                ArrayAdapter adapter = new CampeonatosMiniList(DetalleArbitroActivity.this, mListaCamps);
-                                adapter.setDropDownViewResource(R.layout.camp_single_layout);
-                                mListaCampsListView.setAdapter(adapter);
+                                // ArrayAdapter adapter = new CampeonatosMiniList(DetalleArbitroActivity.this, mListaCamps);
+                                // adapter.setDropDownViewResource(R.layout.camp_single_layout);
+                                // mListaCampsListView.setAdapter(adapter);
+
+                                // Pasarle los datos al ExpandableListView
+                                mListaCampZonasAdapter = new CampeonatosExpandableListAdapter(DetalleArbitroActivity.this, mListaTitulos, mListaDetalle);
+                                mListaCampeonatosZonas.setAdapter(mListaCampZonasAdapter);
+                                // Expansión de un grupo
+                                mListaCampeonatosZonas.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+                                    @Override
+                                    public void onGroupExpand(int groupPosition) {
+                                        Toast.makeText(DetalleArbitroActivity.this,
+                                                "Se ha expandido el grupo de " + mListaTitulos.get(groupPosition),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                // Colapso de un grupo
+                                mListaCampeonatosZonas.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+                                    @Override
+                                    public void onGroupCollapse(int groupPosition) {
+                                        Toast.makeText(DetalleArbitroActivity.this,
+                                                "Se ha colapsado el grupo de " + mListaTitulos.get(groupPosition),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                // Click en uno de los hijos.
+                                mListaCampeonatosZonas.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                                    @Override
+                                    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                                        mListaCombates.clear(); // Borrar la lista anterior de Combates
+                                        Toast.makeText(DetalleArbitroActivity.this,
+                                                mListaTitulos.get(groupPosition) + " - > " +
+                                                        mListaDetalle.get(mListaTitulos.get(groupPosition))
+                                                                .get(childPosition),
+                                                Toast.LENGTH_SHORT).show();
+                                        // Añadir llamada a método que cargue los combates correspondientes al campeonato y a la zona de combate correspondientes.
+                                        // El Campeonato lo obtenemos de groupPosition --> mListaTitulos.get(groupPosition) nos devuelve el nombre del Campeonato.
+                                        // A partir del nombre podemos buscar en la BD y obtener el resto de datos.
+                                        // La Zona de Combate la obtenemos de childPosition --> mListaDetalle.get(mListaTitulos.get(groupPosition)).get(childPosition)
+                                        // nos devuelve el número de la zona de combate. A partir de ese número y el id del Campeonato podemos buscar el resto de datos
+                                        // de la zona de combate.
+                                        String idCamp = mListaTitulos.get(groupPosition);
+                                        String idZona = mListaDetalle.get(mListaTitulos.get(groupPosition)).get(childPosition);
+                                        List<String> listaIDs = buscarIDsCombates(idCamp, idZona); // Localizar los IDs.
+                                        buscarCombates(listaIDs);   // Localizar los Combates correspondientes a los IDs. En este método se actualiza mListaCombates.
+                                        // Ahora debemos mostrar los datos de mListaCombates en mListaCombatesListView.
+                                        ArrayAdapter adapter = new CombatesList(DetalleArbitroActivity.this, mListaCombates);
+                                        adapter.setDropDownViewResource(R.layout.combate_single_layout);
+                                        mListaCombatesListView.setAdapter(adapter);
+                                        return false;
+                                    }
+                                });
                             }
 
                             @Override
@@ -199,7 +277,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
             }
         });
 
-        mListaCampsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+/*        mListaCampsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Obtener el campeonato que se ha pulsado
@@ -209,7 +287,70 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                 // Y buscar sus combates ordenados por modalidad.
                 Query consulta = mCombatesDB;
             }
+        });*/
+
+    }
+
+    // Este método localizará los IDs de los combates que pertenecen al Campeonato y a la Zona de Combate especificadas
+    // y los devolverá en una lista
+    public List<String> buscarIDsCombates(String idCamp, String idZona){
+
+        List<String> lista = new ArrayList<>();
+
+        Query consulta = mZonasDB.orderByChild("idZona").equalTo(idZona);
+
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ZonasCombate zona = dataSnapshot.getValue(ZonasCombate.class); // Obtenemos los datos de la Zona deseada
+
+                try {
+                    List<DatosExtraZonasCombate> datosZonas = zona.getListaDatosExtraCombates();
+                    // Obtenemos los datos de los Combates asignados a esa Zona.
+
+                    List<String> listaIDsCombates = new ArrayList<>();
+                    for(int i = 0; i < datosZonas.size(); i++){                    // Cargamos los IDs de los Combates de la Zona en una List.
+                        String idCombate = datosZonas.get(i).getIdCombate();
+                        listaIDsCombates.add(idCombate);
+                    }
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
         });
 
+        return lista;
+
+    }
+
+    // Búsqueda en la BD de los Combates
+    public void buscarCombates(List<String> listaIDs){
+
+        for(int i = 0; i < listaIDs.size(); i++){
+            final String idCombate = listaIDs.get(i);
+            Query consulta = mCombatesDB.orderByChild("id");
+            consulta.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot combateSnapshot: dataSnapshot.getChildren()){
+                        Combates combate = combateSnapshot.getValue(Combates.class);
+                        if(combate.getId().equals(idCombate)){
+                            mListaCombates.add(combate); // Añade el Combate correspondiente al ID que se ha leído de la lista de IDs.
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 }

@@ -18,11 +18,14 @@ import android.widget.Toast;
 import com.fervenzagames.apparbitraje.Adapters.ArbitrosList;
 import com.fervenzagames.apparbitraje.Adapters.ArbitrosMiniList;
 import com.fervenzagames.apparbitraje.Adapters.ModalidadesList;
+import com.fervenzagames.apparbitraje.Adapters.ZonasMiniList;
 import com.fervenzagames.apparbitraje.Add_Activities.AddModalidadActivity;
+import com.fervenzagames.apparbitraje.Add_Activities.AddZonaCombateActivity;
 import com.fervenzagames.apparbitraje.Add_Activities.AsignarArbitroActivity;
 import com.fervenzagames.apparbitraje.CampeonatosActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Modalidades;
+import com.fervenzagames.apparbitraje.Models.ZonasCombate;
 import com.fervenzagames.apparbitraje.R;
 import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.fervenzagames.apparbitraje.StartActivity;
@@ -48,19 +51,28 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
 
     private ListView mListaArbitrosView;
     private ListView mListaModalidadesView;
+    private ListView mListaZonasView;
 
     private ModalidadesList mModAdapter;
     private ArbitrosMiniList mArbAdapter;
+    private ZonasMiniList mZonasAdapter;
 
     private List<Arbitros> mListaArbitros;
     private List<Modalidades> mListaModalidades;
+    private List<ZonasCombate> mListaZonas;
 
     private Button mAddArbitroBtn;
     private Button mAddModalidadBtn;
+    private Button mAddZonaBtn;
 
     private DatabaseReference campDB;
     private DatabaseReference modsDB;
     private DatabaseReference arbisDB;
+    private DatabaseReference zonasDB;
+
+    private String idCamp;
+    private int numZonas;
+    private int tamanoLista;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,20 +91,25 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
 
         mListaArbitrosView = (ListView) findViewById(R.id.camp_detalle_listaArbitros);
         mListaModalidadesView = (ListView) findViewById(R.id.camp_detalle_listaModalidades);
+        mListaZonasView = findViewById(R.id.camp_detalle_listaZonas);
 
         mModAdapter = new ModalidadesList(DetalleCampeonatoActivity.this, mListaModalidades);
         mArbAdapter = new ArbitrosMiniList(DetalleCampeonatoActivity.this, mListaArbitros);
+        mZonasAdapter = new ZonasMiniList(DetalleCampeonatoActivity.this, mListaZonas);
 
         mListaArbitros = new ArrayList<>();
         mListaModalidades = new ArrayList<>();
+        mListaZonas = new ArrayList<>();
 
         mAddArbitroBtn = (Button) findViewById(R.id.camp_detalle_add_arb);
         mAddModalidadBtn = (Button) findViewById(R.id.camp_detalle_add_mod);
+        mAddZonaBtn = findViewById(R.id.camp_detalle_add_zona);
 
-        String idCamp = getIntent().getStringExtra("idCamp");
+        idCamp = getIntent().getStringExtra("idCamp");
         campDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
         modsDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idCamp);
         arbisDB = campDB.child("listaArbitros");
+        zonasDB = campDB.child("listaZonas");
 
         campDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -140,6 +157,18 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addArbitro();
+            }
+        });
+
+        mAddZonaBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle(); // A la Activity AddZona le pasamos el idCamp
+                extras.putString("idCamp", idCamp);
+                Intent addZonaIntent = new Intent(DetalleCampeonatoActivity.this, AddZonaCombateActivity.class);
+                addZonaIntent.putExtras(extras);
+                startActivity(addZonaIntent);
+
             }
         });
 
@@ -271,6 +300,8 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
 
             }
         });
+
+        // Lista de Zonas de Combate de este Campeonato.
 
         // Lista de Modalidades de este campeonato
         modsDB.addValueEventListener(new ValueEventListener() {
