@@ -6,8 +6,8 @@
         android:id="@+id/main_ver_campeonatos"
         android:title="@string/ver_campeonatos" />
     <item
-        android:id="@+id/main_account_settings"
-        android:title="@string/cuenta_de_usuario" />
+        android:id="@+id/main_combates"
+        android:title="Ver Combates" />
     <item
         android:id="@+id/main_lista_arbitros"
         android:title="@string/lista_de_arbitros" />
@@ -23,6 +23,9 @@
     <item
         android:id="@+id/main_app_type"
         android:title="@string/tipo_de_app" />
+    <item
+        android:id="@+id/main_account_settings"
+        android:title="@string/cuenta_de_usuario" />
     <item
         android:id="@+id/main_logout_btn"
         android:title="@string/cerrar_sesion" />

@@ -163,12 +163,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         mAddZonaBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle extras = new Bundle(); // A la Activity AddZona le pasamos el idCamp
-                extras.putString("idCamp", idCamp);
-                Intent addZonaIntent = new Intent(DetalleCampeonatoActivity.this, AddZonaCombateActivity.class);
-                addZonaIntent.putExtras(extras);
-                startActivity(addZonaIntent);
-
+                addZona();
             }
         });
 
@@ -347,6 +342,14 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         addArbIntent.putExtra("idCamp", idCamp);
         addArbIntent.putExtra("numZonasCombate", numZonasCombate);
         startActivity(addArbIntent);
+    }
+
+    public void addZona(){
+        Bundle extras = new Bundle(); // A la Activity AddZona le pasamos el idCamp
+        extras.putString("idCamp", idCamp);
+        Intent addZonaIntent = new Intent(DetalleCampeonatoActivity.this, AddZonaCombateActivity.class);
+        addZonaIntent.putExtras(extras);
+        startActivity(addZonaIntent);
     }
 
     /*------------------------------- MENU PRINCIPAL -----------------------------------------------------------------------------------------------------------------*/

@@ -109,9 +109,8 @@
         <activity
             android:name=".Add_Activities.AddZonaCombateActivity"
             android:parentActivityName=".Detail_Activities.DetalleCampeonatoActivity"
-            android:screenOrientation="landscape"
-            />
-
+            android:screenOrientation="landscape" />
+        <activity android:name=".CombatesActivity"></activity>
     </application>
 
 </manifest>

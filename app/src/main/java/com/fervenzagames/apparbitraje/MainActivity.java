@@ -176,6 +176,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(listArbitrosIntent);
                 break;
             }
+            case R.id.main_combates:{
+                Intent listaCombatesIntent = new Intent(MainActivity.this, CombatesActivity.class);
+                startActivity(listaCombatesIntent);
+            }
         }
 
         return true;

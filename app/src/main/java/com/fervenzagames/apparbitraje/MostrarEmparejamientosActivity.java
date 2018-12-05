@@ -1216,7 +1216,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                             "", "", "", "",
                             emp.getIdRojo(), emp.getIdAzul(),
                             listaAsaltos,
-                            idCamp, idMod, idCat,
+                            idCamp,"", idMod, idCat,
                             Combates.EstadoCombate.Pendiente);
                     // Insertar dicho objeto en la BD.
                     mCombatesDB.child(idCat).child(idCombate).setValue(comb);
