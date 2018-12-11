@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.MiSpinnerAdapter;
 import com.fervenzagames.apparbitraje.Models.Asaltos;
@@ -66,6 +68,9 @@ public class CombatesActivity extends AppCompatActivity {
     }
 
     private void cargarDatosCampeonatos(){
+
+        final ArrayAdapter<CharSequence> adapterCamps = new ArrayAdapter(this, android.R.layout.simple_spinner_item, mListaNombresCamps);
+
         mCampsDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -73,6 +78,8 @@ public class CombatesActivity extends AppCompatActivity {
                     Campeonatos camp = campSnapshot.getValue(Campeonatos.class);
                     mListaNombresCamps.add(camp.getNombre());
                 }
+                Toast.makeText(CombatesActivity.this, "El Spinner de Campeonatos tiene " + mListaNombresCamps.size() + " elementos.", Toast.LENGTH_SHORT).show();
+                adapterCamps.notifyDataSetChanged();
             }
 
             @Override
@@ -81,8 +88,9 @@ public class CombatesActivity extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter adapterCamps = new MiSpinnerAdapter(this, mListaNombresCamps);
-        adapterCamps.setDropDownViewResource(R.layout.spinner_single_textview_dropdown_item);
+        // ArrayAdapter adapterCamps = new MiSpinnerAdapter(this, mListaNombresCamps);
+        // adapterCamps.setDropDownViewResource(R.layout.spinner_single_textview_dropdown_item);
+
         mCampSpinner.setAdapter(adapterCamps);
     }
 }

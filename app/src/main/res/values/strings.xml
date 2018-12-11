@@ -252,4 +252,8 @@
         <item>Round-Robin</item>
     </array>
 
+    <array name="seleccionSpinner">
+        <item>Seleccione</item>
+    </array>
+
 </resources>
