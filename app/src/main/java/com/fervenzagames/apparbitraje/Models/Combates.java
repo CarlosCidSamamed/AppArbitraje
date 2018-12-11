@@ -164,8 +164,36 @@ public class Combates {
                 res = "Cancelado";
                 break;
             }
+            default:
+            {
+                res = "Estado no especificado";
+                break;
+            }
         }
 
         return res;
+    }
+
+    public EstadoCombate estadoFromString(String cadena){
+        EstadoCombate estado = EstadoCombate.Pendiente;
+
+        switch(cadena){
+            case "Pendiente":
+            {
+                break;
+            }
+            case "Finalizado":
+            {
+                estado = EstadoCombate.Finalizado;
+                break;
+            }
+            case "Cancelado":
+            {
+                estado = EstadoCombate.Cancelado;
+                break;
+            }
+        }
+
+        return estado;
     }
 }

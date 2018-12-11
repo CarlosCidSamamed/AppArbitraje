@@ -45,7 +45,12 @@ public class CombatesList extends ArrayAdapter<Combates> {
         categoria.setText(comb.getCategoria());
         ganador.setText(comb.getGanador());
         motivo.setText(comb.getMotivo());
-        String est = comb.estadoToString(comb.getEstadoCombate());
+        String est = "";
+        if(comb.getEstadoCombate() != null) {
+            est = comb.estadoToString(comb.getEstadoCombate());
+        } else {
+            est = "Estado no especificado...";
+        }
         estado.setText(est);
 
         return convertView;
