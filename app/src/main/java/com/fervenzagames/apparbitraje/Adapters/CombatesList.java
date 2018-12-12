@@ -33,18 +33,23 @@ public class CombatesList extends ArrayAdapter<Combates> {
 
         convertView = LayoutInflater.from(context).inflate(R.layout.combate_single_layout, null);
 
-        TextView modalidad = convertView.findViewById(R.id.modalidadCombate);
+        //TextView modalidad = convertView.findViewById(R.id.modalidadCombate);
         TextView numero = convertView.findViewById(R.id.numCombate);
-        TextView categoria = convertView.findViewById(R.id.categoriaCombate);
+        //TextView categoria = convertView.findViewById(R.id.categoriaCombate);
         TextView ganador = convertView.findViewById(R.id.ganadorCombate);
         TextView motivo = convertView.findViewById(R.id.motivoCombate);
         TextView estado = convertView.findViewById(R.id.estadoCombate);
 
-        modalidad.setText(comb.getModalidad());
+        //modalidad.setText(comb.getModalidad());
         numero.setText(comb.getNumCombate());
-        categoria.setText(comb.getCategoria());
-        ganador.setText(comb.getGanador());
-        motivo.setText(comb.getMotivo());
+        ganador.setText("Ganador");
+        //categoria.setText(comb.getCategoria());
+        /*if(!comb.getGanador().equals("")){
+            ganador.setText(comb.getGanador());
+        }
+        if(!comb.getMotivo().equals("")) {
+            motivo.setText(comb.getMotivo());
+        }*/
         String est = "";
         if(comb.getEstadoCombate() != null) {
             est = comb.estadoToString(comb.getEstadoCombate());

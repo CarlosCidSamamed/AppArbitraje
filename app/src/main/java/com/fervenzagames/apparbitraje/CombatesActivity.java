@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -27,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.VISIBLE;
+
 public class CombatesActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
@@ -35,6 +37,11 @@ public class CombatesActivity extends AppCompatActivity {
     private Spinner mModSpinner;
     private Spinner mCatSpinner;
     private Spinner mEstadoSpinner;
+
+    private Button mFiltroModBtn;
+    private Button mFiltroCatBtn;
+    private Button mFiltroEstadoBtn;
+    private Button mAplicarFiltroBtn;
 
     // private ExpandableListView mListaCombatesView;
     private ListView mListaCombatesView;
@@ -52,6 +59,10 @@ public class CombatesActivity extends AppCompatActivity {
     private DatabaseReference mCatsDB;
     private List<String> mListaCats;
 
+    private String mNombreCamp;
+    private String mNombreMod;
+    private String mNombreCat;
+    private String mEstado;
     private String mIdCamp;
     private String mIdMod;
     private String mIdCat;
@@ -70,6 +81,11 @@ public class CombatesActivity extends AppCompatActivity {
         mCatSpinner = findViewById(R.id.combates_nombreCatSpinner);
         mEstadoSpinner = findViewById(R.id.combates_estadoSpinner);
 
+        mFiltroModBtn = findViewById(R.id.combates_add_flitroMod_btn);
+        mFiltroCatBtn = findViewById(R.id.combates_add_filtroCat_btn);
+        mFiltroEstadoBtn = findViewById(R.id.combates_add_filtroEstado_btn);
+        mAplicarFiltroBtn = findViewById(R.id.combates_aplicar_filtro_btn);
+
         // mListaCombatesView = findViewById(R.id.combates_lista);
 
         mListaCombatesView =  findViewById(R.id.combates_lista);
@@ -80,6 +96,10 @@ public class CombatesActivity extends AppCompatActivity {
         mListaCats = new ArrayList<>();
         mListaCombates = new ArrayList<>();
 
+        mNombreCamp = "";
+        mNombreMod = "";
+        mNombreCat = "";
+        mEstado = "";
         mIdCamp = "";
         mIdMod = "";
         mIdCat = "";
@@ -89,13 +109,15 @@ public class CombatesActivity extends AppCompatActivity {
         // Cargar los datos en los Spinners
         // Spinner Nombres Campeonatos
         // Cargar los datos de los nombres en una lista que después le pasaremos al Spinner
+
         cargarDatosCampeonatos();
+        //region Spinners
 
         mCampSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                final String nombreCamp = mCampSpinner.getSelectedItem().toString();
-                Toast.makeText(CombatesActivity.this, "Nombre del Campeonato --> " + nombreCamp, Toast.LENGTH_SHORT).show();
+                mNombreCamp = mCampSpinner.getSelectedItem().toString();
+                Toast.makeText(CombatesActivity.this, "Nombre del Campeonato --> " + mNombreCamp, Toast.LENGTH_SHORT).show();
                 // Almacenar el ID del Campeonato seleccionado.
                 // Buscar Campeonato mediante nombre.
                 Query consultaIdCamp = mCampsDB;
@@ -104,7 +126,7 @@ public class CombatesActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot campSnapshot: dataSnapshot.getChildren()){
                             Campeonatos camp = campSnapshot.getValue(Campeonatos.class);
-                            if(camp.getNombre().equals(nombreCamp)){
+                            if(camp.getNombre().equals(mNombreCamp)){
                                 mIdCamp = camp.getIdCamp();
                                 Toast.makeText(CombatesActivity.this, "ID Camp --> " + mIdCamp, Toast.LENGTH_SHORT).show();
                             }
@@ -116,7 +138,7 @@ public class CombatesActivity extends AppCompatActivity {
 
                     }
                 });
-                cargarDatosModalidades(nombreCamp);
+                // cargarDatosModalidades(mNombreCamp);
             }
 
             @Override
@@ -128,7 +150,7 @@ public class CombatesActivity extends AppCompatActivity {
         mModSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                final String nombreMod = mModSpinner.getSelectedItem().toString();
+                mNombreMod = mModSpinner.getSelectedItem().toString();
                 // Buscar Modalidad por nombre y almacenar su ID
                 if(!mIdCamp.equals("")){
                     mModsDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Modalidades").child(mIdCamp);
@@ -138,7 +160,7 @@ public class CombatesActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for(DataSnapshot modSnapshot: dataSnapshot.getChildren()){
                                 Modalidades mod = modSnapshot.getValue(Modalidades.class);
-                                if(mod.getNombre().equals(nombreMod)){
+                                if(mod.getNombre().equals(mNombreMod)){
                                     mIdMod = mod.getId();
                                     Toast.makeText(CombatesActivity.this, "ID Mod --> " + mIdMod, Toast.LENGTH_SHORT).show();
                                 }
@@ -150,7 +172,7 @@ public class CombatesActivity extends AppCompatActivity {
 
                         }
                     });
-                    cargarDatosCategorias(nombreMod, mIdCamp);
+                    // cargarDatosCategorias(nombreMod, mIdCamp);
                 } else {
                     Toast.makeText(CombatesActivity.this, "Seleccione el Campeonato antes que la Modalidad.", Toast.LENGTH_SHORT).show();
                 }
@@ -168,7 +190,7 @@ public class CombatesActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mListaCombates.clear();
-                final String nombreCat = mCatSpinner.getSelectedItem().toString();
+                mNombreCat = mCatSpinner.getSelectedItem().toString();
                 String estado = mEstadoSpinner.getSelectedItem().toString();
                 // Buscar la Categoría mediante nombre y almacenar su ID
                 if(!mIdMod.equals("")){
@@ -179,7 +201,7 @@ public class CombatesActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for(DataSnapshot catSnapshot: dataSnapshot.getChildren()){
                                 Categorias cat = catSnapshot.getValue(Categorias.class);
-                                if(cat.getNombre().equals(nombreCat)){
+                                if(cat.getNombre().equals(mNombreCat)){
                                     mIdCat = cat.getId();
                                     Toast.makeText(CombatesActivity.this, "ID Cat --> " + mIdCat, Toast.LENGTH_SHORT).show();
                                 }
@@ -194,7 +216,7 @@ public class CombatesActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(CombatesActivity.this, "Seleccione la Modalidad antes que la Categoría.", Toast.LENGTH_SHORT).show();
                 }
-                cargarDatosCombates(nombreCat, estado);
+                // cargarDatosCombates(nombreCat, estado);
             }
 
             @Override
@@ -202,6 +224,58 @@ public class CombatesActivity extends AppCompatActivity {
 
             }
         });
+
+        mEstadoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mEstado = mEstadoSpinner.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //endregion
+
+        //region Botones
+        mFiltroModBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mModSpinner.setVisibility(VISIBLE);
+                if(!mNombreCamp.equals("")){
+                    cargarDatosModalidades(mNombreCamp);
+                }
+            }
+        });
+
+        mFiltroCatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCatSpinner.setVisibility(VISIBLE);
+                if(!mIdMod.equals("")){
+                    cargarDatosCategorias(mNombreMod, mIdCamp);
+                }
+            }
+        });
+
+        mFiltroEstadoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEstadoSpinner.setVisibility(VISIBLE);
+            }
+        });
+
+        mAplicarFiltroBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                aplicarFiltro(mNombreCamp, mNombreMod, mNombreCat, mEstado);
+            }
+        });
+        //endregion
+
+
 
     }
 
@@ -378,6 +452,7 @@ public class CombatesActivity extends AppCompatActivity {
         // Toast.makeText(this, "ID CAT -->" + mIdCat, Toast.LENGTH_SHORT).show();
 
         Query consulta = mCombatesDB.child(mIdCat).orderByChild("id"); // Lista de Combates de esta Categoría, Modalidad y Campeonato.
+        Toast.makeText(this, "URL de la Consulta de Combates --> " + consulta.getRef().toString(), Toast.LENGTH_SHORT).show();
         consulta.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -389,6 +464,7 @@ public class CombatesActivity extends AppCompatActivity {
                     for(DataSnapshot combateSnapshot: dataSnapshot.getChildren()){
                         Combates combate = combateSnapshot.getValue(Combates.class);
                         mListaCombates.add(combate);
+                        Toast.makeText(CombatesActivity.this, "ID del Combate : " + combate.getId(), Toast.LENGTH_SHORT).show();
                         /*try {
                             String estado = combate.estadoToString(combate.getEstadoCombate());
                             Toast.makeText(CombatesActivity.this, "Estado --> " + estado, Toast.LENGTH_SHORT).show();
@@ -422,6 +498,133 @@ public class CombatesActivity extends AppCompatActivity {
             }
         });
         // Configurar adapter listView
+        mListaCombatesView.setAdapter(adapter);
+    }
+
+    // Se obtienen los valores de los Spinners si están activos, es decir, si son visibles. A partir de esos valores de los Spinners se buscan los ID de las
+    // entidades correspondientes y se realiza la búsqueda correspondiente en los combates.
+    public void aplicarFiltro(String nombreCamp, String nombreMod, String nombreCat, String estado){
+
+        Toast.makeText(this, "Nombre Camp --> " + mNombreCamp, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Nombre Mod  --> " + mNombreMod, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Nombre Cat  --> " + mNombreCat, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Estado      --> " + mEstado, Toast.LENGTH_SHORT).show();
+
+        // El ID del Campeonato a partir del nombre que se obtiene del Spinner se ha almacenado en la variable mIdCamp
+        final List<Combates> listaCombates = new ArrayList<>();
+        final List<Modalidades> listaModalidades = new ArrayList<>();
+        final List<Categorias> listaCategorias = new ArrayList<>();
+        //1. Solo se pasa el nombre del Campeonato
+        if((mNombreMod.equals("") && (mNombreCat.equals("")))){
+            // Buscar los Combates cuyo campo campenato coincida con el ID del Campeonato deseado.
+            // Como los Campeonatos dependen de una Categoría, si no se facilita la categoría deseada deberemos obtener una lista de categorías para ese campenato.
+            // Para obtener las categorías deberemos obtener antes las modalidades.
+
+            // Lista de Modalidades de este Campeonato
+            mModsDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Modalidades").child(mIdCamp);
+            Toast.makeText(this, "URL de la Consulta de Modalidades --> " + mModsDB.getRef().toString(), Toast.LENGTH_SHORT).show();
+            Query consultaMods = mModsDB;
+            consultaMods.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.exists()){
+                        Toast.makeText(CombatesActivity.this, "No existen Modalidades en la Bd para ese Campeonato.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        for(DataSnapshot modSnapshot: dataSnapshot.getChildren()){
+                            Modalidades mod = modSnapshot.getValue(Modalidades.class);
+                            listaModalidades.add(mod);
+                        }
+                        Toast.makeText(getApplicationContext(), "La consulta de Modalidades devuelve " + listaModalidades.size() + " elementos.", Toast.LENGTH_SHORT).show();
+                        buscarCategorias(listaModalidades, listaCategorias);
+                        // buscarCombates(listaCategorias, listaCombates);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+        // 2. Se pasa el nombre del Campeonato y el nombre de la Modalidad
+
+        // 3. Se pasan los nombres del Campeonato, Modalidad y Categoría.
+
+        // 4. Se pasan los nombres del Campeonato, Modalidad y Categoría además del Estado del Combate.
+    }
+
+    public void buscarCategorias(List<Modalidades> listaModalidades, final List<Categorias> listaCategorias){
+        if(listaModalidades.size() > 0) { // Si no hay modalidades no se recorre la lista
+            for (int i = 0; i < listaModalidades.size(); i++) {
+                final String idMod = listaModalidades.get(i).getId();
+                // Obtener la referencia a la BD
+                mCatsDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Categorias").child(idMod);
+                // Obtener datos de Categorías
+                Query consultaCats = mCatsDB;
+                consultaCats.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (!dataSnapshot.exists()) {
+                            Toast.makeText(CombatesActivity.this, "No existen Categorías en la BD para la Modalidad cuyo ID es " + idMod, Toast.LENGTH_SHORT).show();
+                        } else {
+                            for (DataSnapshot catSnapshot : dataSnapshot.getChildren()) {
+                                Categorias cat = catSnapshot.getValue(Categorias.class);
+                                // Añadir las Categorías a la lista
+                                listaCategorias.add(cat);
+                            }
+                            Toast.makeText(getApplicationContext(), "La consulta de Categorías devuelve " + listaCategorias.size() + " elementos.", Toast.LENGTH_SHORT).show();
+                            buscarCombates(listaCategorias, mListaCombates);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    public void buscarCombates(final List<Categorias> listaCategorias, final List<Combates> listaCombates){
+        if(listaCategorias.size() > 0){
+            for(int i = 0; i < listaCategorias.size(); i++){
+                final String idCat = listaCategorias.get(i).getId();
+                Query consultaCombates = mCombatesDB.child(idCat);
+                consultaCombates.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(!dataSnapshot.exists()){
+                            Toast.makeText(CombatesActivity.this,
+                                    "No existen Combates en la BD para la Categoría cuyo ID es " + idCat,
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            listaCombates.clear();
+                            for(DataSnapshot combSnapshot: dataSnapshot.getChildren()){
+                                Combates comb = combSnapshot.getValue(Combates.class);
+                                listaCombates.add(comb);
+                                Toast.makeText(getApplicationContext(),
+                                        "La consulta de Combates devuelve " + listaCombates.size() + " elementos.",
+                                        Toast.LENGTH_SHORT).show();
+                                cargarCombates(listaCombates);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    public void cargarCombates(List<Combates> listaCombates){
+        // Crear Adapter
+        CombatesList adapter = new CombatesList(this, listaCombates);
+        // Asignar Adapter a ListView
         mListaCombatesView.setAdapter(adapter);
     }
 }
