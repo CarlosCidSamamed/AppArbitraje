@@ -514,7 +514,7 @@ public class CombatesActivity extends AppCompatActivity {
         final List<Combates> listaCombates = new ArrayList<>();
         final List<Modalidades> listaModalidades = new ArrayList<>();
         final List<Categorias> listaCategorias = new ArrayList<>();
-        //1. Solo se pasa el nombre del Campeonato
+        //region 1. Solo se pasa el nombre del Campeonato
         if((mNombreMod.equals("") && (mNombreCat.equals("")))){
             // Buscar los Combates cuyo campo campenato coincida con el ID del Campeonato deseado.
             // Como los Campeonatos dependen de una Categoría, si no se facilita la categoría deseada deberemos obtener una lista de categorías para ese campenato.
@@ -545,10 +545,8 @@ public class CombatesActivity extends AppCompatActivity {
 
                 }
             });
-
-        }
-        // 2. Se pasa el nombre del Campeonato y el nombre de la Modalidad
-        if(mNombreCat.equals("")){
+            //endregion
+        } else if(mNombreCat.equals("")){        //region 2. Se pasa el nombre del Campeonato y el nombre de la Modalidad
             // Obtener el ID de la Modalidad a partir del nombre
             mModsDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Modalidades").child(mIdCamp);
             Query consultaIdMod = mModsDB;
@@ -595,9 +593,13 @@ public class CombatesActivity extends AppCompatActivity {
 
                 }
             });
+            //endregion
+        } else { //region 3. Se pasan los nombres del Campeonato, Modalidad y Categoría.
+            buscarCombatesIdCat(mIdCat, listaCombates);
+            //endregion
         }
 
-        // 3. Se pasan los nombres del Campeonato, Modalidad y Categoría.
+
 
         // 4. Se pasan los nombres del Campeonato, Modalidad y Categoría además del Estado del Combate.
     }
@@ -667,6 +669,30 @@ public class CombatesActivity extends AppCompatActivity {
                 });
             }
         }
+    }
+
+    public void buscarCombatesIdCat(String idCat, final List<Combates> listaCombates){
+        Query consultaCombates = mCombatesDB.child(mIdCat);
+        consultaCombates.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(CombatesActivity.this, "No existen Combates que cumplan esos requisitos.", Toast.LENGTH_SHORT).show();
+                } else {
+                    listaCombates.clear();
+                    for(DataSnapshot combSnapshot: dataSnapshot.getChildren()){
+                        Combates comb = combSnapshot.getValue(Combates.class);
+                        listaCombates.add(comb);
+                        cargarCombates(listaCombates);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void cargarCombates(List<Combates> listaCombates){
