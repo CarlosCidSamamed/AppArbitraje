@@ -67,6 +67,8 @@ public class CombatesActivity extends AppCompatActivity {
     private String mIdMod;
     private String mIdCat;
 
+    private CombatesList mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -270,6 +272,11 @@ public class CombatesActivity extends AppCompatActivity {
         mAplicarFiltroBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Vaciar ListView.
+                List<Combates> listaVacia = new ArrayList<>();
+                CombatesList adapter = new CombatesList(CombatesActivity.this, listaVacia);
+                mListaCombatesView.setAdapter(adapter);
+                // Aplicar filtro para mostrar los resultados correctos.
                 aplicarFiltro(mNombreCamp, mNombreMod, mNombreCat, mEstado);
             }
         });
@@ -697,8 +704,8 @@ public class CombatesActivity extends AppCompatActivity {
 
     public void cargarCombates(List<Combates> listaCombates){
         // Crear Adapter
-        CombatesList adapter = new CombatesList(this, listaCombates);
+        mAdapter = new CombatesList(this, listaCombates);
         // Asignar Adapter a ListView
-        mListaCombatesView.setAdapter(adapter);
+        mListaCombatesView.setAdapter(mAdapter);
     }
 }
