@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje;
 
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.CombatesList;
@@ -37,6 +39,10 @@ public class CombatesActivity extends AppCompatActivity {
     private Spinner mModSpinner;
     private Spinner mCatSpinner;
     private Spinner mEstadoSpinner;
+
+    private TextView mModTitulo;
+    private TextView mCatTitulo;
+    private TextView mResultados;
 
     private Button mFiltroModBtn;
     private Button mFiltroCatBtn;
@@ -82,6 +88,10 @@ public class CombatesActivity extends AppCompatActivity {
         mModSpinner = findViewById(R.id.combates_nombreModSpinner);
         mCatSpinner = findViewById(R.id.combates_nombreCatSpinner);
         mEstadoSpinner = findViewById(R.id.combates_estadoSpinner);
+
+        mModTitulo = findViewById(R.id.combates_nombreMod);
+        mCatTitulo = findViewById(R.id.combates_nombreCat);
+        mResultados = findViewById(R.id.combates_resultados);
 
         mFiltroModBtn = findViewById(R.id.combates_add_flitroMod_btn);
         mFiltroCatBtn = findViewById(R.id.combates_add_filtroCat_btn);
@@ -276,6 +286,8 @@ public class CombatesActivity extends AppCompatActivity {
                 List<Combates> listaVacia = new ArrayList<>();
                 CombatesList adapter = new CombatesList(CombatesActivity.this, listaVacia);
                 mListaCombatesView.setAdapter(adapter);
+                // Resultados = 0
+                mResultados.setText("Resultados");
                 // Aplicar filtro para mostrar los resultados correctos.
                 aplicarFiltro(mNombreCamp, mNombreMod, mNombreCat, mEstado);
             }
@@ -542,6 +554,10 @@ public class CombatesActivity extends AppCompatActivity {
                             listaModalidades.add(mod);
                         }
                         Toast.makeText(getApplicationContext(), "La consulta de Modalidades devuelve " + listaModalidades.size() + " elementos.", Toast.LENGTH_SHORT).show();
+                        // Mostrar en el título del Spinner de Modalidades el número de resultados que ha devuelto la consulta.
+                        String m = "Modalidad ( " + listaModalidades.size() + " )";
+                        mModTitulo.setText(m);
+                        mModTitulo.setTypeface(null, Typeface.BOLD);
                         buscarCategorias(listaModalidades, listaCategorias);
                         // buscarCombates(listaCategorias, listaCombates);
                     }
@@ -583,6 +599,10 @@ public class CombatesActivity extends AppCompatActivity {
                                         listaCategorias.add(cat);
                                     }
                                     Toast.makeText(CombatesActivity.this, "La consulta de Categorías devuelve " + listaCategorias.size() + " elementos." , Toast.LENGTH_SHORT).show();
+                                    // Mostrar en el título del Spinner de Categorías el número de resultados que ha devuelto la consulta.
+                                    String c = "Categorías ( " + listaCategorias.size() + " )";
+                                    mCatTitulo.setTypeface(null, Typeface.BOLD);
+                                    mCatTitulo.setText(c);
                                     buscarCombates(listaCategorias, listaCombates);
                                 }
                             }
@@ -664,6 +684,9 @@ public class CombatesActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),
                                         "La consulta de Combates devuelve " + listaCombates.size() + " elementos.",
                                         Toast.LENGTH_SHORT).show();
+                                // Mostrar en el título del ListView de Combates el número de resultados que ha devuelto la consulta.
+                                String res = "Resultados ( " + listaCombates.size() + " )";
+                                mResultados.setText(res);
                                 cargarCombates(listaCombates);
                             }
                         }
