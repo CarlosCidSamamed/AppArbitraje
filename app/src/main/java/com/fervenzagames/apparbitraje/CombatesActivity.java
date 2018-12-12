@@ -548,6 +548,54 @@ public class CombatesActivity extends AppCompatActivity {
 
         }
         // 2. Se pasa el nombre del Campeonato y el nombre de la Modalidad
+        if(mNombreCat.equals("")){
+            // Obtener el ID de la Modalidad a partir del nombre
+            mModsDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Modalidades").child(mIdCamp);
+            Query consultaIdMod = mModsDB;
+            consultaIdMod.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.exists()){
+                        Toast.makeText(CombatesActivity.this, "No existe ninguna Modalidad en la BD para ese Campeonato.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        for(DataSnapshot modSnapshot: dataSnapshot.getChildren()){
+                            Modalidades mod = modSnapshot.getValue(Modalidades.class);
+                            if(mod.getNombre().equals(mNombreMod)){
+                                mIdMod = mod.getId();
+                            }
+                        }
+                        // Consulta de Categorías para obtener la lista correspondiente.
+                        mCatsDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Categorias").child(mIdMod);
+                        Query consultaMods = mCatsDB;
+                        consultaMods.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(!dataSnapshot.exists()){
+                                    Toast.makeText(CombatesActivity.this, "No existen Categorías para la Modalidad cuyo ID es " + mIdMod, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    for(DataSnapshot catSnapshot: dataSnapshot.getChildren()){
+                                        Categorias cat = catSnapshot.getValue(Categorias.class);
+                                        listaCategorias.add(cat);
+                                    }
+                                    Toast.makeText(CombatesActivity.this, "La consulta de Categorías devuelve " + listaCategorias.size() + " elementos." , Toast.LENGTH_SHORT).show();
+                                    buscarCombates(listaCategorias, listaCombates);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
 
         // 3. Se pasan los nombres del Campeonato, Modalidad y Categoría.
 
