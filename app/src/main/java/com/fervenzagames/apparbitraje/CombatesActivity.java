@@ -203,7 +203,6 @@ public class CombatesActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mListaCombates.clear();
                 mNombreCat = mCatSpinner.getSelectedItem().toString();
-                String estado = mEstadoSpinner.getSelectedItem().toString();
                 // Buscar la Categoría mediante nombre y almacenar su ID
                 if(!mIdMod.equals("")){
                     mCatsDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Categorias").child(mIdMod);
@@ -275,6 +274,12 @@ public class CombatesActivity extends AppCompatActivity {
         mFiltroEstadoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Cargar el array de valores para el spinner de estado
+                // Adapter
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(CombatesActivity.this, R.array.estadosCombate, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+                mEstadoSpinner.setAdapter(adapter);
+                // Mostrar el Spinner
                 mEstadoSpinner.setVisibility(VISIBLE);
             }
         });
@@ -524,10 +529,10 @@ public class CombatesActivity extends AppCompatActivity {
     // entidades correspondientes y se realiza la búsqueda correspondiente en los combates.
     public void aplicarFiltro(String nombreCamp, String nombreMod, String nombreCat, String estado){
 
-        Toast.makeText(this, "Nombre Camp --> " + mNombreCamp, Toast.LENGTH_SHORT).show();
+        /*Toast.makeText(this, "Nombre Camp --> " + mNombreCamp, Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "Nombre Mod  --> " + mNombreMod, Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "Nombre Cat  --> " + mNombreCat, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Estado      --> " + mEstado, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Estado      --> " + mEstado, Toast.LENGTH_SHORT).show();*/
 
         // El ID del Campeonato a partir del nombre que se obtiene del Spinner se ha almacenado en la variable mIdCamp
         final List<Combates> listaCombates = new ArrayList<>();
@@ -680,7 +685,18 @@ public class CombatesActivity extends AppCompatActivity {
                             listaCombates.clear();
                             for(DataSnapshot combSnapshot: dataSnapshot.getChildren()){
                                 Combates comb = combSnapshot.getValue(Combates.class);
-                                listaCombates.add(comb);
+
+                                // Comprobar si el spinner de Estado se ha habilitado
+                                if(!mEstado.equals("")){
+                                    Toast.makeText(CombatesActivity.this, "Estado del Combate --> " + comb.getEstadoCombate().toString(), Toast.LENGTH_SHORT).show();
+                                    if(comb.getEstadoCombate().toString().equals(mEstado)){ // Si el estado del combate actual coincide con el seleccionado en el Spinner
+                                        listaCombates.add(comb);                            // se añade el combate a la lista
+                                    }
+                                } else { // Spinner Estado deshabilitado
+                                    listaCombates.add(comb);
+                                }
+
+                                // listaCombates.add(comb);
                                 Toast.makeText(getApplicationContext(),
                                         "La consulta de Combates devuelve " + listaCombates.size() + " elementos.",
                                         Toast.LENGTH_SHORT).show();
@@ -712,8 +728,21 @@ public class CombatesActivity extends AppCompatActivity {
                     listaCombates.clear();
                     for(DataSnapshot combSnapshot: dataSnapshot.getChildren()){
                         Combates comb = combSnapshot.getValue(Combates.class);
-                        listaCombates.add(comb);
+
+                        // Comprobar si el spinner de Estado se ha habilitado
+                        if(!mEstado.equals("")){
+                            Toast.makeText(CombatesActivity.this, "Estado del Combate --> " + comb.getEstadoCombate().toString(), Toast.LENGTH_SHORT).show();
+                            if(comb.getEstadoCombate().toString().equals(mEstado)){ // Si el estado del combate actual coincide con el seleccionado en el Spinner
+                                listaCombates.add(comb);                            // se añade el combate a la lista
+                            }
+                        } else { // Spinner Estado deshabilitado
+                            listaCombates.add(comb);
+                        }
+
+                        //listaCombates.add(comb);
                         cargarCombates(listaCombates);
+                        String res = "Resultados ( " + listaCombates.size() + " )";
+                        mResultados.setText(res);
                     }
                 }
             }
