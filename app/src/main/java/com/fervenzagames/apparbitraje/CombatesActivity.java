@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.CombatesList;
+import com.fervenzagames.apparbitraje.Detail_Activities.DetalleCombateActivity;
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
 import com.fervenzagames.apparbitraje.Models.Categorias;
 import com.fervenzagames.apparbitraje.Models.Combates;
@@ -33,6 +35,7 @@ import static android.view.View.VISIBLE;
 
 public class CombatesActivity extends AppCompatActivity {
 
+    //region Variables
     private Toolbar mToolbar;
 
     private Spinner mCampSpinner;
@@ -74,6 +77,7 @@ public class CombatesActivity extends AppCompatActivity {
     private String mIdCat;
 
     private CombatesList mAdapter;
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -299,8 +303,29 @@ public class CombatesActivity extends AppCompatActivity {
         });
         //endregion
 
+        //region Detalle Combate
+        mListaCombatesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Combates comb = mListaCombates.get(position);
+                Bundle extras = new Bundle();
+                extras.putString("idCamp", comb.getCampeonato());
+                extras.putString("idMod", comb.getModalidad());
+                extras.putString("idCat", comb.getCategoria());
+                extras.putString("idCombate", comb.getId());
+                if(comb.getEstadoCombate() != null){
+                    extras.putString("idZona", comb.getIdZonaCombate());
+                } else {
+                    extras.putString("idZona", "");
+                }
 
-
+                Intent detalleCombateIntent = new Intent(CombatesActivity.this, DetalleCombateActivity.class);
+                detalleCombateIntent.putExtras(extras);
+                // startActivity(detalleCombateIntent);
+                Toast.makeText(CombatesActivity.this, "Mostrar detalle del Combate " + comb.getId() , Toast.LENGTH_SHORT).show();
+            }
+        });
+        //endregion
     }
 
     private void cargarDatosCampeonatos(){

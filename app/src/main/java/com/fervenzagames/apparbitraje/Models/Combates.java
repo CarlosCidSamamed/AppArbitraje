@@ -2,6 +2,8 @@ package com.fervenzagames.apparbitraje.Models;
 
 import com.fervenzagames.apparbitraje.Models.Asaltos;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Combates {
@@ -195,5 +197,16 @@ public class Combates {
         }
 
         return estado;
+    }
+
+    public HashMap<String , String> getHashMapDetalleCombate(Combates comb){
+
+        HashMap<String, String> hashMapDetalle = new HashMap<>();
+
+        List<String> estados = new ArrayList<>();
+
+        hashMapDetalle.put(comb.getNumCombate(), comb.getEstadoCombate().toString());
+
+        return hashMapDetalle;
     }
 }
