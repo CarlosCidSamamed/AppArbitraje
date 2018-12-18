@@ -58,11 +58,13 @@ public class AddZonaCombateActivity extends AppCompatActivity {
     private List<String> mListaDetalle;
     private List<String> mListaIDs;
     private List<String> mListaIDsCat;
+    private List<String> mListaIDsMod;
 
     private List<String> mListaTitulosDisp;
     private List<String> mListaDetalleDisp;
     private List<String> mListaIDsDisp;
     private List<String> mListaIDsCatDisp;
+    private List<String> mListaIDsModDisp;
 
     private CombatesExpandableListAdapter mListaCombatesAdapter;
     private CombatesExpandableListAdapter mListaCombatesDispAdapter;
@@ -219,8 +221,10 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                                                                     String idCombate = mListaIDsDisp.get(groupPosition);
                                                                     // Capturar el valor del ID de la Categoría del Combate seleccionado.
                                                                     String idCat = mListaIDsCatDisp.get(groupPosition);
+                                                                    // Capturar el valor del ID de la Modalidad del Combate seleccionado.
+                                                                    String idMod = mListaIDsModDisp.get(groupPosition);
                                                                     // Abrir el Dialog con el detalle del Combate.
-                                                                    abrirDialog(idCombate, idCat);
+                                                                    abrirDialog(idCombate, idCat, idMod);
                                                                 } else {
                                                                     Toast.makeText(AddZonaCombateActivity.this, "En este momemto no existen combates disponibles...", Toast.LENGTH_SHORT).show();
                                                                 }
@@ -270,6 +274,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
         List<String> detalle = new ArrayList<>();
         List<String> listaIDs = new ArrayList<>();
         List<String> listaIDsCategoria = new ArrayList<>();
+        List<String> listaIDsMod = new ArrayList<>();
 
         for(int i = 0; i < lista.size(); i++){ // Recorrer la lista
             // Obtener el número del combate (Título)
@@ -280,6 +285,8 @@ public class AddZonaCombateActivity extends AppCompatActivity {
             listaIDs.add(lista.get(i).getId());
             // Para poder buscar un combate determinado necesstamos el ID de la Categoría
             listaIDsCategoria.add(lista.get(i).getCategoria());
+            // Para poder mostrar el nombre de la Categoría debemos acceder a ella y para eso necesitamos el ID de la Modalidad
+            listaIDsMod.add(lista.get(i).getModalidad());
         }
 
         if(disp == false){
@@ -287,12 +294,14 @@ public class AddZonaCombateActivity extends AppCompatActivity {
             mListaDetalle = detalle;
             mListaIDs = listaIDs;
             mListaIDsCat = listaIDsCategoria;
+            mListaIDsMod = listaIDsMod;
 
         } else {
             mListaTitulosDisp = titulos;
             mListaDetalleDisp = detalle;
             mListaIDsDisp = listaIDs;
             mListaIDsCatDisp = listaIDsCategoria;
+            mListaIDsModDisp = listaIDsMod;
         }
 
     }
@@ -313,11 +322,12 @@ public class AddZonaCombateActivity extends AppCompatActivity {
 
     }
 
-    public void abrirDialog(String idCombate, String idCategoria){
+    public void abrirDialog(String idCombate, String idCategoria, String idMod){
         DetalleCombateDialog dialog = new DetalleCombateDialog();
         Bundle extras = new Bundle(); // En este bundle le pasamos el ID del Combate al dialog que muestra el detalle de ese combate.
         extras.putString("idCombate", idCombate);
         extras.putString("idCategoria", idCategoria);
+        extras.putString("idMod", idMod);
         dialog.setArguments(extras);
         dialog.show(getSupportFragmentManager(), "combate dialog");
     }

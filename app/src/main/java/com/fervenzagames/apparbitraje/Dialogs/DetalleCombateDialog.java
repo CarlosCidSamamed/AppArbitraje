@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Models.Categorias;
 import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.fervenzagames.apparbitraje.R;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +27,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DetalleCombateDialog extends AppCompatDialogFragment {
 
+    private TextView mCategoria;
+
     private TextView mNombreRojo;
     private TextView mNombreAzul;
     private CircleImageView mFotoRojo;
@@ -33,6 +36,7 @@ public class DetalleCombateDialog extends AppCompatDialogFragment {
 
     private DatabaseReference mCompetidorDB;
     private DatabaseReference mCombateDB;
+    private DatabaseReference mCategoriaDB;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -50,6 +54,7 @@ public class DetalleCombateDialog extends AppCompatDialogFragment {
             }
         });
 
+        mCategoria = view.findViewById(R.id.combate_dialog_categoria);
         mNombreRojo = view.findViewById(R.id.combate_dialog_nombreRojo);
         mNombreAzul = view.findViewById(R.id.combate_dialog_nombreAzul);
         mFotoRojo = view.findViewById(R.id.combate_dialog_fotoRojo);
@@ -60,28 +65,49 @@ public class DetalleCombateDialog extends AppCompatDialogFragment {
         //Toast.makeText(getActivity(), "ID Combate Dialog --> " + idCombate, Toast.LENGTH_SHORT).show();
         String idCat = extras.getString("idCategoria");
         //Toast.makeText(getActivity(), "ID Categoría Dialog --> " + idCat, Toast.LENGTH_SHORT).show();
+        String idMod = extras.getString("idMod");
 
         // ROJO
-        cargarDatosCompetidor(idCombate, idCat, true);
+        cargarDatosCompetidor(idCombate, idCat, idMod, true);
         // AZUL
-        cargarDatosCompetidor(idCombate, idCat, false);
+        cargarDatosCompetidor(idCombate, idCat, idMod, false);
 
         return builder.create();
     }
 
     // Método para buscar y cargar los datos de un competidor en la sección correspondiente del dialog.
     // Se pasan como parámetros el id del Combate, el id de la Categoría y si el competidor a cargar es el rojo o el azul.
-    private void cargarDatosCompetidor(String idCombate, String idCategoria, final boolean rojo){
+    private void cargarDatosCompetidor(String idCombate, String idCategoria, String idMod, final boolean rojo){
 
         mCompetidorDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Competidores");
+        mCategoriaDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Categorias").child(idMod).child(idCategoria);
         mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates").child(idCategoria).child(idCombate);
-        Query consulta = mCombateDB;
-        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        Query consultaCombate = mCombateDB;
+        consultaCombate.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
                     Toast.makeText(getContext(), "No existen datos en la BD relacionados con el combate indicado...", Toast.LENGTH_SHORT).show();
                 } else {
+                    Query consultaCat = mCategoriaDB;
+                    consultaCat.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(!dataSnapshot.exists()){
+                                Toast.makeText(getContext(), "No existe ninguna Categoría con ese ID en la BD...", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Categorias cat = dataSnapshot.getValue(Categorias.class);
+                                String nombreCat = cat.getNombre();
+                                mCategoria.setText(nombreCat);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     String idCompetidor = "";
                     if(rojo == true) {
                         idCompetidor = dataSnapshot.child("idRojo").getValue().toString();
