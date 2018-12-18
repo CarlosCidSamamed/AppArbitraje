@@ -92,6 +92,11 @@ public class Competidores {
         this.apellido2 = apellido2;
     }
 
+    public String getnombreCompleto(){
+        String nombreCompleto = nombre + " " + apellido1 + " " + apellido2;
+        return nombreCompleto;
+    }
+
     public String getFechaNac() {
         return fechaNac;
     }

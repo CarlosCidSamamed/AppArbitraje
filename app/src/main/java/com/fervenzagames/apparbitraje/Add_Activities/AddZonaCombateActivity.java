@@ -56,12 +56,17 @@ public class AddZonaCombateActivity extends AppCompatActivity {
     private List<String> mListaTitulos; // Nombre de los Combates
     // private HashMap<String, List<String>> mListaDetalle; // Lista con el estado de los Combates
     private List<String> mListaDetalle;
+    private List<String> mListaIDs;
+    private List<String> mListaIDsCat;
 
     private List<String> mListaTitulosDisp;
     private List<String> mListaDetalleDisp;
+    private List<String> mListaIDsDisp;
+    private List<String> mListaIDsCatDisp;
 
     private CombatesExpandableListAdapter mListaCombatesAdapter;
     private CombatesExpandableListAdapter mListaCombatesDispAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +94,8 @@ public class AddZonaCombateActivity extends AppCompatActivity {
         mListaCombates = new ArrayList<>();
         mListaMods = new ArrayList<>();
         mListaCats = new ArrayList<>();
+        mListaIDsDisp = new ArrayList<>();
+        mListaIDs = new ArrayList<>();
 
         mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Campeonatos").child(idCamp);
         // mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates");
@@ -206,10 +213,14 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                                                             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                                                                 mListaCombatesDisponibles.clear();
                                                                 if(mListaTitulosDisp.size() > 0){
-                                                                    String idCombate = mListaTitulosDisp.get(groupPosition);
-                                                                    Toast.makeText(AddZonaCombateActivity.this, "IdCombate " + idCombate, Toast.LENGTH_SHORT).show();
+                                                                    String numCombate = mListaTitulosDisp.get(groupPosition);
+                                                                    Toast.makeText(AddZonaCombateActivity.this, "NumCombate " + numCombate, Toast.LENGTH_SHORT).show();
+                                                                    // Capturar el valor del ID del Combate seleccionado
+                                                                    String idCombate = mListaIDsDisp.get(groupPosition);
+                                                                    // Capturar el valor del ID de la Categoría del Combate seleccionado.
+                                                                    String idCat = mListaIDsCatDisp.get(groupPosition);
                                                                     // Abrir el Dialog con el detalle del Combate.
-                                                                    abrirDialog();
+                                                                    abrirDialog(idCombate, idCat);
                                                                 } else {
                                                                     Toast.makeText(AddZonaCombateActivity.this, "En este momemto no existen combates disponibles...", Toast.LENGTH_SHORT).show();
                                                                 }
@@ -257,23 +268,31 @@ public class AddZonaCombateActivity extends AppCompatActivity {
 
         List<String> titulos = new ArrayList<>();
         List<String> detalle = new ArrayList<>();
-        HashMap<String, List<String>> fotos = new HashMap<>(); // String idCompetidor, List<String> con las URLs de las foto de Rojo y Azul.
+        List<String> listaIDs = new ArrayList<>();
+        List<String> listaIDsCategoria = new ArrayList<>();
 
         for(int i = 0; i < lista.size(); i++){ // Recorrer la lista
             // Obtener el número del combate (Título)
             titulos.add(lista.get(i).getNumCombate());
             // Obtener el estado del combate (Detalle)
             detalle.add(lista.get(i).getEstadoCombate().toString());
+            // Obtener el ID del Combate para poder pasárselo al Dialog del Detalle
+            listaIDs.add(lista.get(i).getId());
+            // Para poder buscar un combate determinado necesstamos el ID de la Categoría
+            listaIDsCategoria.add(lista.get(i).getCategoria());
         }
 
         if(disp == false){
             mListaTitulos = titulos;
             mListaDetalle = detalle;
+            mListaIDs = listaIDs;
+            mListaIDsCat = listaIDsCategoria;
 
         } else {
             mListaTitulosDisp = titulos;
             mListaDetalleDisp = detalle;
-
+            mListaIDsDisp = listaIDs;
+            mListaIDsCatDisp = listaIDsCategoria;
         }
 
     }
@@ -294,8 +313,12 @@ public class AddZonaCombateActivity extends AppCompatActivity {
 
     }
 
-    public void abrirDialog(){
+    public void abrirDialog(String idCombate, String idCategoria){
         DetalleCombateDialog dialog = new DetalleCombateDialog();
+        Bundle extras = new Bundle(); // En este bundle le pasamos el ID del Combate al dialog que muestra el detalle de ese combate.
+        extras.putString("idCombate", idCombate);
+        extras.putString("idCategoria", idCategoria);
+        dialog.setArguments(extras);
         dialog.show(getSupportFragmentManager(), "combate dialog");
     }
 
