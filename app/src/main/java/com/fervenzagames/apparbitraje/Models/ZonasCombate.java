@@ -1,7 +1,9 @@
 package com.fervenzagames.apparbitraje.Models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ZonasCombate {
 
@@ -69,4 +71,14 @@ public class ZonasCombate {
             listaDatosExtraCombates.remove(posicion);
         }
     }
+
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("idZona", idZona);
+        result.put("numZona", numZona);
+        result.put("idCamp", idCamp);
+        result.put("listaDatosExtraCombates", listaDatosExtraCombates);
+        return result;
+    }
+
 }

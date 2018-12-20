@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje.Add_Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,9 @@ import com.fervenzagames.apparbitraje.Dialogs.DetalleCombateDialog;
 import com.fervenzagames.apparbitraje.Models.Campeonatos;
 import com.fervenzagames.apparbitraje.Models.Categorias;
 import com.fervenzagames.apparbitraje.Models.Combates;
+import com.fervenzagames.apparbitraje.Models.DatosExtraZonasCombate;
 import com.fervenzagames.apparbitraje.Models.Modalidades;
+import com.fervenzagames.apparbitraje.Models.ZonasCombate;
 import com.fervenzagames.apparbitraje.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddZonaCombateActivity extends AppCompatActivity {
 
@@ -40,12 +44,16 @@ public class AddZonaCombateActivity extends AppCompatActivity {
     private Button mRevertirBtn;
     private Button mGuardarBtn;
 
-    private String idCamp;
+    private String mIdCamp;
     private DatabaseReference mCampDB;
+
+    private String mIdZona;
 
     private DatabaseReference mCombatesDB;
     private DatabaseReference mModsDB;
     private DatabaseReference mCatsDB;
+    private DatabaseReference mZonaCombateBD;
+    private DatabaseReference mZonasDB;
 
     private List<Combates> mListaCombatesDisponibles;
     private List<Combates> mListaCombates;
@@ -53,7 +61,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
     private List<Modalidades> mListaMods;
     private List<Categorias> mListaCats;
 
-    private List<String> mListaTitulos; // Nombre de los Combates
+    private List<String> mListaTitulos; // Número de los Combates
     // private HashMap<String, List<String>> mListaDetalle; // Lista con el estado de los Combates
     private List<String> mListaDetalle;
     private List<String> mListaIDs;
@@ -68,6 +76,11 @@ public class AddZonaCombateActivity extends AppCompatActivity {
 
     private CombatesExpandableListAdapter mListaCombatesAdapter;
     private CombatesExpandableListAdapter mListaCombatesDispAdapter;
+
+    private String mIdCombateSeleccionado;
+    private Combates mCombateSeleccionado;
+    private ZonasCombate mZonaSeleccionada;
+    private DatosExtraZonasCombate mDatosZona;
 
 
     @Override
@@ -90,7 +103,8 @@ public class AddZonaCombateActivity extends AppCompatActivity {
         mGuardarBtn = findViewById(R.id.add_zona_guardarBtn);
 
         Bundle extras = getIntent().getExtras();
-        idCamp = extras.getString("idCamp");
+        mIdCamp = extras.getString("idCamp");
+        mIdZona = "";
 
         mListaCombatesDisponibles = new ArrayList<>();
         mListaCombates = new ArrayList<>();
@@ -99,9 +113,13 @@ public class AddZonaCombateActivity extends AppCompatActivity {
         mListaIDsDisp = new ArrayList<>();
         mListaIDs = new ArrayList<>();
 
-        mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Campeonatos").child(idCamp);
+        mIdCombateSeleccionado = "";
+        mCombateSeleccionado = new Combates();
+
+        mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Campeonatos").child(mIdCamp);
         // mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates");
-        mModsDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Modalidades").child(idCamp);
+        mModsDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Modalidades").child(mIdCamp);
+        mZonasDB = FirebaseDatabase.getInstance().getReference("Arbitraje/ZonasCombate").child(mIdCamp);
 
         mCampDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -124,18 +142,77 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                     mNumZona.setTextColor(Color.BLUE);
                     mNumZona.setText(n);
 
+                    insertarDatosZona(mIdCamp, String.valueOf(numero));
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 obtenerCombatesCampeonato("");
+                if(!mIdZona.equals("")){
+                    obtenerCombatesCampeonato(mIdZona);
+                }
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        // Botón Asignar
+        mAsignarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mIdCombateSeleccionado.equals("")){ // Si no se ha seleccionado ningún combate no se puede asignar
+                    Toast.makeText(AddZonaCombateActivity.this, "No se ha seleccionado ningún Combate para ASIGNAR.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Localizar el combate
+                    asignarCombateZona(mIdCombateSeleccionado, mCombateSeleccionado.getCategoria(), mIdZona, mCombateSeleccionado.getCampeonato());
+                }
+            }
+        });
+        // Botón Eliminar
+        mRevertirBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mIdCombateSeleccionado.equals("")){ // Si no se ha seleccionado ningún combate no se puede eliminar
+                    Toast.makeText(AddZonaCombateActivity.this, "No se ha seleccionado ningún Combate para ELIMINAR.", Toast.LENGTH_SHORT).show();
+                } else {
+
+                }
+            }
+        });
+        // Botón Guardar
+        // Se volverá visible si la lista de Combates asignados tiene un tamaño mayor que cero.
+        /*mGuardarBtn.setVisibility(View.INVISIBLE);
+        if(mListaCombates != null){
+            if(mListaCombates.size() > 0){
+                mGuardarBtn.setVisibility(View.VISIBLE);
+            }
+        }*/
+        mGuardarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((mListaCombatesDisponibles.size() > 0) && (mListaCombates.size() == 0)) {
+                    // Si existen combates sin asignar y esta zona no tiene ningún combate asignado se muestra un dialog esperando confirmación.
+                } else if(mCombateSeleccionado.getIdZonaCombate() == null){
+                    Toast.makeText(AddZonaCombateActivity.this, "Seleccione los Combates que quiere asignar a esta Zona antes de pulsar el botón de Guardar...", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Se guardan los datos de los combates asignados a esta zona.
+                    // Recuperar el texto del TextView con el Número de la Zona
+                    String num = mNumZona.getText().toString();
+                    // insertarDatosZona(mIdCamp, num);
+                    // Se lanza una nueva actividad para asignar los árbitros a los combates.
+                    Intent arbisZonaIntent = new Intent(AddZonaCombateActivity.this, AsignarArbitrosCombatesZonaActivity.class);
+                    Bundle extras = new Bundle();
+                    extras.putString("idCamp", mIdCamp);
+                    extras.putString("idZona", mIdZona);
+                    arbisZonaIntent.putExtras(extras);
+                    startActivity(arbisZonaIntent);
+                }
             }
         });
 
@@ -225,6 +302,9 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                                                                     String idMod = mListaIDsModDisp.get(groupPosition);
                                                                     // Abrir el Dialog con el detalle del Combate.
                                                                     abrirDialog(idCombate, idCat, idMod);
+                                                                    // Capturar el ID del Combate seleccionado para poder cambiarlo de lista de Combates.
+                                                                    mIdCombateSeleccionado = idCombate;
+                                                                    localizarCombate(idCat, idCombate);
                                                                 } else {
                                                                     Toast.makeText(AddZonaCombateActivity.this, "En este momemto no existen combates disponibles...", Toast.LENGTH_SHORT).show();
                                                                 }
@@ -289,13 +369,12 @@ public class AddZonaCombateActivity extends AppCompatActivity {
             listaIDsMod.add(lista.get(i).getModalidad());
         }
 
-        if(disp == false){
+        if(!disp){
             mListaTitulos = titulos;
             mListaDetalle = detalle;
             mListaIDs = listaIDs;
             mListaIDsCat = listaIDsCategoria;
             mListaIDsMod = listaIDsMod;
-
         } else {
             mListaTitulosDisp = titulos;
             mListaDetalleDisp = detalle;
@@ -309,7 +388,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
     // Se encarga de cargar los datos en el ExpandableListView correspondiente
     private void cargarCombates(ExpandableListView view, List<String> titulos, List<String> detalle, boolean disp){
 
-        if(disp == false) {
+        if(!disp) {
             mListaCombatesAdapter = new CombatesExpandableListAdapter(AddZonaCombateActivity.this, mListaTitulos, mListaDetalle);
             view.setAdapter(mListaCombatesAdapter);
             mListaCombatesAdapter.notifyDataSetChanged();
@@ -330,6 +409,158 @@ public class AddZonaCombateActivity extends AppCompatActivity {
         extras.putString("idMod", idMod);
         dialog.setArguments(extras);
         dialog.show(getSupportFragmentManager(), "combate dialog");
+    }
+
+    public void localizarCombate(String idCat, String idCombate){
+        mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates").child(idCat).child(idCombate);
+        Query consulta = mCombatesDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(AddZonaCombateActivity.this, "Error: No existe ningún Combate en la BD con ese ID", Toast.LENGTH_SHORT).show();
+                } else {
+                    mCombateSeleccionado = dataSnapshot.getValue(Combates.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void localizarZonaCombate(String idCamp, String idZona){
+        mZonaCombateBD = FirebaseDatabase.getInstance().getReference("Arbitraje/ZonasCombate").child(idCamp).child(idZona);
+        Query consulta = mZonaCombateBD;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(AddZonaCombateActivity.this, "No existe ninguna Zona de Combate con ese ID para el Campeonato seleccionado.", Toast.LENGTH_SHORT).show();
+                } else {
+                    mZonaSeleccionada = dataSnapshot.getValue(ZonasCombate.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    // Método que se encarga de modificar los datos necesarios en los objetos Combates y ZonasCombate correspondiente a los IDs indicados.
+    // Es decir, una vez realizadas esas modifiaciones el combate quedará asignado a la zona y la zona contendrá las referencias necesarias al combate en cuestión.
+    private void asignarCombateZona(String idCombate, String idCat, String idZona, String idCamp){
+        // Localizar Combate en la BD
+        if(mCombateSeleccionado.getNumCombate().equals("")) {
+            localizarCombate(idCat, idCombate);
+        }
+        // Modificar Combates.idZonaCombate
+        mCombateSeleccionado.setIdZonaCombate(idZona);
+        // Convertir el objeto Combates en un HashMap para actualizar la BD
+        Map<String, Object> combateModificado = mCombateSeleccionado.toMap();
+        // Map con las rutas necesarias para las actualizaciones
+        Map<String, Object> rutasUpdate = new HashMap<>();
+        // Localizar ZonaCombate en la BD
+        localizarZonaCombate(idCamp, idZona);
+        if(mZonaSeleccionada != null) {
+            // Convertir el objeto ZonasCombate en un HashMap para actualizar la BD
+            Map<String, Object> zonaModificada = mZonaSeleccionada.toMap();
+            // Modificar lista de Combates para añadir la entrada correspondiente al Combate indicado.
+            List<DatosExtraZonasCombate> listaDatosZonaModificada = mZonaSeleccionada.getListaDatosExtraCombates();
+        } else {
+            Toast.makeText(this, "No se ha podido ASIGNAR ese Combate a la Zona deseada...", Toast.LENGTH_SHORT).show();
+        }
+        // Pendiente --> Trabajar con los datos de la Lista para poder localizar los datos deseados y actualizarlos.
+            // Dialog para información referente a los Árbitros asignados al Combate indicado.
+    }
+
+    // Método que se encarga de eliminar un combate de la lista de combates asignados a la zona indicada. Se eliminarán las conexiones entre dicha zona y dicho combate.
+    private void retirarCombateZona(String idCombate, String idCat, String idZona, String idCamp){
+        // Localizar Combate en la BD
+        // Modificar Combates.idZonaCombate para que quede como ""
+        // Localizar ZonaCombate en la BD
+        // Modificar lista de Combates para eliminar la entrada correspondiente al Combate indicado.
+    }
+
+    private void insertarDatosZona(final String idCamp, final String numZona){
+        // Generar ID al insertar la zona en la BD.
+        mZonaCombateBD = FirebaseDatabase.getInstance().getReference("Arbitraje").child("ZonasCombate");
+        mIdZona = mZonaCombateBD.child(idCamp).push().getKey();
+        Toast.makeText(this, "ID de la Zona generado en insertarDatosZona --> " + mIdZona, Toast.LENGTH_SHORT).show();
+        // Guardar el resto de datos de la Zona
+        int n = Integer.valueOf(numZona);
+        final ZonasCombate zona = new ZonasCombate(mIdZona, n, idCamp, null);
+        Toast.makeText(this, "Zona.idCamp --> " + zona.getIdCamp(), Toast.LENGTH_SHORT).show();
+        Query consulta = mZonaCombateBD.child(idCamp).orderByChild("numZona").equalTo(zona.getNumZona());
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Toast.makeText(AddZonaCombateActivity.this, "Ya existe una Zona de Combate con ese Número", Toast.LENGTH_SHORT).show();
+                    // Si ya existe la zona deberemos eliminar el id insertado con el push() del principio de este método.
+                    mZonaCombateBD.child(idCamp).child(mIdZona).removeValue();
+                } else {
+                    // Añadir Zona de Combate
+                    mZonaCombateBD.child(idCamp).child(mIdZona).setValue(zona);
+                    Toast.makeText(AddZonaCombateActivity.this, "Se ha añadido la Zona de Combate " + zona.getNumZona() + " a la BD.", Toast.LENGTH_SHORT).show();
+                    mZonaSeleccionada = zona;
+                    // anadirCombatesListaZona(zona.getIdZona(), zona.getIdCamp(), mListaCombates);
+                }
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    // Añadir los combates seleccionados y almacenados en la lista indicada a la zona de combate indicada (idZona e idCamp).
+    private void anadirCombatesListaZona(String idZona, String idCamp, final List<Combates> lista){
+        // Localizar la zona de Combate
+        mZonaCombateBD = FirebaseDatabase.getInstance().getReference("Arbirtaje/ZonasCombate").child(mIdCamp).child(mIdZona);
+        mZonaCombateBD.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(AddZonaCombateActivity.this, "No existe la Zona de Combate indicada.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Obtener la Zona de Combate de la BD
+                    ZonasCombate zona = dataSnapshot.getValue(ZonasCombate.class);
+                    // Añadir los combates de la Lista
+                    // Recorrer la lista
+                    for(int i = 0; i < lista.size(); i++){
+                        // Obtener el combate de la lista
+                        Combates comb = lista.get(i);
+                        // Crear objeto de clase DatosExtraZonasCombate
+                        // Se obtienen el idCombate y numCombate del objeto extraido de la lista
+                        // y la información de árbitros se deja sin cubrir hasta que se esepecifique más adelante.
+                        DatosExtraZonasCombate datos = new DatosExtraZonasCombate(comb.getId(), comb.getNumCombate(), 0, null);
+                        // Añadir esos datos a la lista de la Zona de Combate
+                        zona.addToListaDatosExtraCombate(datos);
+                    }
+                    // Actualizar la Zona de Combate en la BD.
+                    Map<String, Object> zonaActualizada = zona.toMap();
+                    // Crear ruta para actualizar
+                    Map<String, Object> rutaUpdate = new HashMap<>();
+                    // Indicar ruta
+                    rutaUpdate.put(mIdZona, zonaActualizada);
+                    // Relizar la actualización del objeto indicado en la ruta indicada
+                    mZonasDB.updateChildren(rutaUpdate);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 }

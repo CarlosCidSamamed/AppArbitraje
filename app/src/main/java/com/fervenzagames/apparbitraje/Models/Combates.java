@@ -5,6 +5,7 @@ import com.fervenzagames.apparbitraje.Models.Asaltos;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Combates {
 
@@ -208,5 +209,26 @@ public class Combates {
         hashMapDetalle.put(comb.getNumCombate(), comb.getEstadoCombate().toString());
 
         return hashMapDetalle;
+    }
+
+    // Para actualizar un Combate
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("numCombate", numCombate);
+        result.put("ganador", ganador);
+        result.put("perdedor", perdedor);
+        result.put("motivo", motivo);
+        result.put("enlaceVideo", enlaceVideo);
+        result.put("idRojo", idRojo);
+        result.put("idAzul", idAzul);
+        result.put("listaAsaltos", listaAsaltos);
+        result.put("modalidad", modalidad);
+        result.put("categoria", categoria);
+        result.put("campeonato",campeonato);
+        result.put("idZonaCombate", idZonaCombate);
+        result.put("estadoCombate", estadoCombate);
+
+        return result;
     }
 }

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Add_Activities.AsignarArbitrosCombatesZonaActivity">
+
+    <include layout="@layout/app_bar_layout" android:id="@+id/asignar_arb_combate_app_bar"/>
+
+    <TextView
+        android:id="@+id/asignar_arb_combate_titulo1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/combates_asignados"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/asignar_arb_combate_app_bar" />
+
+    <ExpandableListView
+        android:id="@+id/asignar_arb_combate_combatesAsignados"
+        android:layout_width="250dp"
+        android:layout_height="400dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/asignar_arb_combate_titulo1" />
+
+    <TextView
+        android:id="@+id/asignar_arb_combate_titulo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/listadoArbitros"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.322"
+        app:layout_constraintStart_toEndOf="@+id/asignar_arb_combate_titulo1"
+        app:layout_constraintTop_toBottomOf="@+id/asignar_arb_combate_app_bar" />
+
+    <ExpandableListView
+        android:id="@+id/asignar_arb_combate_arbitrosCampeonato"
+        android:layout_width="250dp"
+        android:layout_height="400dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.18"
+        app:layout_constraintStart_toEndOf="@+id/asignar_arb_combate_combatesAsignados"
+        app:layout_constraintTop_toBottomOf="@+id/asignar_arb_combate_titulo2" />
+
+    <TextView
+        android:id="@+id/asignar_arb_combate_titulo3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/arbitros_asignados"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintStart_toEndOf="@+id/asignar_arb_combate_titulo2"
+        app:layout_constraintTop_toBottomOf="@+id/asignar_arb_combate_app_bar" />
+
+    <ExpandableListView
+        android:id="@+id/asignar_arb_combate_arbitrosAsignados"
+        android:layout_width="250dp"
+        android:layout_height="400dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.58"
+        app:layout_constraintStart_toEndOf="@+id/asignar_arb_combate_arbitrosCampeonato"
+        app:layout_constraintTop_toBottomOf="@+id/asignar_arb_combate_titulo3"></ExpandableListView>
+
+    <Button
+        android:id="@+id/asignar_arb_combate_guardarBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/guardar_datos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.946"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/asignar_arb_combate_arbitrosAsignados" />
+
+</android.support.constraint.ConstraintLayout>

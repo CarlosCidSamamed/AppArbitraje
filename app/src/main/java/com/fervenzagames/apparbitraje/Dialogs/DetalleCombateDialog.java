@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -109,7 +108,7 @@ public class DetalleCombateDialog extends AppCompatDialogFragment {
                         }
                     });
                     String idCompetidor = "";
-                    if(rojo == true) {
+                    if(rojo) {
                         idCompetidor = dataSnapshot.child("idRojo").getValue().toString();
                         //Toast.makeText(getContext(), "ID Competidor ROJO " + idCompetidor, Toast.LENGTH_SHORT).show();
                     } else {
@@ -122,7 +121,7 @@ public class DetalleCombateDialog extends AppCompatDialogFragment {
                     consulta.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()){
+                            if (dataSnapshot.exists()) {
 
                                 // Toast.makeText(getContext(), "URL consulta Competidor " + consulta.getRef(), Toast.LENGTH_SHORT).show();
 
@@ -132,7 +131,7 @@ public class DetalleCombateDialog extends AppCompatDialogFragment {
                                 // Toast.makeText(getContext(), "Nombre Completo --> " + nombre, Toast.LENGTH_SHORT).show();
                                 String foto = comp.getFoto();
 
-                                if(rojo == true){ // ROJO
+                                if (rojo) { // ROJO
                                     mNombreRojo.setText(nombre);
                                     Picasso.get().load(foto).into(mFotoRojo);
                                 } else { // AZUL
@@ -140,30 +139,6 @@ public class DetalleCombateDialog extends AppCompatDialogFragment {
                                     Picasso.get().load(foto).into(mFotoAzul);
                                 }
 
-                        /*try {
-                            String nombre = dataSnapshot.child("nombre").getValue().toString();
-                            Toast.makeText(getContext(), "Nombre : " + nombre , Toast.LENGTH_SHORT).show();
-
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        }*/
-
-                        /*String ap1 = dataSnapshot.child("apellido1").getValue().toString();
-                        String ap2 = dataSnapshot.child("apellido2").getValue().toString();
-                        String nombreCompleto = nombre + " " + ap1 + " " + ap2;
-
-                        String foto = dataSnapshot.child("foto").getValue().toString();
-                        try {
-                            if(rojo == true){ // ROJO
-                                mNombreRojo.setText(nombreCompleto);
-                                Picasso.get().load(foto).into(mFotoRojo);
-                            } else { // AZUL
-                                mNombreAzul.setText(nombreCompleto);
-                                Picasso.get().load(foto).into(mFotoAzul);
-                            }
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        }*/
                             }
                         }
 
@@ -182,7 +157,6 @@ public class DetalleCombateDialog extends AppCompatDialogFragment {
 
             }
         });
-
 
     }
 }

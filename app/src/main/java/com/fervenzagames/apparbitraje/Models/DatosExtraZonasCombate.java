@@ -1,7 +1,9 @@
 package com.fervenzagames.apparbitraje.Models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatosExtraZonasCombate {
     // La estructura de los datos a almacenar en la Lista de Combates de la clase ZonasCombate
@@ -57,13 +59,13 @@ public class DatosExtraZonasCombate {
         this.listaIDsArbis = listaIDsArbis;
     }
 
-    public void addToListaArbis(String id){
+    public void addToListaArbis(String idArbitro){
         if(this.listaIDsArbis == null){
             List<String> nuevaLista = new ArrayList<>();
-            nuevaLista.add(id);
+            nuevaLista.add(idArbitro);
             this.listaIDsArbis = nuevaLista;
         } else {
-            this.listaIDsArbis.add(id);
+            this.listaIDsArbis.add(idArbitro);
         }
     }
 
@@ -74,4 +76,15 @@ public class DatosExtraZonasCombate {
             this.listaIDsArbis.remove(posicion);
         }
     }
+
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("idCombate", idCombate);
+        result.put("numCombate", numCombate);
+        result.put("numArbisAsignados", numArbisAsignados);
+        result.put("listaIDsArbis", listaIDsArbis);
+        return  result;
+    }
 }
+
+
