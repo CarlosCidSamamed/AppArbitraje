@@ -82,6 +82,8 @@ public class AddZonaCombateActivity extends AppCompatActivity {
     private ZonasCombate mZonaSeleccionada;
     private DatosExtraZonasCombate mDatosZona;
 
+    private Campeonatos mCampeonatoActual;
+    private List<ZonasCombate> mListaActualizada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -509,6 +511,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                     Toast.makeText(AddZonaCombateActivity.this, "Se ha añadido la Zona de Combate " + zona.getNumZona() + " a la BD.", Toast.LENGTH_SHORT).show();
                     mZonaSeleccionada = zona;
                     // anadirCombatesListaZona(zona.getIdZona(), zona.getIdCamp(), mListaCombates);
+                    // actualizarListaZonasCampeonato();
                 }
             }
 
@@ -563,4 +566,60 @@ public class AddZonaCombateActivity extends AppCompatActivity {
 
     }
 
+    // Una vez que se añada la zona de combate a la BD deberemos actualizar la lista de Zonas de Combate del Campeonato correspondiente.
+    private void actualizarListaZonasCampeonato(){
+        // mCampDB ya apunta al Campeonato actual
+        Query consultaCamp = mCampDB;
+        consultaCamp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    mCampeonatoActual = dataSnapshot.getValue(Campeonatos.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        Query consulta = mCampDB.child("listaZonasCombate");
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<ZonasCombate> lista = new ArrayList<>();
+                // Localizar la lista de Zonas de Combate de este Campeonato
+                if(dataSnapshot.exists()){
+                    for(DataSnapshot zona: dataSnapshot.getChildren()){
+                        ZonasCombate z = zona.getValue(ZonasCombate.class);
+                        lista.add(z);
+                    }
+                } else {
+                    lista = new ArrayList<>();
+                }
+                mListaActualizada = lista;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // Una vez localizado el Campeonato a actualizar y modificada a su lista de zonas de combate
+        // deberemos actualizar el Campeonato e insertar los cambios en la BD.
+        if(mListaActualizada.size() > 0){ // Si hemos introducido alguna zona nueva se actualiza el Campeonato
+            // Actualizar Objeto Campeonato
+            mCampeonatoActual.setListaZonasCombate(mListaActualizada);
+            // Mapear Campeonato
+            Map<String, Object> campeonatoActualizado = mCampeonatoActual.toMap();
+            // Crear ruta de actualizacion
+            Map<String, Object> rutaUpdate = new HashMap<>();
+            rutaUpdate.put("/Campeonatos/" + mIdCamp, campeonatoActualizado);
+            // Actualizar BD en la ruta indicada
+            DatabaseReference campDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
+            campDB.updateChildren(rutaUpdate);
+            Toast.makeText(this, "Se ha actualizado la lista de Zonas de Combate del Campeonato actual.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
