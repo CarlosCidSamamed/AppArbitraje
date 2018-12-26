@@ -85,6 +85,8 @@ public class AddZonaCombateActivity extends AppCompatActivity {
     private Campeonatos mCampeonatoActual;
     private List<ZonasCombate> mListaActualizada;
 
+    private boolean mDatosExisten;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -117,6 +119,8 @@ public class AddZonaCombateActivity extends AppCompatActivity {
 
         mIdCombateSeleccionado = "";
         mCombateSeleccionado = new Combates();
+
+        mDatosExisten = false;
 
         mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Campeonatos").child(mIdCamp);
         // mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates");
@@ -313,6 +317,8 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                                                                 return false;
                                                             }
                                                         });
+
+                                                        // Método para el Click en uno de los hijos de la lista de Combates ASIGNADOS a la Zona de Combate.
                                                     } else {
                                                         // Advertencia
                                                     }
@@ -462,22 +468,57 @@ public class AddZonaCombateActivity extends AppCompatActivity {
         }
         // Modificar Combates.idZonaCombate
         mCombateSeleccionado.setIdZonaCombate(idZona);
-        // Convertir el objeto Combates en un HashMap para actualizar la BD
+        // Toast.makeText(this, "ID Zona Combate --> " + mCombateSeleccionado.getIdZonaCombate() + " (método : asignarZonasCombate)", Toast.LENGTH_SHORT).show();
+        // Convertir el objeto Combates en un Map para actualizar la BD
         Map<String, Object> combateModificado = mCombateSeleccionado.toMap();
         // Map con las rutas necesarias para las actualizaciones
         Map<String, Object> rutasUpdate = new HashMap<>();
         // Localizar ZonaCombate en la BD
         localizarZonaCombate(idCamp, idZona);
         if(mZonaSeleccionada != null) {
-            // Convertir el objeto ZonasCombate en un HashMap para actualizar la BD
-            Map<String, Object> zonaModificada = mZonaSeleccionada.toMap();
+            // Zona de Combate
             // Modificar lista de Combates para añadir la entrada correspondiente al Combate indicado.
-            List<DatosExtraZonasCombate> listaDatosZonaModificada = mZonaSeleccionada.getListaDatosExtraCombates();
+            // Crear nuevo objeto con los datos extras para la Zona Seleccionada
+            DatosExtraZonasCombate datos = new DatosExtraZonasCombate(mCombateSeleccionado.getId(), mCombateSeleccionado.getNumCombate(), 0, null);
+            //Buscar el IdCombate del objeto recién creado para evitar duplicados.
+            // Si existe --> Mensaje de AVISO
+            buscarDatosDuplicados(datos.getIdCombate(), mZonaSeleccionada.getListaDatosExtraCombates());
+            if(mDatosExisten){
+                Toast.makeText(this, "Ya existen datos para ese Combate en la Zona de Combate actual. No se han modificado los datos.", Toast.LENGTH_SHORT).show();
+            } else {
+                // Si no existe --> Añadirlo a la lista de DatosExtra de la Zona Seleccionada y Actualizar los Datos correspondientes a la Zona y al Combate
+                mZonaSeleccionada.addToListaDatosExtraCombate(datos);
+                // List<DatosExtraZonasCombate> listaDatosZonaModificada = mZonaSeleccionada.getListaDatosExtraCombates();
+                // Convertir el objeto ZonasCombate en un HashMap para actualizar la BD
+                Map<String, Object> zonaModificada = mZonaSeleccionada.toMap();
+
+                // Actualizar Zona y Combate en BD.
+                DatabaseReference raizBD = FirebaseDatabase.getInstance().getReference("Arbitraje");
+                // Ruta Zona
+                rutasUpdate.put("/ZonasCombate/" + idCamp + "/" + idZona, zonaModificada);
+                // Ruta Combate
+                rutasUpdate.put("/Combates/" + idCat + "/" + idCombate, combateModificado);
+                // Actualización  en la BD
+                raizBD.updateChildren(rutasUpdate);
+                Toast.makeText(this,
+                        "Se ha actualizado la Zona del Combate Seleccionado. Combate Nº " + mCombateSeleccionado.getNumCombate()
+                                + " Zona Nº " + mZonaSeleccionada.getNumZona(),
+                        Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, "No se ha podido ASIGNAR ese Combate a la Zona deseada...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No se ha podido ASIGNAR ese Combate a la Zona deseada...(método : asignarComabteZona) ", Toast.LENGTH_SHORT).show();
         }
-        // Pendiente --> Trabajar con los datos de la Lista para poder localizar los datos deseados y actualizarlos.
-            // Dialog para información referente a los Árbitros asignados al Combate indicado.
+    }
+
+    // Este método se encarga de buscar los datos del Combate especificado para evitar duplicados en la lista de DatosExtra de la Zona a la que se quiere añadir dicho combate.
+    private void buscarDatosDuplicados(String idCombate, List<DatosExtraZonasCombate> lista){
+        // Recorrer la lista buscando una coincidencia
+        for(int i = 0; i < lista.size(); i++){
+            if(lista.get(i).getIdCombate().equals(idCombate)){
+                mDatosExisten = true;
+                return;
+            }
+        }
     }
 
     // Método que se encarga de eliminar un combate de la lista de combates asignados a la zona indicada. Se eliminarán las conexiones entre dicha zona y dicho combate.
@@ -488,7 +529,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
         // Modificar lista de Combates para eliminar la entrada correspondiente al Combate indicado.
     }
 
-    private void insertarDatosZona(final String idCamp, final String numZona){
+    private void insertarDatosZona(final String idCamp, String numZona){
         // Generar ID al insertar la zona en la BD.
         mZonaCombateBD = FirebaseDatabase.getInstance().getReference("Arbitraje").child("ZonasCombate");
         mIdZona = mZonaCombateBD.child(idCamp).push().getKey();
@@ -526,7 +567,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
     // Añadir los combates seleccionados y almacenados en la lista indicada a la zona de combate indicada (idZona e idCamp).
     private void anadirCombatesListaZona(String idZona, String idCamp, final List<Combates> lista){
         // Localizar la zona de Combate
-        mZonaCombateBD = FirebaseDatabase.getInstance().getReference("Arbirtaje/ZonasCombate").child(mIdCamp).child(mIdZona);
+        mZonaCombateBD = FirebaseDatabase.getInstance().getReference("Arbirtaje/ZonasCombate").child(idCamp).child(idZona);
         mZonaCombateBD.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -542,13 +583,22 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                         Combates comb = lista.get(i);
                         // Crear objeto de clase DatosExtraZonasCombate
                         // Se obtienen el idCombate y numCombate del objeto extraido de la lista
-                        // y la información de árbitros se deja sin cubrir hasta que se esepecifique más adelante.
+                        // y la información de árbitros se deja sin cubrir hasta que se especifique más adelante.
                         DatosExtraZonasCombate datos = new DatosExtraZonasCombate(comb.getId(), comb.getNumCombate(), 0, null);
                         // Añadir esos datos a la lista de la Zona de Combate
-                        zona.addToListaDatosExtraCombate(datos);
+                        try {
+                            zona.addToListaDatosExtraCombate(datos);
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
                     }
                     // Actualizar la Zona de Combate en la BD.
-                    Map<String, Object> zonaActualizada = zona.toMap();
+                    Map<String, Object> zonaActualizada = null;
+                    try {
+                        zonaActualizada = zona.toMap();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                     // Crear ruta para actualizar
                     Map<String, Object> rutaUpdate = new HashMap<>();
                     // Indicar ruta
