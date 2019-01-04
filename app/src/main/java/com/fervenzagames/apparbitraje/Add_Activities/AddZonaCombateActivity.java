@@ -264,64 +264,66 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                                         mCombatesDB.addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                    if(dataSnapshot.exists()){
-                                                        for(DataSnapshot combSnapshot: dataSnapshot.getChildren()){
-                                                            Combates comb = combSnapshot.getValue(Combates.class);
-                                                            // Comprobar idZona
-                                                            if(idZona.equals("")){ // Combates Disponibles
-                                                                mListaCombatesDisponibles.add(comb);
-                                                            } else if(idZona.equals(comb.getIdZonaCombate())){ // Combates de la Zona deseada
-                                                                mListaCombates.add(comb);
-                                                            }
+                                                mListaCombatesDisponibles.clear();
+                                                mListaCombates.clear();
+                                                if(dataSnapshot.exists()){
+                                                    for(DataSnapshot combSnapshot: dataSnapshot.getChildren()){
+                                                        Combates comb = combSnapshot.getValue(Combates.class);
+                                                        // Comprobar idZona
+                                                        if(idZona.equals("")){ // Combates Disponibles
+                                                            mListaCombatesDisponibles.add(comb);
+                                                        } else if(idZona.equals(comb.getIdZonaCombate())){ // Combates de la Zona deseada
+                                                            mListaCombates.add(comb);
                                                         }
-                                                        if(mListaCombatesDisponibles.size() == 0){
-                                                            Toast.makeText(AddZonaCombateActivity.this, "Lista de Combates Disponibles VACÍA.", Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            Toast.makeText(AddZonaCombateActivity.this, "Lista de Combates Disponibles --> " + mListaCombatesDisponibles.size() + "elementos.", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                        if(mListaCombates.size() == 0){
-                                                            Toast.makeText(AddZonaCombateActivity.this, "Lista de Combates de la Zona VACÍA.", Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            Toast.makeText(AddZonaCombateActivity.this, "Lista de Combates ZONA --> " + mListaCombatesDisponibles.size() + "elementos.", Toast.LENGTH_SHORT).show();
-                                                        }
+                                                    }
+                                                    if(mListaCombatesDisponibles.size() == 0){
+                                                        Toast.makeText(AddZonaCombateActivity.this, "Lista de Combates Disponibles VACÍA.", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(AddZonaCombateActivity.this, "Lista de Combates Disponibles --> " + mListaCombatesDisponibles.size() + "elementos.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    if(mListaCombates.size() == 0){
+                                                        Toast.makeText(AddZonaCombateActivity.this, "Lista de Combates de la Zona VACÍA.", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(AddZonaCombateActivity.this, "Lista de Combates ZONA --> " + mListaCombatesDisponibles.size() + "elementos.", Toast.LENGTH_SHORT).show();
+                                                    }
 
-                                                        // Procesar datos para mostrarlos en los ExpandableListViews
-                                                        procesarDatosLista(mListaCombatesDisponibles, true);
-                                                        procesarDatosLista(mListaCombates, false);
-                                                        // Cargar datos en los ExpandableListViews
-                                                        cargarCombates(mListaCombatesDisponiblesView, mListaTitulosDisp, mListaDetalleDisp,true);
-                                                        cargarCombates(mListaCombatesView, mListaTitulos, mListaDetalle, false);
+                                                    // Procesar datos para mostrarlos en los ExpandableListViews
+                                                    procesarDatosLista(mListaCombatesDisponibles, true);
+                                                    procesarDatosLista(mListaCombates, false);
+                                                    // Cargar datos en los ExpandableListViews
+                                                    cargarCombates(mListaCombatesDisponiblesView, mListaTitulosDisp, mListaDetalleDisp,true);
+                                                    cargarCombates(mListaCombatesView, mListaTitulos, mListaDetalle, false);
 
-                                                        // Método para el Click en uno de los hijos de la lista de Combates Disponibles para Asignar a una Zona de Combate.
-                                                        mListaCombatesDisponiblesView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                                                            @Override
-                                                            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                                                                mListaCombatesDisponibles.clear();
-                                                                if(mListaTitulosDisp.size() > 0){
-                                                                    String numCombate = mListaTitulosDisp.get(groupPosition);
-                                                                    Toast.makeText(AddZonaCombateActivity.this, "NumCombate " + numCombate, Toast.LENGTH_SHORT).show();
-                                                                    // Capturar el valor del ID del Combate seleccionado
-                                                                    String idCombate = mListaIDsDisp.get(groupPosition);
-                                                                    // Capturar el valor del ID de la Categoría del Combate seleccionado.
-                                                                    String idCat = mListaIDsCatDisp.get(groupPosition);
-                                                                    // Capturar el valor del ID de la Modalidad del Combate seleccionado.
-                                                                    String idMod = mListaIDsModDisp.get(groupPosition);
-                                                                    // Abrir el Dialog con el detalle del Combate.
-                                                                    abrirDialog(idCombate, idCat, idMod);
-                                                                    // Capturar el ID del Combate seleccionado para poder cambiarlo de lista de Combates.
-                                                                    mIdCombateSeleccionado = idCombate;
-                                                                    localizarCombate(idCat, idCombate);
-                                                                } else {
-                                                                    Toast.makeText(AddZonaCombateActivity.this, "En este momemto no existen combates disponibles...", Toast.LENGTH_SHORT).show();
-                                                                }
-                                                                return false;
+                                                    // Método para el Click en uno de los hijos de la lista de Combates Disponibles para Asignar a una Zona de Combate.
+                                                    mListaCombatesDisponiblesView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                                                        @Override
+                                                        public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                                                            mListaCombatesDisponibles.clear();
+                                                            if(mListaTitulosDisp.size() > 0){
+                                                                String numCombate = mListaTitulosDisp.get(groupPosition);
+                                                                Toast.makeText(AddZonaCombateActivity.this, "NumCombate " + numCombate, Toast.LENGTH_SHORT).show();
+                                                                // Capturar el valor del ID del Combate seleccionado
+                                                                String idCombate = mListaIDsDisp.get(groupPosition);
+                                                                // Capturar el valor del ID de la Categoría del Combate seleccionado.
+                                                                String idCat = mListaIDsCatDisp.get(groupPosition);
+                                                                // Capturar el valor del ID de la Modalidad del Combate seleccionado.
+                                                                String idMod = mListaIDsModDisp.get(groupPosition);
+                                                                // Abrir el Dialog con el detalle del Combate.
+                                                                abrirDialog(idCombate, idCat, idMod);
+                                                                // Capturar el ID del Combate seleccionado para poder cambiarlo de lista de Combates.
+                                                                mIdCombateSeleccionado = idCombate;
+                                                                localizarCombate(idCat, idCombate);
+                                                            } else {
+                                                                Toast.makeText(AddZonaCombateActivity.this, "En este momemto no existen combates disponibles...", Toast.LENGTH_SHORT).show();
                                                             }
-                                                        });
+                                                            return false;
+                                                        }
+                                                    });
 
                                                         // Método para el Click en uno de los hijos de la lista de Combates ASIGNADOS a la Zona de Combate.
-                                                    } else {
-                                                        // Advertencia
-                                                    }
+                                                } else {
+                                                    // Advertencia
+                                                }
                                             }
 
                                             @Override
@@ -506,7 +508,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "No se ha podido ASIGNAR ese Combate a la Zona deseada...(método : asignarComabteZona) ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No se ha podido ASIGNAR ese Combate a la Zona deseada...(método : asignarCombateZona) ", Toast.LENGTH_SHORT).show();
         }
     }
 

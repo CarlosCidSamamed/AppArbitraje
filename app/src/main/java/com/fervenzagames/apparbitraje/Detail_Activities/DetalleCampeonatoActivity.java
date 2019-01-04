@@ -109,7 +109,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         campDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
         modsDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idCamp);
         arbisDB = campDB.child("listaArbitros");
-        zonasDB = campDB.child("listaZonas");
+        zonasDB = FirebaseDatabase.getInstance().getReference("Arbitraje/ZonasCombate").child(idCamp);
 
         campDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -191,6 +191,24 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
 
                 // Y se inicia dicho Intent
                 startActivity(modIntent);
+            }
+        });
+
+        mListaZonasView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Notificar de cambios al adapter
+
+                ZonasCombate zona = mListaZonas.get(position);
+                Intent detalleZona = new Intent(DetalleCampeonatoActivity.this, DetalleZonaActivity.class);
+                String idZona = zona.getIdZona();
+                String idCamp = zona.getIdCamp();
+                Bundle extras = new Bundle();
+                extras.putString("idZona", idZona);
+                extras.putString("idCamp", idCamp);
+                detalleZona.putExtras(extras);
+                startActivity(detalleZona);
+
             }
         });
 
@@ -297,6 +315,23 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         });
 
         // Lista de Zonas de Combate de este Campeonato.
+        zonasDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mListaZonas.clear();
+                for(DataSnapshot zonaSnap : dataSnapshot.getChildren()){
+                    ZonasCombate zona = zonaSnap.getValue(ZonasCombate.class);
+                    mListaZonas.add(zona);
+                }
+                ZonasMiniList adapter = new ZonasMiniList(DetalleCampeonatoActivity.this, mListaZonas);
+                mListaZonasView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         // Lista de Modalidades de este campeonato
         modsDB.addValueEventListener(new ValueEventListener() {

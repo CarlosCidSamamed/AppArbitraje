@@ -1,6 +1,7 @@
 package com.fervenzagames.apparbitraje.Adapters;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -34,7 +35,14 @@ public class ZonasMiniList extends ArrayAdapter {
         convertView = LayoutInflater.from(context).inflate(R.layout.zona_layout_mini, null);
 
         TextView numero = convertView.findViewById(R.id.zona_mini_numero);
-        numero.setText(zona.getNumZona());
+        String num = String.valueOf(zona.getNumZona());
+        numero.setTypeface(numero.getTypeface(), Typeface.BOLD);
+        numero.setText(num);
+
+        TextView numCombates = convertView.findViewById(R.id.zona_mini_numCombates);
+        String combates = String.valueOf(zona.getListaDatosExtraCombates().size());
+        String comb = " Combates : " + combates;
+        numCombates.setText(comb);
 
         return convertView;
     }
