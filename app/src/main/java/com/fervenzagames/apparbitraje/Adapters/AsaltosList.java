@@ -1,6 +1,7 @@
 package com.fervenzagames.apparbitraje.Adapters;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -44,7 +45,8 @@ public class AsaltosList extends ArrayAdapter<Asaltos> {
             e.printStackTrace();
         }
 
-        estado.setText(asalto.estadoToString(asalto.getEstado()));
+        String est = asalto.estadoToString(asalto.getEstado());
+        estado.setText(est);
         ganador.setText(asalto.getGanador());
 
         return  convertView;

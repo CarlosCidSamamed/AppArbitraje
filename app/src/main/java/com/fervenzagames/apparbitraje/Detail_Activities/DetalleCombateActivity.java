@@ -260,6 +260,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
                 Asaltos asalto = mListaAsaltos.get(position);
                 Bundle extras = new Bundle();
                 extras.putString("idCombate", idCombate);
+                extras.putString("idAsalto", asalto.getId());
                 Intent detalleAsaltoIntent = new Intent(DetalleCombateActivity.this, DetalleAsaltoActivity.class);
                 detalleAsaltoIntent.putExtras(extras);
                 startActivity(detalleAsaltoIntent);

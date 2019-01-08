@@ -127,7 +127,7 @@ public class DetalleCombateDialog extends AppCompatDialogFragment {
 
                                 Competidores comp = dataSnapshot.getValue(Competidores.class);
 
-                                String nombre = comp.getnombreCompleto();
+                                String nombre = comp.getNombreCompleto();
                                 // Toast.makeText(getContext(), "Nombre Completo --> " + nombre, Toast.LENGTH_SHORT).show();
                                 String foto = comp.getFoto();
 
