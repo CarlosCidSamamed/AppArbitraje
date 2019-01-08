@@ -116,7 +116,12 @@
         <activity
             android:name=".Add_Activities.AsignarArbitrosCombatesZonaActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".Detail_Activities.DetalleZonaActivity"></activity>
+        <activity
+            android:name=".Detail_Activities.DetalleZonaActivity"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".Detail_Activities.DetalleAsaltoActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
