@@ -37,7 +37,13 @@ public class AsaltosList extends ArrayAdapter<Asaltos> {
         TextView estado = convertView.findViewById(R.id.asalto_single_estado);
         TextView ganador = convertView.findViewById(R.id.asalto_single_ganador);
 
-        numero.setText(asalto.getNumAsalto());
+        try {
+            String num = String.valueOf(asalto.getNumAsalto());
+            numero.setText(num);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         estado.setText(asalto.estadoToString(asalto.getEstado()));
         ganador.setText(asalto.getGanador());
 

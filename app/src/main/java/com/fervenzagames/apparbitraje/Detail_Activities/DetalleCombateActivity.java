@@ -91,6 +91,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
         mNombreAzul = findViewById(R.id.comb_detalle_Azul_nombre);
 
         mListaAsaltosView = findViewById(R.id.comb_detalle_listaAsaltos);
+        mListaAsaltos = new ArrayList<>();
 
         extras = getIntent().getExtras();
         try {
@@ -102,7 +103,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates").child(idCombate);    // Datos de este Combate
+        mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates").child(idCat).child(idCombate);    // Datos de este Combate
         mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Campeonatos").child(idCamp);                // Campeonato de este Combate
         mModDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Modalidades").child(idCamp).child(idMod);    // Modalidad de este Combate
         mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Categorias").child(idMod).child(idCat);      // Categoría de este Combate
@@ -155,6 +156,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                  numZona = dataSnapshot.child("numZona").getValue().toString();
+                 numZona = "Zona de Combate : " + numZona;
                  mZona.setText(numZona);
             }
 
@@ -172,6 +174,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
                     Asaltos asalto = asaltoSnapshot.getValue(Asaltos.class);
                     mListaAsaltos.add(asalto);
                 }
+                Toast.makeText(DetalleCombateActivity.this, "Nº de Asaltos de este Combate : " + mListaAsaltos.size(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -186,7 +189,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){
                     try {
                         // Estado
-                        String estado = dataSnapshot.child("estado").getValue().toString();
+                        String estado = dataSnapshot.child("estadoCombate").getValue().toString();
                         mEstado.setText(estado);
                         // Ganador
                         String ganador = dataSnapshot.child("ganador").getValue().toString();
@@ -198,6 +201,8 @@ public class DetalleCombateActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 String nombreRojo = dataSnapshot.child("nombre").getValue().toString();
+                                nombreRojo = nombreRojo + " " + dataSnapshot.child("apellido1").getValue().toString();
+                                nombreRojo = nombreRojo + " " + dataSnapshot.child("apellido2").getValue().toString();
                                 String fotoRojo = dataSnapshot.child("foto").getValue().toString();
                                 mNombreRojo.setText(nombreRojo);
                                 Picasso.get().load(fotoRojo).into(mFotoRojo);
@@ -215,6 +220,8 @@ public class DetalleCombateActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 String nombreAzul = dataSnapshot.child("nombre").getValue().toString();
+                                nombreAzul = nombreAzul + " " + dataSnapshot.child("apellido1").getValue().toString();
+                                nombreAzul = nombreAzul + " " + dataSnapshot.child("apellido2").getValue().toString();
                                 String fotoAzul = dataSnapshot.child("foto").getValue().toString();
                                 mNombreAzul.setText(nombreAzul);
                                 Picasso.get().load(fotoAzul).into(mFotoAzul);

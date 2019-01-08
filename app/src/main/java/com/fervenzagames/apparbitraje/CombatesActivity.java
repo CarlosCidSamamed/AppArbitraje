@@ -321,7 +321,7 @@ public class CombatesActivity extends AppCompatActivity {
 
                 Intent detalleCombateIntent = new Intent(CombatesActivity.this, DetalleCombateActivity.class);
                 detalleCombateIntent.putExtras(extras);
-                // startActivity(detalleCombateIntent);
+                startActivity(detalleCombateIntent);
                 Toast.makeText(CombatesActivity.this, "Mostrar detalle del Combate " + comb.getId() , Toast.LENGTH_SHORT).show();
             }
         });
