@@ -17,9 +17,9 @@ public class IncidenciasExpandableListAdapter extends BaseExpandableListAdapter 
 
     private Context context;
     private List<String> expandableListTitle;
-    private HashMap<String, List<String>> expandableListDetail;
+    private List<String> expandableListDetail;
 
-    public IncidenciasExpandableListAdapter(Context context, List<String> expandableListTitle, HashMap<String, List<String>> expandableListDetail){
+    public IncidenciasExpandableListAdapter(Context context, List<String> expandableListTitle, List<String> expandableListDetail){
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
@@ -27,8 +27,7 @@ public class IncidenciasExpandableListAdapter extends BaseExpandableListAdapter 
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition))
-                .get(expandedListPosition);
+        return this.expandableListDetail.get(expandedListPosition);
     }
 
     @Override
@@ -54,8 +53,7 @@ public class IncidenciasExpandableListAdapter extends BaseExpandableListAdapter 
     @Override
     public int getChildrenCount(int listPosition) {
         if(this.expandableListDetail.size() > 0) {
-            return this.expandableListDetail.get(this.expandableListTitle.get(listPosition))
-                    .size();
+            return this.expandableListDetail.size();
         } else {
             return 0;
         }

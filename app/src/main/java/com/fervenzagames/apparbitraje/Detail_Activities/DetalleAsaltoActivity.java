@@ -5,10 +5,15 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Adapters.IncidenciasExpandableListAdapter;
+import com.fervenzagames.apparbitraje.Adapters.PuntuacionesExpandableListAdapter;
+import com.fervenzagames.apparbitraje.Dialogs.DetalleIncidenciaDialog;
+import com.fervenzagames.apparbitraje.Dialogs.DetallePuntuacionDialog;
 import com.fervenzagames.apparbitraje.Models.Asaltos;
 import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.fervenzagames.apparbitraje.Models.Incidencias;
@@ -45,11 +50,23 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private List<Puntuaciones> listaPunts;
     private List<Incidencias> listaIncs;
 
+    private List<String> listaTitulosPunts;
+    private List<String> listaDetallesPunts;
+
+    private List<String> listaTitulosIncs;
+    private List<String> listaDetallesIncs;
+
+    private List<String> listaIDsPunts;
+    private List<String> listaIDsIncs;
+
     private DatabaseReference mAsaltoDB;
     private DatabaseReference mGanadorDB;
     private String mIdCombate;
     private String mIdAsalto;
     private String mIdGanador;
+
+    private DatabaseReference mPuntsDB;
+    private DatabaseReference mIncsDB;
 
 
     @Override
@@ -75,6 +92,13 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
         listaPunts = new ArrayList<>();
         listaIncs = new ArrayList<>();
+
+        listaTitulosPunts = new ArrayList<>();
+        listaDetallesPunts = new ArrayList<>();
+        listaTitulosIncs = new ArrayList<>();
+        listaDetallesIncs = new ArrayList<>();
+        listaIDsPunts = new ArrayList<>();
+        listaIDsIncs = new ArrayList<>();
 
         Bundle extras = getIntent().getExtras();
         try {
@@ -165,12 +189,63 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                         }
                         //endregion
                         //region Lista Punts
-                        // Crear Adapter
-                        // Asignar el adapter al View
+                        // Obtener la lista de Puntuaciones para este Asalto
+                        listaPunts.clear();
+                        listaPunts = asalto.getListaPuntuaciones();
+                        if(listaPunts == null){
+                            Toast.makeText(DetalleAsaltoActivity.this, "No existen Puntuaciones para este Asalto", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Procesar lista para obtener Headers y Children para el ExpandableListView
+                            procesarListaPuntuaciones(listaPunts);
+                            // Crear Adapter
+                            PuntuacionesExpandableListAdapter adapterPunts = new PuntuacionesExpandableListAdapter(DetalleAsaltoActivity.this, listaTitulosPunts, listaDetallesPunts);
+                            // Asignar el adapter al View
+                            mListaPuntsView.setAdapter(adapterPunts);
+                            adapterPunts.notifyDataSetChanged();
+                        }
                         //endregion
                         //region Lista Incs
-                        // Crear Adapter
-                        // Asignar el adapter al View
+                        // Obtener la lista de Incidencias para este Asalto
+                        listaIncs.clear();
+                        listaIncs = asalto.getListaIncidencias();
+                        if(listaIncs == null)
+                        {
+                            Toast.makeText(DetalleAsaltoActivity.this, "No existen Incidencias para este Asalto", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Procesar lista para obtener Headers y Children para el ExpandableListView
+                            procesarListaIncidencias(listaIncs);
+                            // Crear Adapter
+                            IncidenciasExpandableListAdapter adapterIncs = new IncidenciasExpandableListAdapter(DetalleAsaltoActivity.this, listaTitulosIncs, listaDetallesIncs);
+                            // Asignar el adapter al View
+                            mListaIncsView.setAdapter(adapterIncs);
+                            adapterIncs.notifyDataSetChanged();
+                        }
+                        //endregion
+                        //region Click en una Puntuación
+                        mListaPuntsView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                            @Override
+                            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                                listaPunts.clear();
+                                if(listaTitulosPunts.size() > 0){
+                                    String idPunt = listaIDsPunts.get(groupPosition);
+                                    abrirDialogPunt(idPunt, mIdAsalto);
+                                }
+                                return false;
+                            }
+                        });
+                        //endregion
+                        //region Click en una Incidencia
+                        mListaIncsView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                            @Override
+                            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                                listaIncs.clear();
+                                if(listaTitulosIncs.size() > 0){
+                                    String idInc = listaIDsIncs.get(groupPosition);
+                                    abrirDialogInc(idInc, mIdAsalto);
+                                }
+                                return false;
+                            }
+                        });
                         //endregion
                     }
                 }
@@ -184,4 +259,53 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void procesarListaPuntuaciones(List<Puntuaciones> lista){
+        List<String> titulos = new ArrayList<>();
+        List<String> detalles = new ArrayList<>();
+        List<String> listaIDs = new ArrayList<>();
+        for(int i = 0; i < lista.size(); i++){
+            titulos.add(lista.get(i).getConcepto());
+            detalles.add(lista.get(i).getTipoAtaque());
+            listaIDs.add(lista.get(i).getId());
+        }
+        listaTitulosPunts = titulos;
+        listaDetallesPunts = detalles;
+        listaIDsPunts = listaIDs;
+        Toast.makeText(this, "Tamaño de la lista de Puntuaciones para este Asalto : " + lista.size(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void procesarListaIncidencias(List<Incidencias> lista){
+        List<String> titulos = new ArrayList<>();
+        List<String> detalles = new ArrayList<>();
+        List<String> listaIDs = new ArrayList<>();
+        for(int i = 0; i < lista.size(); i++){
+            titulos.add(lista.get(i).getTipo());
+            detalles.add(lista.get(i).getDescripcion());
+            listaIDs.add(lista.get(i).getId());
+        }
+        listaTitulosIncs = titulos;
+        listaDetallesIncs = detalles;
+        listaIDsIncs = listaIDs;
+        Toast.makeText(this, "Tamaño de la lista de Incidencias para este Asalto : " + lista.size(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void abrirDialogPunt(String idPunt, String idAsalto){
+        DetallePuntuacionDialog dialog = new DetallePuntuacionDialog();
+        Bundle extras = new Bundle();
+        extras.putString("idPunt", idPunt);
+        extras.putString("idAsalto", idAsalto);
+        dialog.setArguments(extras);
+        dialog.show(getSupportFragmentManager(), "detalle puntuacion dialog");
+    }
+
+    private void abrirDialogInc(String idInc, String idAsalto){
+        DetalleIncidenciaDialog dialog = new DetalleIncidenciaDialog();
+        Bundle extras = new Bundle();
+        extras.putString("idInc", idInc);
+        extras.putString("idAsalto", idAsalto);
+        dialog.setArguments(extras);
+        dialog.show(getSupportFragmentManager(), "detalle incidencia dialog");
+    }
+
 }

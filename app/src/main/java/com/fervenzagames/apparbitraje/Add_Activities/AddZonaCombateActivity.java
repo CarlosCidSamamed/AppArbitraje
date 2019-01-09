@@ -373,7 +373,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
             detalle.add(lista.get(i).getEstadoCombate().toString());
             // Obtener el ID del Combate para poder pasárselo al Dialog del Detalle
             listaIDs.add(lista.get(i).getId());
-            // Para poder buscar un combate determinado necesstamos el ID de la Categoría
+            // Para poder buscar un combate determinado necesitamos el ID de la Categoría
             listaIDsCategoria.add(lista.get(i).getCategoria());
             // Para poder mostrar el nombre de la Categoría debemos acceder a ella y para eso necesitamos el ID de la Modalidad
             listaIDsMod.add(lista.get(i).getModalidad());
