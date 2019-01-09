@@ -217,4 +217,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_titulo2" />
 
+    <Button
+        android:id="@+id/detalle_asalto_iniciarBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/boton_capsula_gris"
+        android:text="@string/iniciar"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.552"
+        app:layout_constraintStart_toEndOf="@+id/detalle_asalto_estado"
+        app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_app_bar" />
+
 </android.support.constraint.ConstraintLayout>

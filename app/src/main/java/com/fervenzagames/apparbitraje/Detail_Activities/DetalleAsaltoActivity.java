@@ -1,11 +1,14 @@
 package com.fervenzagames.apparbitraje.Detail_Activities;
 
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +49,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private TextView mDuracion;
     private ExpandableListView mListaPuntsView;
     private ExpandableListView mListaIncsView;
+    private Button mIniciarBtn;
 
     private List<Puntuaciones> listaPunts;
     private List<Incidencias> listaIncs;
@@ -89,6 +93,10 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         mDuracion = findViewById(R.id.detalle_asalto_duracion);
         mListaPuntsView = findViewById(R.id.detalle_asalto_listaPunts);
         mListaIncsView   = findViewById(R.id.detalle_asalto_listaIncs);
+        mIniciarBtn = findViewById(R.id.detalle_asalto_iniciarBtn);
+
+        // Por defecto el botón de Iniciar se oculta si el estado del Asalto no es Pendiente.
+        mIniciarBtn.setVisibility(View.INVISIBLE);
 
         listaPunts = new ArrayList<>();
         listaIncs = new ArrayList<>();
@@ -127,6 +135,8 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                         switch(estado){
                             case "Pendiente":{
                                 mEstado.setTextColor(res.getColor(R.color.colorAccent2));
+                                // Mostrar el botón de Iniciar el Asalto
+                                mIniciarBtn.setVisibility(View.VISIBLE);
                                 break;
                             }
                             case "Finalizado":{
@@ -244,6 +254,30 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                                     abrirDialogInc(idInc, mIdAsalto);
                                 }
                                 return false;
+                            }
+                        });
+                        //endregion
+                        //region Click en mIniciarBtn
+                        mIniciarBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Abrir Dialog de Confirmación
+                                AlertDialog.Builder builder = new AlertDialog.Builder(DetalleAsaltoActivity.this);
+                                builder.setMessage("¿Desea comenzar el arbitraje de este Asalto?")
+                                        .setPositiveButton("aceptar", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Toast.makeText(DetalleAsaltoActivity.this, "Se ha confirmado el Inicio del Asalto ", Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Toast.makeText(DetalleAsaltoActivity.this, "Se ha cancelado el Inicio del Asalto", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
                             }
                         });
                         //endregion
