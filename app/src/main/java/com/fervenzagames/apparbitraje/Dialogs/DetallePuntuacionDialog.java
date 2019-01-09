@@ -57,7 +57,14 @@ public class DetallePuntuacionDialog extends AppCompatDialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
+                })
+                .setPositiveButton("detalle", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getActivity(), "Se ha pulsado el botón Detalle", Toast.LENGTH_SHORT).show();
+                    }
                 });
+
 
         mValor = view.findViewById(R.id.punt_dialog_valor);
         mFotoJuezView = view.findViewById(R.id.punt_dialog_fotoJuez);
@@ -69,8 +76,8 @@ public class DetallePuntuacionDialog extends AppCompatDialogFragment {
         Bundle extras = getArguments();
         try {
             String idPunt = extras.getString("idPunt");
-
-            cargarDatosPuntuacion(idPunt);
+            String idAsalto = extras.getString("idAsalto");
+            cargarDatosPuntuacion(idPunt, idAsalto); // Las puntuaciones dependen de los asaltos.
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -78,16 +85,18 @@ public class DetallePuntuacionDialog extends AppCompatDialogFragment {
         return builder.create();
     }
 
-    private void cargarDatosPuntuacion(String idPunt){
-        mPuntDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Puntuaciones").child(idPunt);
+    private void cargarDatosPuntuacion(String idPunt, String idAsalto){
+        mPuntDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Puntuaciones").child(idAsalto).child(idPunt);
         Query consulta = mPuntDB;
         consulta.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
-                    Toast.makeText(getActivity(), "Error al cargar los datos de la Puntuacion en el cuadro de Diálogo...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Error al cargar los datos de la Puntuación en el cuadro de Diálogo...", Toast.LENGTH_SHORT).show();
                 } else {
                     Puntuaciones punt = dataSnapshot.getValue(Puntuaciones.class);
+                    String valor = "Valor " + String.valueOf(punt.getValor());
+                    mValor.setText(valor);
                     String dniJuez = punt.getDniJuez();
                     String idComp = punt.getIdCompetidor();
                     getFotoJuez(dniJuez);
@@ -176,7 +185,7 @@ public class DetallePuntuacionDialog extends AppCompatDialogFragment {
         }
     }
 
-    // PENDIENTE
+    // PENDIENTE de que se incluya la información de la ZonaContacto de un golpe.
     private void mostrarZonaContacto(String zonaContacto){
 
     }
