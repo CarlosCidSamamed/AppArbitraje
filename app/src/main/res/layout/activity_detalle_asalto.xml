@@ -131,6 +131,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_desc" />
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/detalle_asalto_fotoRojo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:contentDescription="@string/foto_del_competidor_rojo"
+        android:src="@drawable/default_avatar"
+        app:civ_border_color="@color/colorRojo"
+        app:civ_border_width="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/detalle_asalto_puntRojo"
+        app:layout_constraintHorizontal_bias="0.637"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_nombreGanador" />
+
     <TextView
         android:id="@+id/detalle_asalto_puntRojo"
         android:layout_width="wrap_content"
@@ -166,6 +184,24 @@
         app:layout_constraintHorizontal_bias="0.13"
         app:layout_constraintStart_toEndOf="@+id/detalle_asalto_puntRojo"
         app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_ganador" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/detalle_asalto_fotoAzul"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:contentDescription="@string/foto_del_competidor_azul"
+        android:src="@drawable/default_avatar"
+        app:civ_border_color="@color/colorAccent2"
+        app:civ_border_width="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintStart_toEndOf="@+id/detalle_asalto_puntAzul"
+        app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_nombreGanador" />
 
     <TextView
         android:id="@+id/detalle_asalto_titulo1"

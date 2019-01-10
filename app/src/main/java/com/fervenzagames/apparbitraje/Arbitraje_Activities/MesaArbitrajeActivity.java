@@ -238,11 +238,11 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         //region Datos Bundle Extra y DBref
         Intent intent =  getIntent();
         Bundle extras = intent.getExtras();
-        String idCamp = extras.getString("idCamp");
-        String idMod = extras.getString("idMod");
-        String idCat = extras.getString("idCat");
-        mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates").child("idCat");   // Lista de Combates de esta Categoría.
-        mCompetidoresDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Competidores");          // Lista de Compatidores de la BD.
+        //String idCamp = extras.getString("idCamp");
+        //String idMod = extras.getString("idMod");
+        //String idCat = extras.getString("idCat");
+        //mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates").child(idCat);   // Lista de Combates de esta Categoría.
+        mCompetidoresDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Competidores");          // Lista de Compatidores de la BD.
         //endregion
 
         //region UI ROJO

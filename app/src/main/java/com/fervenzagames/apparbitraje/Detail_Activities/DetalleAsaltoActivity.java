@@ -1,6 +1,7 @@
 package com.fervenzagames.apparbitraje.Detail_Activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.IncidenciasExpandableListAdapter;
 import com.fervenzagames.apparbitraje.Adapters.PuntuacionesExpandableListAdapter;
+import com.fervenzagames.apparbitraje.Arbitraje_Activities.MesaArbitrajeActivity;
 import com.fervenzagames.apparbitraje.Dialogs.DetalleIncidenciaDialog;
 import com.fervenzagames.apparbitraje.Dialogs.DetallePuntuacionDialog;
 import com.fervenzagames.apparbitraje.Models.Asaltos;
@@ -41,7 +43,11 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private TextView mNumero;
     private CircleImageView mFotoGanador;
     private TextView mNombreGanador;
+    private CircleImageView mFotoRojo;
+    private String urlFotoRojo;
     private TextView mPuntRojo;
+    private CircleImageView mFotoAzul;
+    private String urlFotoAzul;
     private TextView mPuntAzul;
     private TextView mEstado;
     private TextView mMotivo;
@@ -68,6 +74,8 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private String mIdCombate;
     private String mIdAsalto;
     private String mIdGanador;
+    private String mIdRojo;
+    private String mIdAzul;
 
     private DatabaseReference mPuntsDB;
     private DatabaseReference mIncsDB;
@@ -85,7 +93,9 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         mNumero = findViewById(R.id.detalle_asalto_num);
         mFotoGanador = findViewById(R.id.detalle_asalto_fotoGanador);
         mNombreGanador = findViewById(R.id.detalle_asalto_nombreGanador);
+        mFotoRojo = findViewById(R.id.detalle_asalto_fotoRojo);
         mPuntRojo = findViewById(R.id.detalle_asalto_puntRojo);
+        mFotoAzul = findViewById(R.id.detalle_asalto_fotoAzul);
         mPuntAzul = findViewById(R.id.detalle_asalto_puntAzul);
         mEstado = findViewById(R.id.detalle_asalto_estado);
         mMotivo = findViewById(R.id.detalle_asalto_motivo);
@@ -115,6 +125,12 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
             mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos").child(mIdCombate).child(mIdAsalto);
 
             mGanadorDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Competidores");
+
+            urlFotoRojo = extras.getString("urlFotoRojo");
+            urlFotoAzul = extras.getString("urlFotoAzul");
+
+            mIdRojo = extras.getString("idRojo");
+            mIdAzul = extras.getString("idAzul");
 
             Query consulta = mAsaltoDB;
             consulta.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -185,13 +201,15 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                             }
                         }
                         //endregion
-                        //region Puntuación ROJO
+                        //region Puntuación y Foto ROJO
                         String puntRojo = String.valueOf(asalto.getPuntuacionRojo());
                         mPuntRojo.setText(puntRojo);
+                        Picasso.get().load(urlFotoRojo).into(mFotoRojo);
                         //endregion
-                        //region Puntuación AZUL
+                        //region Puntuación y Foto AZUL
                         String puntAzul = String.valueOf(asalto.getPuntuacionAzul());
                         mPuntAzul.setText(puntAzul);
+                        Picasso.get().load(urlFotoAzul).into(mFotoAzul);
                         //endregion
                         //region Duración
                         if(!asalto.getDuracion().equals("")){
@@ -268,6 +286,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 Toast.makeText(DetalleAsaltoActivity.this, "Se ha confirmado el Inicio del Asalto ", Toast.LENGTH_SHORT).show();
+                                                cargarDatosArbitrajeAsalto(mIdAsalto);
                                             }
                                         })
                                         .setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
@@ -340,6 +359,18 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         extras.putString("idAsalto", idAsalto);
         dialog.setArguments(extras);
         dialog.show(getSupportFragmentManager(), "detalle incidencia dialog");
+    }
+
+    // Este método se encargará de cargar los datos del asalto para poder iniciar el arbitraje del asalto indicado mediante el ID.
+    private void cargarDatosArbitrajeAsalto(String idAsalto){
+        Bundle extras = new Bundle();
+        extras.putString("idComb", mIdCombate);
+        extras.putString("idAsalto", idAsalto);
+        extras.putString("idRojo", mIdRojo);
+        extras.putString("idAzul", mIdAzul);
+        Intent arbitrarIntent = new Intent(DetalleAsaltoActivity.this, MesaArbitrajeActivity.class);
+        arbitrarIntent.putExtras(extras);
+        startActivity(arbitrarIntent);
     }
 
 }

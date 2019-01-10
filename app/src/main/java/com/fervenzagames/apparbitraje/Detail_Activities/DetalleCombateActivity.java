@@ -45,6 +45,11 @@ public class DetalleCombateActivity extends AppCompatActivity {
     private TextView mNombreRojo;
     private CircleImageView mFotoAzul;
     private TextView mNombreAzul;
+    // Para pasar como extras
+    private String urlFotoRojo;
+    private String urlFotAzul;
+    private String mIdRojo;
+    private String mIdAzul;
 
     private ListView mListaAsaltosView;
     private List<Asaltos> mListaAsaltos;
@@ -199,6 +204,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
                         mGanador.setText(ganador);
                         // Datos Rojo
                         String idRojo = dataSnapshot.child("idRojo").getValue().toString();
+                        mIdRojo = idRojo;
                         Query consultaRojo = mRojoDB.child(idRojo);
                         consultaRojo.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -207,6 +213,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
                                 nombreRojo = nombreRojo + " " + dataSnapshot.child("apellido1").getValue().toString();
                                 nombreRojo = nombreRojo + " " + dataSnapshot.child("apellido2").getValue().toString();
                                 String fotoRojo = dataSnapshot.child("foto").getValue().toString();
+                                urlFotoRojo = fotoRojo;
                                 mNombreRojo.setText(nombreRojo);
                                 Picasso.get().load(fotoRojo).into(mFotoRojo);
                             }
@@ -218,6 +225,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
                         });
                         // Datos Azul
                         String idAzul = dataSnapshot.child("idAzul").getValue().toString();
+                        mIdAzul = idAzul;
                         Query consultaAzul = mAzulDB.child(idAzul);
                         consultaAzul.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -226,6 +234,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
                                 nombreAzul = nombreAzul + " " + dataSnapshot.child("apellido1").getValue().toString();
                                 nombreAzul = nombreAzul + " " + dataSnapshot.child("apellido2").getValue().toString();
                                 String fotoAzul = dataSnapshot.child("foto").getValue().toString();
+                                urlFotAzul = fotoAzul;
                                 mNombreAzul.setText(nombreAzul);
                                 Picasso.get().load(fotoAzul).into(mFotoAzul);
                             }
@@ -261,6 +270,10 @@ public class DetalleCombateActivity extends AppCompatActivity {
                 Bundle extras = new Bundle();
                 extras.putString("idCombate", idCombate);
                 extras.putString("idAsalto", asalto.getId());
+                extras.putString("urlFotoRojo", urlFotoRojo);
+                extras.putString("urlFotoAzul", urlFotAzul);
+                extras.putString("idRojo", mIdRojo);
+                extras.putString("idAzul", mIdAzul);
                 Intent detalleAsaltoIntent = new Intent(DetalleCombateActivity.this, DetalleAsaltoActivity.class);
                 detalleAsaltoIntent.putExtras(extras);
                 startActivity(detalleAsaltoIntent);
