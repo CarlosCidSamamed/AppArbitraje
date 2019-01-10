@@ -313,7 +313,7 @@ public class CombatesActivity extends AppCompatActivity {
                 extras.putString("idMod", comb.getModalidad());
                 extras.putString("idCat", comb.getCategoria());
                 extras.putString("idCombate", comb.getId());
-                if(comb.getEstadoCombate() != null){
+                if(comb.getEstadoCombate() != null){ //¿¿¿???
                     extras.putString("idZona", comb.getIdZonaCombate());
                 } else {
                     extras.putString("idZona", "");

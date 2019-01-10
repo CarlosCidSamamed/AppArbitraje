@@ -108,7 +108,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
             idMod = extras.getString("idMod");
             idCat = extras.getString("idCat");
             idZona = extras.getString("idZona");
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
         mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Combates").child(idCat).child(idCombate);    // Datos de este Combate
@@ -270,6 +270,7 @@ public class DetalleCombateActivity extends AppCompatActivity {
                 Bundle extras = new Bundle();
                 extras.putString("idCombate", idCombate);
                 extras.putString("idAsalto", asalto.getId());
+                extras.putString("idCat", idCat);
                 extras.putString("urlFotoRojo", urlFotoRojo);
                 extras.putString("urlFotoAzul", urlFotAzul);
                 extras.putString("idRojo", mIdRojo);

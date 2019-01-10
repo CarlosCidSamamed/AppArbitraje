@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.CampeonatosActivity;
+import com.fervenzagames.apparbitraje.Models.Asaltos;
 import com.fervenzagames.apparbitraje.Models.Combates;
 import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.fervenzagames.apparbitraje.R;
@@ -65,8 +66,9 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
     //endregion
 
     //region Database References
-    private DatabaseReference mCombatesDB;
+    private DatabaseReference mCombateDB;
     private DatabaseReference mCompetidoresDB;
+    private DatabaseReference mAsaltoDB;
     //endregion
 
     //region Atributos UI ROJO
@@ -165,7 +167,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.mesa_arbitraje_bar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("SD -85 M ABS (Campeonato X)");
+        getSupportActionBar().setTitle("SD -85 M ABS");
 
         mCrono = (TextView) findViewById(R.id.crono);
         mStartPauseBtn = (Button) findViewById(R.id.pausa_btn);
@@ -177,6 +179,9 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
         estado = Estado.DESCANSO_ENTRE_COMBATES;
         mResetBtn.setVisibility(View.INVISIBLE);
+
+        mNumCombateText = findViewById(R.id.num_combate);
+        mNumAsaltoText = findViewById(R.id.num_asalto);
 
         // Reproducir Sonido Campana
         final MediaPlayer player = MediaPlayer.create(MesaArbitrajeActivity.this, R.raw.bell);
@@ -238,9 +243,12 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         //region Datos Bundle Extra y DBref
         Intent intent =  getIntent();
         Bundle extras = intent.getExtras();
+        String idComb = extras.getString("idComb");
+        String idAsalto = extras.getString("idAsalto");
+
         //String idCamp = extras.getString("idCamp");
         //String idMod = extras.getString("idMod");
-        //String idCat = extras.getString("idCat");
+        String idCat = extras.getString("idCat");
         //mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates").child(idCat);   // Lista de Combates de esta Categoría.
         mCompetidoresDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Competidores");          // Lista de Compatidores de la BD.
         //endregion
@@ -287,6 +295,11 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
             }
         });
+        //endregion
+
+        //region Número de Combate y de Asalto
+        cargarDatosCombate(idCat, idComb);
+        cargarDatosAsalto(idComb, idAsalto);
         //endregion
 
 
@@ -386,6 +399,60 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
     //region Trabajo con la DB
 
     //region Cargar Datos desde la BD
+    // Combate
+    private void cargarDatosCombate(String idCat, String idCombate){
+        mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates").child(idCat).child(idCombate);
+        Query consulta = mCombateDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(MesaArbitrajeActivity.this, "Error al cargar los datos del Combate...", Toast.LENGTH_SHORT).show();
+                } else {
+                    Combates comb = dataSnapshot.getValue(Combates.class);
+                    // Número de Combate
+                    try {
+                        String num = "COMBATE \n" + comb.getNumCombate();
+                        mNumCombateText.setText(num);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    // Asalto
+    private void cargarDatosAsalto(String idCombate, String idAsalto){
+        mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos").child(idCombate).child(idAsalto);
+        Query consulta = mAsaltoDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(MesaArbitrajeActivity.this, "Error al cargar los datos del Asalto...", Toast.LENGTH_SHORT).show();
+                } else {
+                    Asaltos asalto = dataSnapshot.getValue(Asaltos.class);
+                    // Número de Asalto
+                    try {
+                        String num = "ASALTO \n" + asalto.getNumAsalto();
+                        mNumAsaltoText.setText(num);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     // Vamos a localizar el combate en cuestión mediante su Número de Combate dentro de la Categoría y la Modalidad indicadas.
     // En el Bundle se le pasan el idCamp, idMod e idCat.

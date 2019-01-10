@@ -76,6 +76,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private String mIdGanador;
     private String mIdRojo;
     private String mIdAzul;
+    private String mIdCat;
 
     private DatabaseReference mPuntsDB;
     private DatabaseReference mIncsDB;
@@ -120,6 +121,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         try {
+            mIdCat = extras.getString("idCat");
             mIdCombate = extras.getString("idCombate");
             mIdAsalto = extras.getString("idAsalto");
             mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos").child(mIdCombate).child(mIdAsalto);
@@ -131,6 +133,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
             mIdRojo = extras.getString("idRojo");
             mIdAzul = extras.getString("idAzul");
+
 
             Query consulta = mAsaltoDB;
             consulta.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -368,6 +371,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         extras.putString("idAsalto", idAsalto);
         extras.putString("idRojo", mIdRojo);
         extras.putString("idAzul", mIdAzul);
+        extras.putString("idCat", mIdCat);
         Intent arbitrarIntent = new Intent(DetalleAsaltoActivity.this, MesaArbitrajeActivity.class);
         arbitrarIntent.putExtras(extras);
         startActivity(arbitrarIntent);
