@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/startActivity">
+
+    <activity
+        android:id="@+id/startActivity"
+        android:name="com.fervenzagames.apparbitraje.StartActivity"
+        android:label="activity_start"
+        tools:layout="@layout/activity_start" >
+        <action android:id="@+id/start_to_login" app:destination="@id/loginActivity"/>
+        <action android:id="@+id/start_to_register" app:destination="@id/registerActivity"/>
+    </activity>
+
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.fervenzagames.apparbitraje.User_Activities.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" >
+        <action android:id="@+id/logged_main" app:destination="@id/mainActivity"/>
+    </activity>
+
+    <activity
+        android:id="@+id/registerActivity"
+        android:name="com.fervenzagames.apparbitraje.User_Activities.RegisterActivity"
+        android:label="activity_register"
+        tools:layout="@layout/activity_register" >
+        <action android:id="@+id/logged_main" app:destination="@id/mainActivity"/>
+    </activity>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.fervenzagames.apparbitraje.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" >
+        <action android:id="@+id/logout" app:destination="@id/startActivity"/>
+        <action android:id="@+id/main_to_settings" app:destination="@id/settingsActivity"/>
+        <action android:id="@+id/lista_camps" app:destination="@id/campeonatosActivity"/>
+        <action android:id="@+id/lista_combs" app:destination="@id/combatesActivity"/>
+        <action android:id="@+id/lista_arbis" app:destination="@id/arbitrosActivity"/>
+        <action android:id="@+id/lista_competidores" app:destination="@id/competidoresActivity"/>
+
+    </activity>
+
+    <activity
+        android:id="@+id/settingsActivity"
+        android:name="com.fervenzagames.apparbitraje.User_Activities.SettingsActivity"
+        android:label="activity_settings"
+        tools:layout="@layout/activity_settings" >
+        <action android:id="@+id/edit_settings" app:destination="@id/cargoNivelActivity"/>
+    </activity>
+    <activity
+        android:id="@+id/cargoNivelActivity"
+        android:name="com.fervenzagames.apparbitraje.User_Activities.CargoNivelActivity"
+        android:label="activity_cargo_nivel"
+        tools:layout="@layout/activity_cargo_nivel" />
+
+    <activity
+        android:id="@+id/campeonatosActivity"
+        android:name="com.fervenzagames.apparbitraje.CampeonatosActivity"
+        android:label="activity_campeonatos"
+        tools:layout="@layout/activity_campeonatos" >
+        <action android:id="@+id/add_camp" app:destination="@id/addCampeonatoActivity"/>
+        <action android:id="@+id/detail_camp" app:destination="@id/detalleCampeonatoActivity"/>
+    </activity>
+    <activity
+        android:id="@+id/addCampeonatoActivity"
+        android:name="com.fervenzagames.apparbitraje.Add_Activities.AddCampeonatoActivity"
+        android:label="activity_add_campeonato"
+        tools:layout="@layout/activity_add_campeonato" >
+
+    </activity>
+    <activity
+        android:id="@+id/detalleCampeonatoActivity"
+        android:name="com.fervenzagames.apparbitraje.Detail_Activities.DetalleCampeonatoActivity"
+        android:label="activity_detalle_campeonato"
+        tools:layout="@layout/activity_detalle_campeonato" >
+        <action android:id="@+id/edit_camp" app:destination="@id/Campeonato"/>
+        <action android:id="@+id/delete_camp" app:destination="@id/Campeonato"/>
+
+        <action android:id="@+id/detalle_arbi" app:destination="@id/Arbitro"/>
+        <action android:id="@+id/detalle_zona" app:destination="@id/ZonaCombate"/>
+        <action android:id="@+id/detalle_modalidad" app:destination="@id/Modalidad"/>
+
+        <action android:id="@+id/asignar_arbi" app:destination="@id/asignarArbitroActivity"/>
+        <action android:id="@+id/add_zona" app:destination="@id/addZonaCombateActivity"/>
+        <action android:id="@+id/add_mod" app:destination="@id/addModalidadActivity"/>
+    </activity>
+
+    <activity
+        android:id="@+id/addModalidadActivity"
+        android:name="com.fervenzagames.apparbitraje.Add_Activities.AddModalidadActivity"
+        android:label="activity_add_modalidad"
+        tools:layout="@layout/activity_add_modalidad" />
+
+    <activity
+        android:id="@+id/addZonaCombateActivity"
+        android:name="com.fervenzagames.apparbitraje.Add_Activities.AddZonaCombateActivity"
+        android:label="activity_add_zona_combate"
+        tools:layout="@layout/activity_add_zona_combate" />
+
+    <activity
+        android:id="@+id/asignarArbitroActivity"
+        android:name="com.fervenzagames.apparbitraje.Add_Activities.AsignarArbitroActivity"
+        android:label="activity_asignar_arbitro"
+        tools:layout="@layout/activity_asignar_arbitro" />
+
+    <navigation
+        android:id="@+id/Arbitro"
+        app:startDestination="@id/detalleArbitroActivity">
+        <activity
+            android:id="@+id/detalleArbitroActivity"
+            android:name="com.fervenzagames.apparbitraje.Detail_Activities.DetalleArbitroActivity"
+            android:label="activity_detalle_arbitro"
+            tools:layout="@layout/activity_detalle_arbitro">
+            <action
+                android:id="@+id/edit_arbi"
+                app:destination="@id/editArbitroActivity" />
+            <action
+                android:id="@+id/delete_arbi"
+                app:destination="@id/deleteArbitroActivity" />
+        </activity>
+        <fragment android:id="@+id/editArbitroActivity" />
+        <fragment android:id="@+id/deleteArbitroActivity" />
+        <fragment android:id="@+id/addArbitroActivity" />
+    </navigation>
+    <navigation
+        android:id="@+id/ZonaCombate"
+        app:startDestination="@id/detalleZonaActivity">
+        <activity
+            android:id="@+id/detalleZonaActivity"
+            android:name="com.fervenzagames.apparbitraje.Detail_Activities.DetalleZonaActivity"
+            android:label="activity_detalle_zona"
+            tools:layout="@layout/activity_detalle_zona">
+            <action
+                android:id="@+id/edit_zona"
+                app:destination="@id/editZonaActivity" />
+            <action
+                android:id="@+id/delete_zona"
+                app:destination="@id/deleteZonaActivity" />
+        </activity>
+        <fragment android:id="@+id/editZonaActivity" />
+        <fragment android:id="@+id/deleteZonaActivity" />
+    </navigation>
+    <navigation
+        android:id="@+id/Modalidad"
+        app:startDestination="@id/asignarArbitrosCombatesZonaActivity">
+        <activity
+            android:id="@+id/asignarArbitrosCombatesZonaActivity"
+            android:name="com.fervenzagames.apparbitraje.Add_Activities.AsignarArbitrosCombatesZonaActivity"
+            android:label="activity_asignar_arbitros_combates_zona"
+            tools:layout="@layout/activity_asignar_arbitros_combates_zona" />
+        <activity
+            android:id="@+id/detalleModalidadActivity"
+            android:name="com.fervenzagames.apparbitraje.Detail_Activities.DetalleModalidadActivity"
+            android:label="activity_detalle_modalidad"
+            tools:layout="@layout/activity_detalle_modalidad">
+            <action
+                android:id="@+id/edit_mod"
+                app:destination="@id/editModalidadActivity" />
+            <action
+                android:id="@+id/delete_mod"
+                app:destination="@id/deleteModalidadActivity" />
+        </activity>
+        <fragment android:id="@+id/editModalidadActivity" />
+        <fragment android:id="@+id/deleteModalidadActivity" />
+    </navigation>
+    <navigation
+        android:id="@+id/Campeonato"
+        app:startDestination="@id/deleteCampeonatoActivity">
+        <fragment
+            android:id="@+id/deleteCampeonatoActivity"
+            android:label="deleteCampeonatoActivity" />
+        <fragment
+            android:id="@+id/editCampeonatoActivity"
+            android:label="editCampeonatoActivity" />
+    </navigation>
+    <activity
+        android:id="@+id/combatesActivity"
+        android:name="com.fervenzagames.apparbitraje.CombatesActivity"
+        android:label="activity_combates"
+        tools:layout="@layout/activity_combates" >
+        <action android:id="@+id/detalle_combate" app:destination="@id/detalleCombateActivity"/>
+    </activity>
+    <activity
+        android:id="@+id/detalleCombateActivity"
+        android:name="com.fervenzagames.apparbitraje.Add_Activities.AddCombateActivity"
+        android:label="activity_detalle_combate"
+        tools:layout="@layout/activity_detalle_combate" >
+        <action android:id="@+id/asaltos" app:destination="@id/Asalto"/>
+    </activity>
+    <navigation
+        android:id="@+id/Asalto"
+        app:startDestination="@id/detalleAsaltoActivity">
+        <fragment android:id="@+id/addAsaltoActivity" />
+        <activity
+            android:id="@+id/detalleAsaltoActivity"
+            android:name="com.fervenzagames.apparbitraje.Detail_Activities.DetalleAsaltoActivity"
+            android:label="activity_detalle_asalto"
+            tools:layout="@layout/activity_detalle_asalto" >
+            <action android:id="@+id/edit_asalto" app:destination="@id/editAsaltoActivity"/>
+            <action android:id="@+id/delete_asalto" app:destination="@id/deleteAsaltoActivity"/>
+            <action android:id="@+id/mesa_arbitraje" app:destination="@id/mesaArbitrajeActivity"/>
+            <action android:id="@+id/silla_arbitraje" app:destination="@id/sillaArbitrajeActivity"/>
+        </activity>
+        <fragment android:id="@+id/editAsaltoActivity" />
+        <fragment android:id="@+id/deleteAsaltoActivity" />
+    </navigation>
+    <activity
+        android:id="@+id/arbitrosActivity"
+        android:name="com.fervenzagames.apparbitraje.ArbitrosActivity"
+        android:label="activity_arbitros"
+        tools:layout="@layout/activity_arbitros" >
+        <action android:id="@+id/detalle_arbi" app:destination="@id/Arbitro"/>
+    </activity>
+    <activity
+        android:id="@+id/mesaArbitrajeActivity"
+        android:name="com.fervenzagames.apparbitraje.Arbitraje_Activities.MesaArbitrajeActivity"
+        android:label="activity_mesa_arbitraje"
+        tools:layout="@layout/activity_mesa_arbitraje" />
+    <activity
+        android:id="@+id/sillaArbitrajeActivity"
+        android:name="com.fervenzagames.apparbitraje.Arbitraje_Activities.SillaArbitrajeActivity"
+        android:label="activity_silla_arbitraje"
+        tools:layout="@layout/activity_silla_arbitraje" />
+    <fragment android:id="@+id/competidoresActivity" >
+        <action
+            android:id="@+id/action_competidoresActivity_to_detalleCompetidorActivity"
+            app:destination="@id/Competidor" />
+        <action
+            android:id="@+id/action_competidoresActivity_to_addCompetidorActivity"
+            app:destination="@id/addCompetidorActivity" />
+    </fragment>
+    <fragment android:id="@+id/addCompetidorActivity" />
+    <navigation android:id="@+id/Competidor"
+        app:startDestination="@id/detalleCompetidorActivity">
+        <fragment android:id="@+id/detalleCompetidorActivity">
+            <action
+                android:id="@+id/action_detalleCompetidorActivity_to_editCompetidorActivity"
+                app:destination="@id/editCompetidorActivity" />
+            <action
+                android:id="@+id/action_detalleCompetidorActivity_to_deleteCompetidorActivty"
+                app:destination="@id/deleteCompetidorActivty" />
+        </fragment>
+        <fragment android:id="@+id/editCompetidorActivity" />
+        <fragment android:id="@+id/deleteCompetidorActivty" />
+    </navigation>
+
+</navigation>
