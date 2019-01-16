@@ -43,18 +43,18 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
+        mToolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("AppArbitraje");
 
 
         // Tabs
-        mViewPager = (ViewPager) findViewById(R.id.main_tabPager);
+        mViewPager = findViewById(R.id.main_tabPager);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
+        mTabLayout = findViewById(R.id.main_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
 
         tipo = detectarTipoDispostivo();
@@ -108,7 +108,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        if(detectarTipoDispostivo() == 0) { // MÓVIL
+            getMenuInflater().inflate(R.menu.phone_main_menu, menu);
+        } else if (detectarTipoDispostivo() == 1){ // TABLET
+            getMenuInflater().inflate(R.menu.main_menu, menu);
+        }
+
 
         return true;
     }
@@ -118,44 +123,57 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        switch(item.getItemId())
-        {
-            case R.id.main_logout_btn:{
-                // Vamos a incluir el código para cerrar la sesión.
-
-                // Modificar el campo conectado del Árbitro en la BD. CONECTADO --> FALSE
-
-
-                // Cerrar Sesión
-                FirebaseAuth.getInstance().signOut(); // Cerrar sesión con Firebase Auth.
-
-
-                sendToStart(); // Redirigir al inicio de la app.
-                break;
+        if(detectarTipoDispostivo() == 0) { // MÓVIL
+            switch (item.getItemId()){
+                case R.id.phone_cerrar_sesion_btn:{
+                    FirebaseAuth.getInstance().signOut();
+                    sendToStart();
+                    break;
+                }
+                case R.id.phone_user_settings_btn:{
+                    Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(settingsIntent);
+                }
             }
-            case R.id.main_settings_btn:{
-                Toast.makeText(MainActivity.this, "Ha pulsado el botón Opciones", Toast.LENGTH_SHORT).show();
-                break;
-            }
-            case R.id.main_account_settings:{
-                // Toast.makeText(MainActivity.this, "Ha pulsado el botón de Cuenta de Usuario", Toast.LENGTH_SHORT).show();
-                // Crear el Intent de la página de Settings
-                Intent sett_intent = new Intent(MainActivity.this, SettingsActivity.class);
-                // E iniciarlo
-                startActivity(sett_intent);
-                break;
-            }
-            case R.id.main_app_type:{
-                Toast.makeText(MainActivity.this, "Ha pulsado el botón de Tipo de App", Toast.LENGTH_SHORT).show();
-                break;
-            }
-            case R.id.main_ver_campeonatos:{
-                Toast.makeText(MainActivity.this, "Ver los Campeonatos de la BD", Toast.LENGTH_SHORT).show();
-                Intent campIntent = new Intent(MainActivity.this, CampeonatosActivity.class);
-                startActivity(campIntent);
-                break;
-            }
-            case R.id.main_arbitrar_combate:{
+        } else if(detectarTipoDispostivo() == 1) { // TABLET
+            switch(item.getItemId())
+            {
+                case R.id.main_logout_btn:{
+                    // Vamos a incluir el código para cerrar la sesión.
+
+                    // Modificar el campo conectado del Árbitro en la BD. CONECTADO --> FALSE
+
+
+                    // Cerrar Sesión
+                    FirebaseAuth.getInstance().signOut(); // Cerrar sesión con Firebase Auth.
+
+
+                    sendToStart(); // Redirigir al inicio de la app.
+                    break;
+                }
+                case R.id.main_settings_btn:{
+                    Toast.makeText(MainActivity.this, "Ha pulsado el botón Opciones", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                case R.id.main_account_settings:{
+                    // Toast.makeText(MainActivity.this, "Ha pulsado el botón de Cuenta de Usuario", Toast.LENGTH_SHORT).show();
+                    // Crear el Intent de la página de Settings
+                    Intent sett_intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    // E iniciarlo
+                    startActivity(sett_intent);
+                    break;
+                }
+                case R.id.main_app_type:{
+                    Toast.makeText(MainActivity.this, "Ha pulsado el botón de Tipo de App", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                case R.id.main_ver_campeonatos:{
+                    Toast.makeText(MainActivity.this, "Ver los Campeonatos de la BD", Toast.LENGTH_SHORT).show();
+                    Intent campIntent = new Intent(MainActivity.this, CampeonatosActivity.class);
+                    startActivity(campIntent);
+                    break;
+                }
+            /*case R.id.main_arbitrar_combate:{
                 if (tipo == 0) // MÓVIL
                 {
                     Intent arbitrarIntent = new Intent(MainActivity.this, SillaArbitrajeActivity.class);
@@ -165,20 +183,21 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(arbitrarIntent);
                 }
                 break;
-            }
-            case R.id.main_competidor:{ // Prueba de la Actividad para Añadir un Competidor a la BD.
-                Intent competidorIntent = new Intent(MainActivity.this, AddCompetidorActivity.class);
-                startActivity(competidorIntent);
-                break;
-            }
-            case R.id.main_lista_arbitros:{
-                Intent listArbitrosIntent = new Intent(MainActivity.this, ArbitrosActivity.class);
-                startActivity(listArbitrosIntent);
-                break;
-            }
-            case R.id.main_combates:{
-                Intent listaCombatesIntent = new Intent(MainActivity.this, CombatesActivity.class);
-                startActivity(listaCombatesIntent);
+            }*/
+                case R.id.main_competidor:{ // Prueba de la Actividad para Añadir un Competidor a la BD.
+                    Intent competidorIntent = new Intent(MainActivity.this, AddCompetidorActivity.class);
+                    startActivity(competidorIntent);
+                    break;
+                }
+                case R.id.main_lista_arbitros:{
+                    Intent listArbitrosIntent = new Intent(MainActivity.this, ArbitrosActivity.class);
+                    startActivity(listArbitrosIntent);
+                    break;
+                }
+                case R.id.main_combates:{
+                    Intent listaCombatesIntent = new Intent(MainActivity.this, CombatesActivity.class);
+                    startActivity(listaCombatesIntent);
+                }
             }
         }
 

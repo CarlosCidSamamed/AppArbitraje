@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/phone_user_settings_btn"
+        android:title="@string/cuenta_de_usuario" />
+
+    <item
+        android:id="@+id/phone_cerrar_sesion_btn"
+        android:title="@string/cerrar_sesion" />
+</menu>

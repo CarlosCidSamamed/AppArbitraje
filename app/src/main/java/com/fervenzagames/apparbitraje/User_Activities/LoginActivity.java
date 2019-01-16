@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -49,9 +50,24 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
 
-        mToolbar = (Toolbar) findViewById(R.id.login_toolbar);
+        if(detectarTipoDispostivo() == 1){ // TABLET
+            setContentView(R.layout.activity_login);
+
+            mToolbar = findViewById(R.id.login_toolbar);
+            mLoginEmail = findViewById(R.id.login_email);
+            mLoginPassword = findViewById(R.id.login_password);
+            mLogin_btn = findViewById(R.id.login_btn);
+
+        } else if(detectarTipoDispostivo() == 0){ // MÓVIL
+            setContentView(R.layout.phone_login);
+
+            mToolbar = findViewById(R.id.phone_login_toolbar);
+            mLoginEmail = findViewById(R.id.phone_login_email);
+            mLoginPassword = findViewById(R.id.phone_login_password);
+            mLogin_btn = findViewById(R.id.phone_login_btn);
+        }
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Iniciar Sesión");
@@ -59,10 +75,6 @@ public class LoginActivity extends AppCompatActivity {
         mLoginProgress = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
-
-        mLoginEmail = (TextInputLayout) findViewById(R.id.login_email);
-        mLoginPassword = (TextInputLayout) findViewById(R.id.login_password);
-        mLogin_btn = (Button) findViewById(R.id.login_btn);
 
         mLogin_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,5 +160,39 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    // Este método se encarga de detectar el tamaño de la pantalla para saber si el dispostivo es un móvil o una tablet.
+    // MÓVIL <7 pulgadas TABLET 7 o más.
+    // MÓVIL  --> 0
+    // TABLET --> 1
+    public int detectarTipoDispostivo(){
+
+        int tipo = 0;
+        int screenWidth = 0;
+        int screenHeight = 0;
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels;
+
+        double x = Math.pow(screenWidth / dm.xdpi, 2);
+        double y = Math.pow(screenHeight / dm.xdpi, 2);
+
+        double screenInches = Math.sqrt(x + y);
+        screenInches = (double) Math.round(screenInches * 10) / 10;
+
+        //Toast.makeText(this, "Tamaño en Pulgadas de la Pantalla --> " + screenInches, Toast.LENGTH_LONG).show();
+
+        if(screenInches < 7.0f)
+        {
+            tipo = 0; // MÓVIL
+        } else if (screenInches >= 7.0f){
+            tipo = 1; // TABLET
+        }
+
+        return tipo;
     }
 }

@@ -189,6 +189,9 @@
         android:label="activity_detalle_combate"
         tools:layout="@layout/activity_detalle_combate" >
         <action android:id="@+id/asaltos" app:destination="@id/Asalto"/>
+        <action android:id="@+id/add_combate" app:destination="@id/Combate"/>
+        <action android:id="@+id/edit_combate" app:destination="@id/Combate"/>
+        <action android:id="@+id/delete_combate" app:destination="@id/Combate"/>
     </activity>
     <navigation
         android:id="@+id/Asalto"
@@ -245,6 +248,13 @@
         </fragment>
         <fragment android:id="@+id/editCompetidorActivity" />
         <fragment android:id="@+id/deleteCompetidorActivty" />
+    </navigation>
+    <navigation
+        android:id="@+id/Combate"
+        app:startDestination="@id/addCombateActivity">
+        <fragment android:id="@+id/addCombateActivity" />
+        <fragment android:id="@+id/deleteCombateActivity" />
+        <fragment android:id="@+id/editCombateActivity" />
     </navigation>
 
 </navigation>

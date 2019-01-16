@@ -145,6 +145,13 @@
     <string name="monigote">Monigote</string>
     <string name="marca_de_tiempo">Marca de Tiempo</string>
     <string name="iniciar">Iniciar</string>
+    <string name="campeonatos">Campeonatos</string>
+    <string name="campeonatos_arbitrados">Campeonatos Arbitrados</string>
+    <string name="combates_arbitrados">Combates Arbitrados</string>
+    <string name="modalidad_mas_comun">Modalidad más Común</string>
+    <string name="categoria_mas_comun">Categoría más Común</string>
+    <string name="proximos_eventos">Próximos Eventos</string>
+    <string name="ver_combates">Ver Combates</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">

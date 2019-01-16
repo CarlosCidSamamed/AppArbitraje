@@ -9,7 +9,7 @@
     android:keepScreenOn="true">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/settings_image"
+        android:id="@+id/phone_settings_image"
         android:layout_width="170dp"
         android:layout_height="170dp"
         android:layout_alignParentStart="true"
@@ -17,34 +17,35 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="152dp"
+        android:layout_marginTop="68dp"
         android:src="@drawable/default_avatar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/settings_nombre"
+        android:id="@+id/phone_settings_nombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/settings_image"
+        android:layout_below="@+id/phone_settings_image"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/nombre_y_apellidos"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_image" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_settings_image" />
 
     <TextView
-        android:id="@+id/settings_cargo"
+        android:id="@+id/phone_settings_cargo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/settings_nombre"
+        android:layout_below="@+id/phone_settings_nombre"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
@@ -52,43 +53,42 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/cargo"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.585"
-        app:layout_constraintStart_toEndOf="@+id/settings_nivel"
-        app:layout_constraintTop_toBottomOf="@+id/settings_nombre" />
+        app:layout_constraintStart_toEndOf="@+id/phone_settings_nivel"
+        app:layout_constraintTop_toBottomOf="@+id/phone_settings_nombre" />
 
     <TextView
-        android:id="@+id/settings_nivel"
+        android:id="@+id/phone_settings_nivel"
         android:layout_width="53dp"
         android:layout_height="20dp"
-        android:layout_below="@+id/settings_nombre"
+        android:layout_below="@+id/phone_settings_nombre"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="216dp"
-        android:layout_marginLeft="216dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="40dp"
         android:text="@string/nivel"
         android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_nombre" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_settings_nombre" />
 
     <Button
-        android:id="@+id/settings_change_image"
+        android:id="@+id/phone_settings_change_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="124dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:background="@color/colorPrimary"
@@ -97,19 +97,18 @@
         android:text="@string/cambiar_imagen"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.335"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_nombre" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_settings_nombre" />
 
     <Button
-        android:id="@+id/settings_change_data"
+        android:id="@+id/phone_settings_change_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:background="@color/colorAccent2"
@@ -118,8 +117,7 @@
         android:text="@string/cambiar_datos"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.739"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_nombre" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_settings_change_image" />
 
 </android.support.constraint.ConstraintLayout>

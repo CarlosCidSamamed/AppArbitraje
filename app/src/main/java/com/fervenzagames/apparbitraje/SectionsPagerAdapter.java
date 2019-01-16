@@ -4,6 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.fervenzagames.apparbitraje.PhoneFragments.PhoneNextCupsFragment;
+import com.fervenzagames.apparbitraje.PhoneFragments.PhoneStatsFragment;
+
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     public SectionsPagerAdapter(FragmentManager fm) {
@@ -15,21 +18,25 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position)
         {
             case 0: {
-                SandaFragment sdFragment = new SandaFragment();
-                return sdFragment;
+                /*SandaFragment sdFragment = new SandaFragment();
+                return sdFragment;*/
+                PhoneStatsFragment statsFragment = new PhoneStatsFragment();
+                return statsFragment;
             }
             case 1: {
-                QingdaFragment qdFragment = new QingdaFragment();
-                return qdFragment;
+                PhoneNextCupsFragment nextCupsFragment = new PhoneNextCupsFragment();
+                return nextCupsFragment;
+                /*QingdaFragment qdFragment = new QingdaFragment();
+                return qdFragment;*/
             }
-            case 2: {
+            /*case 2: {
                 KFCFragment kfcFragment = new KFCFragment();
                 return kfcFragment;
             }
             case 3: {
                 ShuaijiaoFragment sjFragment = new ShuaijiaoFragment();
                 return sjFragment;
-            }
+            }*/
             default:
             {
                 return null;
@@ -39,7 +46,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4; /* SD, QD, KFC, SJ*/
+        return 2;
     }
 
     public CharSequence getPageTitle(int position)
@@ -47,17 +54,17 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch(position)
         {
             case 0: {
-                return "SANDA";
+                return "ESTADÍSTICAS";
             }
             case 1: {
-                return "QINGDA";
+                return "PRÓXIMOS EVENTOS";
             }
-            case 2: {
+            /*case 2: {
                 return "KUNGFU COMBAT";
             }
             case 3: {
                 return "SHUAI JIAO";
-            }
+            }*/
             default:
                 return null;
         }
