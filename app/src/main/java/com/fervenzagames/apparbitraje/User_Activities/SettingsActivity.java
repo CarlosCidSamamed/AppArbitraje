@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.MainActivity;
 import com.fervenzagames.apparbitraje.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -228,6 +229,17 @@ public class SettingsActivity extends AppCompatActivity {
                 Exception error = result.getError();
             }
         }
+    }
+
+    // Enviar datos que identifiquen que se ha pulsado el botón back del dispositivo para volver al Main
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Bundle extras = new Bundle();
+        extras.putString("anterior", "settings");
+        Intent main = new Intent(this, MainActivity.class);
+        main.putExtras(extras);
+        startActivity(main);
     }
 
     // Este método se encarga de detectar el tamaño de la pantalla para saber si el dispostivo es un móvil o una tablet.

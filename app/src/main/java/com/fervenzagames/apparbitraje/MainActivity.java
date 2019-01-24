@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Add_Activities.AddCompetidorActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
+import com.fervenzagames.apparbitraje.User_Activities.CargoNivelActivity;
 import com.fervenzagames.apparbitraje.User_Activities.LoginActivity;
 import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.fervenzagames.apparbitraje.Utils.Login_Logout;
@@ -129,7 +130,22 @@ public class MainActivity extends AppCompatActivity {
             sendToStart(null);
         } else {
             mUid = currentUser.getUid();
-            comprobarEstadoUsuario(mUid);
+            Bundle extras = getIntent().getExtras();
+            try {
+                String anterior = extras.getString("anterior");
+                Toast.makeText(this, "anterior --> " + anterior, Toast.LENGTH_SHORT).show();
+                if(anterior != null) {
+                    boolean ant = anterior.equals("settings");
+                    Toast.makeText(this, "anterior.equals('settings') --> " + ant, Toast.LENGTH_SHORT).show();
+                    if(!ant) {
+                        comprobarEstadoUsuario(mUid);
+                    }
+                } else {
+                    comprobarEstadoUsuario(mUid);
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         /*else {
             Toast.makeText(this, "Current User UID ----> " + currentUser.getUid(), Toast.LENGTH_SHORT).show();
