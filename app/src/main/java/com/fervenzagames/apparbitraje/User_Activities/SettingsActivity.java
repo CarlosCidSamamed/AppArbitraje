@@ -2,6 +2,7 @@ package com.fervenzagames.apparbitraje.User_Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView mNivel;
     private Button mImagenBtn;
     private Button mDatosBtn;
+    private CircleImageView mEstado;
 
     //Progress Dialog
     private ProgressDialog mProgressDialog;
@@ -59,17 +62,18 @@ public class SettingsActivity extends AppCompatActivity {
 
         if(detectarTipoDispostivo() == 0){ // MÓVIL
             setContentView(R.layout.phone_user_settings);
-
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             mImagen = findViewById(R.id.phone_settings_image);
             mNombre = findViewById(R.id.phone_settings_nombre);
             mCargo = findViewById(R.id.phone_settings_cargo);
             mNivel = findViewById(R.id.phone_settings_nivel);
             mImagenBtn = findViewById(R.id.phone_settings_change_image);
             mDatosBtn = findViewById(R.id.phone_settings_change_data);
+            mEstado = findViewById(R.id.phone_settings_estado);
 
         } else if(detectarTipoDispostivo() == 1){ // TABLET
             setContentView(R.layout.activity_settings);
-
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             mImagen = findViewById(R.id.settings_image);
             mNombre = findViewById(R.id.settings_nombre);
             mCargo = findViewById(R.id.settings_cargo);
@@ -94,6 +98,25 @@ public class SettingsActivity extends AppCompatActivity {
                 String cargo = dataSnapshot.child("cargo").getValue().toString();
                 String imagen = dataSnapshot.child("imagen").getValue().toString();
                 String imagen_thumb = dataSnapshot.child("imagen_thumb").getValue().toString();
+                String estado = dataSnapshot.child("conectado").getValue().toString();
+
+                if(!estado.isEmpty()){
+                    Toast.makeText(SettingsActivity.this, "Estado del Usuario " + estado, Toast.LENGTH_SHORT).show();
+                }
+
+                switch (estado){
+                    case "true":{
+                        Picasso.get().load(R.drawable.online).into(mEstado);
+                        break;
+                    }
+                    case "false":{
+                        Picasso.get().load(R.drawable.offline).into(mEstado);
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
+                }
 
                 mNombre.setText(nombre);
                 mNivel.setText(nivel);

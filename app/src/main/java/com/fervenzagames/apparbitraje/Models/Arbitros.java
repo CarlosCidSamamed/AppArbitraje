@@ -162,7 +162,7 @@ public class Arbitros {
         this.listaCombates = listaCombates;
     }
 
-    public boolean isConectado() {
+    public boolean getConectado() {
         return conectado;
     }
 

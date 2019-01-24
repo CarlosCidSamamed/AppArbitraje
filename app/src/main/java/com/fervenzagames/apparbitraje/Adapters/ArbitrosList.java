@@ -3,24 +3,18 @@ package com.fervenzagames.apparbitraje.Adapters;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.fervenzagames.apparbitraje.Add_Activities.AsignarArbitroActivity;
-import com.fervenzagames.apparbitraje.Detail_Activities.DetalleCampeonatoActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ArbitrosList extends ArrayAdapter<Arbitros> {
 
@@ -54,7 +48,7 @@ public class ArbitrosList extends ArrayAdapter<Arbitros> {
             Picasso.get().load(arbi.getFoto()).into(foto);
         }
 
-        if(arbi.isConectado() == true){
+        if(arbi.getConectado() == true){
             // Picasso.get().load(R.drawable.punto_verde).into(estado);
             estado.setImageResource(R.drawable.punto_verde);
         } else {

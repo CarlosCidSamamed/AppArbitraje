@@ -45,8 +45,10 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\carlos\Desktop\Iconos Sanda Flaticon\png\038-cinturon-1.png" />
-                                      <entry key="outputName" value="cinturon" />
+                                      <entry key="imageAsset" value="C:\Users\carlos\Desktop\Iconos Sanda Flaticon\png\marca-de-chequeado.png" />
+                                      <entry key="outputName" value="online" />
+                                      <entry key="theme" value="CUSTOM" />
+                                      <entry key="themeColor" value="00c300" />
                                     </map>
                                   </option>
                                 </PersistentState>

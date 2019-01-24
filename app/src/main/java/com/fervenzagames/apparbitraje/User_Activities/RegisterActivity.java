@@ -3,6 +3,7 @@ package com.fervenzagames.apparbitraje.User_Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -54,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if(detectarTipoDispostivo() == 1){ // TABLET
             setContentView(R.layout.activity_register);
-
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             mToolbar = findViewById(R.id.register_toolbar);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setTitle("Crear una nueva Cuenta");
@@ -67,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         } else if(detectarTipoDispostivo() == 0){ // MÓVIL
             setContentView(R.layout.phone_register);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             mToolbar = findViewById(R.id.phone_register_toolbar);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true); /* Al pulsar el botón de la flecha hacia atrás volveremos al inicio. */
@@ -128,6 +130,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userMap.put("imagen", "default");
                             userMap.put("imagen_thumb", "default");
                             userMap.put("email", email);
+                            userMap.put("conectado", "true"); // Por defecto el usuario se conecta al crear la cuenta.
 
                             mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -149,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity {
                             // Los datos de cada Árbitro se almacenan en una rama cuyo ID es el ID del Usuario correspondiente.
                             // Se crea un nuevo Árbitro
                             List<Combates> lista = new ArrayList<>();
-                            Arbitros arbi = new Arbitros(uid, display_name, "DNI", email, password, "default", "Nivel 1", "Silla", 0, "", false,  lista);
+                            Arbitros arbi = new Arbitros(uid, display_name, "DNI", email, password, "default", "Nivel 1", "Silla", 0, "", true,  lista);
                             // Se guardan los datos del árbitro en la BD.
                             mDatabase.setValue(arbi).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

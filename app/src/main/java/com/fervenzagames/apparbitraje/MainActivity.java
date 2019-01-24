@@ -1,6 +1,7 @@
 package com.fervenzagames.apparbitraje;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,18 +13,26 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Add_Activities.AddCompetidorActivity;
-import com.fervenzagames.apparbitraje.Arbitraje_Activities.MesaArbitrajeActivity;
-import com.fervenzagames.apparbitraje.Arbitraje_Activities.SillaArbitrajeActivity;
+import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.User_Activities.LoginActivity;
 import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
+import com.fervenzagames.apparbitraje.Utils.Login_Logout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private Toolbar mToolbar;
 
     private ViewPager mViewPager;
@@ -33,8 +42,10 @@ public class MainActivity extends AppCompatActivity {
 
     private int tipo;
 
-    private String uid;
+    private String mUid;
     private DatabaseReference mArbitrosDB;
+    private DatabaseReference mRootDB;
+    private DatabaseReference mUsuariosDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+
+        // comprobarEstadoUsuarioActual();
 
         mToolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
@@ -56,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         mTabLayout = findViewById(R.id.main_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        mUid = null;
 
         tipo = detectarTipoDispostivo();
         switch (tipo){
@@ -79,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         //Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        //mAuth.addAuthStateListener(mAuthListener);
 /*
         uid = currentUser.getUid();
 */
@@ -89,18 +105,65 @@ public class MainActivity extends AppCompatActivity {
 
         // Si el usuario no ha iniciado sesión deberemos abrir la pantalla de LOGIN
         if(currentUser == null){
-            sendToStart();
+            sendToStart(null);
+        } else {
+            mUid = currentUser.getUid();
+            comprobarEstadoUsuario(mUid);
         }
+        /*else {
+            Toast.makeText(this, "Current User UID ----> " + currentUser.getUid(), Toast.LENGTH_SHORT).show();
+            //mUid = currentUser.getUid();
+            try {
+                //mUid = getIntent().getExtras().getString("uid");
+                mUid = currentUser.getUid();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+            if(mUid != null){
+                actualizarEstadoArbitro(mUid, true);
+            }
+        }*/
     }
 
+/*
 
-    private void sendToStart() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        try {
+            mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        if(mUid != null){
+            actualizarEstadoArbitro(mUid, true);
+        } else {
+            mUid = getIntent().getExtras().getString("uid");
+            actualizarEstadoArbitro(mUid, false);
+        }
+
+    }
+*/
+
+    private void sendToStart(String uid) {
+        /*if(uid != null){
+            actualizarEstadoArbitro(uid, false);
+        }*/
         /* Se crea un Intent para la página de LOGIN */
         Intent startIntent = new Intent(MainActivity.this, StartActivity.class);
+        /* Se envía como extra el ID del Usuario para modificar el campo conectado del árbitro */
+        Bundle extras = new Bundle();
+        extras.putString("uid", mUid);
+        Toast.makeText(this, "(Main) sendToStart mUid : " + mUid, Toast.LENGTH_SHORT).show();
+        startIntent.putExtras(extras);
         /* Se inicia ese Intent */
         startActivity(startIntent);
+        // Toast.makeText(this, "Estado de la Activity MainActivity antes del FINISH --> " + this.getLifecycle().getCurrentState(), Toast.LENGTH_SHORT).show(); --> CREATED
         /* Con esta línea evitamos que al pulsar el botón para retroceder se vuelva a esta actividad. */
         finish();
+        // Toast.makeText(this, "Estado de la Activity MainActivity después del FINISH --> " + this.getLifecycle().getCurrentState(), Toast.LENGTH_SHORT).show(); // --> RESUMED
     }
 
     // Selecionar el menú principal que deseamos y mostrarlo.
@@ -108,9 +171,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        if(detectarTipoDispostivo() == 0) { // MÓVIL
+        if(tipo == 0) { // MÓVIL
             getMenuInflater().inflate(R.menu.phone_main_menu, menu);
-        } else if (detectarTipoDispostivo() == 1){ // TABLET
+        } else if (tipo == 1){ // TABLET
             getMenuInflater().inflate(R.menu.main_menu, menu);
         }
 
@@ -123,32 +186,63 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        if(detectarTipoDispostivo() == 0) { // MÓVIL
+        if(tipo == 0) { // MÓVIL
             switch (item.getItemId()){
                 case R.id.phone_cerrar_sesion_btn:{
-                    FirebaseAuth.getInstance().signOut();
-                    sendToStart();
+
+                    // Obtener el UID antes de cerrar la sesión para poder actualizar el campo conectado del Árbitro
+                    try {
+                        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        //String id_1 = mUid;
+                        // verValorConectado(mUid);
+                        //verValorConectado(id_1);
+                        //Toast.makeText(this, "Iniciando LOGOUT --- UID : " + mUid, Toast.LENGTH_SHORT).show();
+                        // Cerrar Sesión
+                        //FirebaseAuth.getInstance().signOut(); // Cerrar sesión con Firebase Auth.
+                        //logoutUser(mUid);
+                        Login_Logout.actualizarEstadoUsuario(mUid, "false", getBaseContext()); // Incluye el cambio de valor y el logout
+                        /*if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+                            Toast.makeText(this, "Finalizando LOGOUT --- User == NULL", Toast.LENGTH_SHORT).show();
+                        }*/
+                        sendToStart(mUid); // Redirigir al inicio de la app.
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 }
                 case R.id.phone_user_settings_btn:{
                     Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivity(settingsIntent);
+                    break;
                 }
             }
-        } else if(detectarTipoDispostivo() == 1) { // TABLET
+        } else if(tipo == 1) { // TABLET
             switch(item.getItemId())
             {
                 case R.id.main_logout_btn:{
                     // Vamos a incluir el código para cerrar la sesión.
 
                     // Modificar el campo conectado del Árbitro en la BD. CONECTADO --> FALSE
+                    /*try {
+                        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        Toast.makeText(this, "Current User UID -----> " + mUid, Toast.LENGTH_SHORT).show();
+                        actualizarEstadoArbitro(mUid, false);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }*/
 
+                    // Obtener el UID antes de cerrar la sesión para poder actualizar el campo conectado del Árbitro
+                    try {
+                        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        // Cerrar Sesión
+                        // FirebaseAuth.getInstance().signOut(); // Cerrar sesión con Firebase Auth.
+                        Login_Logout.actualizarEstadoUsuario(mUid, "false", getBaseContext()); // Incluye el cambio de valor y el logout
 
-                    // Cerrar Sesión
-                    FirebaseAuth.getInstance().signOut(); // Cerrar sesión con Firebase Auth.
+                        sendToStart(mUid); // Redirigir al inicio de la app.
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
 
-
-                    sendToStart(); // Redirigir al inicio de la app.
                     break;
                 }
                 case R.id.main_settings_btn:{
@@ -197,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.main_combates:{
                     Intent listaCombatesIntent = new Intent(MainActivity.this, CombatesActivity.class);
                     startActivity(listaCombatesIntent);
+                    break;
                 }
             }
         }
@@ -238,4 +333,154 @@ public class MainActivity extends AppCompatActivity {
 
         return tipo;
     }
+
+    public void actualizarEstadoArbitro(String uid, final boolean estado){
+        // Como parámetros se pasan:
+        // 1. el UID que permite identificar al usuario y al árbitro correspondiente.
+        // 2. el nuevo estado del árbitro.
+        final String id = uid;
+
+        // El proceso de actualizar usando updateChildren lo he cogido de la documentación de Firebase: https://firebase.google.com/docs/database/android/read-and-write?hl=es-419
+
+        mRootDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
+        mArbitrosDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(uid);
+
+        final Query consulta = mArbitrosDB;
+
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    // Comprobación de la ruta de la consulta
+                    Toast.makeText(MainActivity.this, "Ruta de la consulta (conectado = FALSE) --> " + consulta.getRef().toString(), Toast.LENGTH_SHORT).show();
+                    // Recuperamos los datos del árbitro
+                    Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                    // Modificamos el estado
+                    arbi.setConectado(estado);
+                    Toast.makeText(MainActivity.this, "(MAIN) Actualizando estado Árbitro --> " + estado, Toast.LENGTH_SHORT).show();
+                    // Actualizamos los datos del Árbitro en la BD con el nuevo estado de conexión.
+                    Map<String, Object> nuevoArbi = arbi.toMap();
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("/Arbitros/" + id, nuevoArbi);
+                    mRootDB.updateChildren(updates);
+                    Toast.makeText(MainActivity.this, "(MAIN) Nuevo estado Arbitro en BD --> " + arbi.getConectado(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Error al localizar al Árbitro cuyo ID es " + id, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    // Método que usa un objeto de la clase Firebase.AuthStateListener para asegurarse de que los tokens de login y logout se actaulizan correctamete.
+    // Así pdoremos asegurarnos de que el usuario está o no logueado.
+
+    public void comprobarEstadoUsuarioActual(){
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null){ // User is signed in
+            //actualizarEstadoArbitro(user.getUid(), true);
+        } else { // No user is signed in
+            //actualizarEstadoArbitro(mCurrentUser.getUid(), false);
+            Toast.makeText(this, "No existe ningún usuario LOGUEADO (MAIN)...", Toast.LENGTH_SHORT).show();
+        }
+        /*mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if((user == null) && (mUid != null)){
+                    actualizarEstadoArbitro(mUid, false);
+                    Toast.makeText(MainActivity.this, "LOGOUT", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };*/
+    }
+
+    public void logoutUser(String uid){
+        //actualizarEstadoArbitro(uid, false);
+        Login_Logout.actualizarEstadoUsuario(uid, "false", getBaseContext());
+        mAuth.signOut();
+    }
+
+    public void verValorConectado(final String uid){
+        mArbitrosDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(uid);
+        Query consulta = mArbitrosDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(MainActivity.this, "Error al recuperar los datos del árbitro cuyo id es " + uid, Toast.LENGTH_SHORT).show();
+                } else {
+                    Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                    Toast.makeText(MainActivity.this, "  El árbitro " + arbi.getNombre() + " tiene el estado de " + arbi.getConectado(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    /*public void actualizarEstadoUsuario(String uid, final String estado){
+        mUsuariosDB = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
+        Query usuarioQuery = mUsuariosDB;
+        usuarioQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(MainActivity.this, "(actualizarEstadoUsuario) No se encuentra el usuario...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "(actualizarEstadoUsuario) Ruta Query --> " + dataSnapshot.getRef(), Toast.LENGTH_SHORT).show();
+                } else {
+                    mUsuariosDB.child("conectado").setValue(estado);
+                    Toast.makeText(MainActivity.this, "(actualizarEstadoUsuario) Estado --> " + estado, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }*/
+
+    public void comprobarEstadoUsuario(String uid){
+        if(uid == null){
+            sendToStart(uid);
+        } else {
+            mUsuariosDB = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
+            Query usuarioQuery = mUsuariosDB;
+            usuarioQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
+                        Toast.makeText(MainActivity.this, "(LOGIN) No existe ese usuario en la BD...", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            String estado = dataSnapshot.child("conectado").getValue().toString();
+                            Toast.makeText(MainActivity.this, "Estado del Usuario --> " + estado, Toast.LENGTH_SHORT).show();
+                            if(estado.equals("true")){
+                                // Aviso
+                                Toast.makeText(MainActivity.this, "(LOGIN) Ya se ha iniciado sesión con este usuario en otro dispositivo.", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
 }

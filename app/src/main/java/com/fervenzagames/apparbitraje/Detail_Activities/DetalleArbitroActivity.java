@@ -1,26 +1,21 @@
 package com.fervenzagames.apparbitraje.Detail_Activities;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.CampeonatosExpandableListAdapter;
-import com.fervenzagames.apparbitraje.Adapters.CampeonatosList;
-import com.fervenzagames.apparbitraje.Adapters.CampeonatosMiniList;
 import com.fervenzagames.apparbitraje.Adapters.CombatesList;
 import com.fervenzagames.apparbitraje.Edit_Activities.EditArbitroActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
@@ -137,7 +132,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                     String cargo = arbi.getCargo();
                     String idCamp = arbi.getIdCamp();
                     String zona = String.valueOf(arbi.getZonaCombate());
-                    String conectado = String.valueOf(arbi.isConectado());
+                    String conectado = String.valueOf(arbi.getConectado());
 
                     extras.putString("idArbitro", arbi.getIdArbitro());
 
