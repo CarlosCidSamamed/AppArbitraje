@@ -81,6 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
             mNivel = findViewById(R.id.settings_nivel);
             mImagenBtn = findViewById(R.id.settings_change_image);
             mDatosBtn = findViewById(R.id.settings_change_data);
+            mEstado = findViewById(R.id.settings_estado);
         }
 
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();

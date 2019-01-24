@@ -1,4 +1,4 @@
-package com.fervenzagames.apparbitraje;
+package com.fervenzagames.apparbitraje.Utils;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -7,9 +7,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.fervenzagames.apparbitraje.PhoneFragments.PhoneNextCupsFragment;
 import com.fervenzagames.apparbitraje.PhoneFragments.PhoneStatsFragment;
 
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
+public class SectionsPagerAdapterMobile extends FragmentPagerAdapter {
 
-    public SectionsPagerAdapter(FragmentManager fm) {
+    public SectionsPagerAdapterMobile(FragmentManager fm) {
         super(fm);
     }
 

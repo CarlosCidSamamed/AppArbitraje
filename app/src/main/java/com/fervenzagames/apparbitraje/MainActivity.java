@@ -16,10 +16,10 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Add_Activities.AddCompetidorActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
-import com.fervenzagames.apparbitraje.User_Activities.CargoNivelActivity;
-import com.fervenzagames.apparbitraje.User_Activities.LoginActivity;
 import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.fervenzagames.apparbitraje.Utils.Login_Logout;
+import com.fervenzagames.apparbitraje.Utils.SectionsPagerAdapterTablet;
+import com.fervenzagames.apparbitraje.Utils.SectionsPagerAdapterMobile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
 
     private ViewPager mViewPager;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapterMobile mSectionsPagerAdapterMobile;
+    private SectionsPagerAdapterTablet mSectionsPagerAdapterTablet;
 
     private TabLayout mTabLayout;
 
@@ -68,9 +69,23 @@ public class MainActivity extends AppCompatActivity {
 
         // Tabs
         mViewPager = findViewById(R.id.main_tabPager);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapterMobile = new SectionsPagerAdapterMobile(getSupportFragmentManager());
+        mSectionsPagerAdapterTablet = new SectionsPagerAdapterTablet(getSupportFragmentManager());
 
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        tipo = detectarTipoDispostivo();
+        switch (tipo){
+            case 0:
+            {
+                Toast.makeText(this, "MÓVIL", Toast.LENGTH_LONG).show();
+                mViewPager.setAdapter(mSectionsPagerAdapterMobile);
+                break;
+            }
+            case 1:{
+                Toast.makeText(this, "TABLET", Toast.LENGTH_LONG).show();
+                mViewPager.setAdapter(mSectionsPagerAdapterTablet);
+                break;
+            }
+        }
 
         mTabLayout = findViewById(R.id.main_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -94,18 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         mUid = null;
 
-        tipo = detectarTipoDispostivo();
-        switch (tipo){
-            case 0:
-            {
-                Toast.makeText(this, "MÓVIL", Toast.LENGTH_LONG).show();
-                break;
-            }
-            case 1:{
-                Toast.makeText(this, "TABLET", Toast.LENGTH_LONG).show();
-                break;
-            }
-        }
+
         // Voy a usar el valor de tipo para delimitar las activities que se pueden ver y cargar desde un móvil o desde una tablet.
         // Esto será así porque los árbitros de SILLA usarán móviles y los de MESA usarán TABLETS.
 
@@ -162,27 +166,6 @@ public class MainActivity extends AppCompatActivity {
         }*/
     }
 
-/*
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        try {
-            mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        if(mUid != null){
-            actualizarEstadoArbitro(mUid, true);
-        } else {
-            mUid = getIntent().getExtras().getString("uid");
-            actualizarEstadoArbitro(mUid, false);
-        }
-
-    }
-*/
 
     private void sendToStart(String uid) {
         /*if(uid != null){

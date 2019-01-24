@@ -152,6 +152,12 @@
     <string name="categoria_mas_comun">Categoría más Común</string>
     <string name="proximos_eventos">Próximos Eventos</string>
     <string name="ver_combates">Ver Combates</string>
+    <string name="campeonatos_en_la_bd">Campeonatos en la BD</string>
+    <string name="combates_en_la_bd">Combates en la BD</string>
+    <string name="competidores_en_la_bd">Competidores en la BD</string>
+    <string name="arbitros">Árbitros</string>
+    <string name="arbitros_en_la_bd">Árbitros en la BD</string>
+    <string name="buscador">Buscador</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">
