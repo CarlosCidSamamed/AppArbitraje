@@ -1,10 +1,12 @@
 package com.fervenzagames.apparbitraje.User_Activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.fervenzagames.apparbitraje.MainActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.R;
+import com.fervenzagames.apparbitraje.StartActivity;
 import com.fervenzagames.apparbitraje.Utils.Login_Logout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -87,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        loggedIn = false;
+        //loggedIn = false;
 
         //comprobarEstadoUsuarioActual();
 
@@ -105,14 +108,19 @@ public class LoginActivity extends AppCompatActivity {
                     mLoginProgress.setCanceledOnTouchOutside(false);
                     mLoginProgress.show();
 
-                    mCurrentUser =  mAuth.getCurrentUser();
 
                     /*if(mCurrentUser == null){
                         comprobarEstadoUsuario(null, email, password);
                     } else {
                         comprobarEstadoUsuario(mCurrentUser.getUid(), email, password);
                     }*/
+
+                    mCurrentUser =  mAuth.getCurrentUser();
+
                     loginUser(email, password);
+
+
+                    // loginUser(email, password);
 
                     /*if(mCurrentUser == null){
                         comprobarEstadoArbitro(null, email, password);
@@ -328,60 +336,4 @@ public class LoginActivity extends AppCompatActivity {
         };*/
     }
 
-    //------------- Modificación del campo Usuarios.conectado = true
-
-    public void comprobarEstadoUsuario(String uid, final String email, final String password){
-        if(uid == null){
-            loginUser(email, password);
-        } else {
-            mUsuariosDB = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
-            Query usuarioQuery = mUsuariosDB;
-            usuarioQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.exists()) {
-                        Toast.makeText(LoginActivity.this, "(LOGIN) No existe ese usuario en la BD...", Toast.LENGTH_SHORT).show();
-                    } else {
-                        try {
-                            String estado = dataSnapshot.child("conectado").getValue().toString();
-                            Toast.makeText(LoginActivity.this, "Estado del Usuario --> " + estado, Toast.LENGTH_SHORT).show();
-                            if(estado.equals("true")){
-                                // Aviso
-                                Toast.makeText(LoginActivity.this, "(LOGIN) Ya se ha iniciado sesión con este usuario en otro dispositivo.", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
-
-    /*public void actualizarEstadoUsuario(String uid, final String estado){
-        mUsuariosDB = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
-        Query usuarioQuery = mUsuariosDB;
-        usuarioQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
-                    Toast.makeText(LoginActivity.this, "(actualizarEstadoUsuario) No se encuentra el usuario...", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(LoginActivity.this, "(actualizarEstadoUsuario) Ruta Query --> " + dataSnapshot.getRef(), Toast.LENGTH_SHORT).show();
-                } else {
-                    mUsuariosDB.child("conectado").setValue(estado);
-                    Toast.makeText(LoginActivity.this, "(actualizarEstadoUsuario) Estado --> " + estado, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }*/
 }

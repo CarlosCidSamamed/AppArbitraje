@@ -82,19 +82,19 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Bundle extras = getIntent().getExtras();
+        /*Bundle extras = getIntent().getExtras();
         try {
             String uid = extras.getString("uid");
-            Toast.makeText(this, "(Start) Extras -- uid " + uid, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "(Start) Extras -- uid " + uid, Toast.LENGTH_SHORT).show();
             //actualizarEstadoArbitro(uid, false);
             //obtenerArbitro(uid);
-            obtenerListaArbitros();
+            //obtenerListaArbitros();
             //actualizarEstadoArbitro2(arbitro);
             // verValorConectado(uid);
         } catch (NullPointerException e) {
-            Toast.makeText(this, "(Start) No se ha podido recuperar el UID de los extras...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "(Start) No se ha podido recuperar el UID de los extras...", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-        }
+        }*/
     }
 
     /*    @Override

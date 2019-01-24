@@ -33,7 +33,7 @@ public class Login_Logout {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(context, "(Login_Logout) Estado --> " + estado, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "(Login_Logout) Estado --> " + estado, Toast.LENGTH_SHORT).show();
                             // si el estado es false es porque deberemos realizar el logout después de haber modificado el valor en la BD
                             if(estado.equals("false")){
                                 //Toast.makeText(context, "(Login Logout) Cerrar Sesión tras modificar conectado a false...", Toast.LENGTH_SHORT).show();
@@ -54,7 +54,7 @@ public class Login_Logout {
         });
     }
 
-    private static void logoutUser(){
+    public static void logoutUser(){
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
     }
