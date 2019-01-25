@@ -158,6 +158,10 @@
     <string name="arbitros">Árbitros</string>
     <string name="arbitros_en_la_bd">Árbitros en la BD</string>
     <string name="buscador">Buscador</string>
+    <string name="nivel_y_cargo">Nivel y Cargo</string>
+    <string name="competidores">Competidores</string>
+    <string name="lista_de_competidores">Lista de Competidores</string>
+    <string name="campeonato">Campeonato</string>
 
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">
