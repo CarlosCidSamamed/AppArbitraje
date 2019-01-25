@@ -45,7 +45,6 @@ public class SectionsPagerAdapterTablet extends FragmentPagerAdapter {
                 TabletNextCupsFragment nextCupsFragment = new TabletNextCupsFragment();
                 return nextCupsFragment;
             }
-
             default:{
                 return null;
             }
@@ -54,7 +53,7 @@ public class SectionsPagerAdapterTablet extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 5;
+        return 6;
     }
 
     @Nullable

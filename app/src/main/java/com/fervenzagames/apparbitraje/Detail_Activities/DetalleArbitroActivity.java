@@ -33,7 +33,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -57,10 +56,11 @@ public class DetalleArbitroActivity extends AppCompatActivity {
     private TextView mZona;*/
     // private ListView mListaCampsListView;
 
-    private ExpandableListView mListaCampeonatosZonas;
-    private ExpandableListAdapter mListaCampZonasAdapter;
+    private ExpandableListView mListaCampeonatosFechas;
+    private ExpandableListAdapter mListaCampFechasAdapter;
     private List<String> mListaTitulos; // Nombre de los Campeonatos
-    private HashMap<String, List<String>> mListaDetalle; // Lista con las zonas de combate
+    //private HashMap<String, List<String>> mListaDetalle; // Lista con las zonas de combate
+    private List<String> mListaDetalle;
 
     private List<Combates> mListaCombates;
     private ListView mListaCombatesListView;
@@ -105,9 +105,10 @@ public class DetalleArbitroActivity extends AppCompatActivity {
         // mZona = findViewById(R.id.arb_detalle_zonaCombate);
         // mListaCampsListView = findViewById(R.id.arb_detalle_listaCampeonatosListView);
 
-        mListaCampeonatosZonas = findViewById(R.id.arb_detalle_listaCampsZonas);
+        mListaCampeonatosFechas = findViewById(R.id.arb_detalle_listaCampsZonas);
         mListaTitulos = new ArrayList<>();
-        mListaDetalle = new HashMap<>();
+        //mListaDetalle = new HashMap<>();
+        mListaDetalle = new ArrayList<>();
 
         mListaCombates = new ArrayList<>();
         mListaCombatesListView = findViewById(R.id.arb_detalle_listaCombates);
@@ -182,7 +183,8 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                                     try {
                                         if(camp.getIdCamp().equals(id)){
                                             mListaTitulos.add(camp.getNombre()); // Obtener cabecera (header)
-                                            mListaDetalle = camp.getHashMapZonasCombate(camp); // Obtener detalle (detail)
+                                            //mListaDetalle = camp.getHashMapZonasCombate(camp); // Obtener detalle (detail)
+                                            mListaDetalle.add(camp.getFecha());
                                         }
                                     } catch (NullPointerException e) {
                                         e.printStackTrace();
@@ -193,10 +195,10 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                                 // mListaCampsListView.setAdapter(adapter);
 
                                 // Pasarle los datos al ExpandableListView
-                                mListaCampZonasAdapter = new CampeonatosExpandableListAdapter(DetalleArbitroActivity.this, mListaTitulos, mListaDetalle);
-                                mListaCampeonatosZonas.setAdapter(mListaCampZonasAdapter);
+                                mListaCampFechasAdapter = new CampeonatosExpandableListAdapter(DetalleArbitroActivity.this, mListaTitulos, mListaDetalle);
+                                mListaCampeonatosFechas.setAdapter(mListaCampFechasAdapter);
                                 // Expansión de un grupo
-                                mListaCampeonatosZonas.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+                                mListaCampeonatosFechas.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                                     @Override
                                     public void onGroupExpand(int groupPosition) {
                                         Toast.makeText(DetalleArbitroActivity.this,
@@ -205,7 +207,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                                     }
                                 });
                                 // Colapso de un grupo
-                                mListaCampeonatosZonas.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+                                mListaCampeonatosFechas.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
                                     @Override
                                     public void onGroupCollapse(int groupPosition) {
                                         Toast.makeText(DetalleArbitroActivity.this,
@@ -213,15 +215,14 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                                // Click en uno de los hijos.
-                                mListaCampeonatosZonas.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                                /*// Click en uno de los hijos.
+                                mListaCampeonatosFechas.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
                                     @Override
                                     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                                         mListaCombates.clear(); // Borrar la lista anterior de Combates
                                         Toast.makeText(DetalleArbitroActivity.this,
                                                 mListaTitulos.get(groupPosition) + " - > " +
-                                                        mListaDetalle.get(mListaTitulos.get(groupPosition))
-                                                                .get(childPosition),
+                                                        mListaDetalle.get(childPosition),
                                                 Toast.LENGTH_SHORT).show();
                                         // Añadir llamada a método que cargue los combates correspondientes al campeonato y a la zona de combate correspondientes.
                                         // El Campeonato lo obtenemos de groupPosition --> mListaTitulos.get(groupPosition) nos devuelve el nombre del Campeonato.
@@ -230,7 +231,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                                         // nos devuelve el número de la zona de combate. A partir de ese número y el id del Campeonato podemos buscar el resto de datos
                                         // de la zona de combate.
                                         String idCamp = mListaTitulos.get(groupPosition);
-                                        String idZona = mListaDetalle.get(mListaTitulos.get(groupPosition)).get(childPosition);
+                                        String idZona = mListaDetalle.get(childPosition);
                                         List<String> listaIDs = buscarIDsCombates(idCamp, idZona); // Localizar los IDs.
                                         buscarCombates(listaIDs);   // Localizar los Combates correspondientes a los IDs. En este método se actualiza mListaCombates.
                                         // Ahora debemos mostrar los datos de mListaCombates en mListaCombatesListView.
@@ -239,7 +240,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                                         mListaCombatesListView.setAdapter(adapter);
                                         return false;
                                     }
-                                });
+                                });*/
                             }
 
                             @Override

@@ -16,6 +16,8 @@ public class Arbitros {
     private String password;
 
     private String foto; // URL de la foto
+    private String pais;
+    private String federacion;
 
     private String nivel;
     private String cargo;
@@ -37,13 +39,19 @@ public class Arbitros {
 
     public List<Combates> listaCombates;
 
-    public Arbitros(String idArbitro, String nombre, String dni, String email, String password, String foto, String nivel, String cargo, int zonaCombate, String idCamp, boolean conectado, List<Combates> listaCombates) {
+    public Arbitros(String idArbitro, String nombre, String dni,
+                    String email, String password, String foto,
+                    String pais, String federacion,
+                    String nivel, String cargo, int zonaCombate,
+                    String idCamp, boolean conectado, List<Combates> listaCombates) {
         this.idArbitro = idArbitro;
         this.nombre = nombre;
         this.dni = dni;
         this.email = email;
         this.password = password;
         this.foto = foto;
+        this.pais = pais;
+        this.federacion = federacion;
         this.nivel = nivel;
         this.cargo = cargo;
         this.zonaCombate = zonaCombate;
@@ -107,6 +115,22 @@ public class Arbitros {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    public String getFederacion() {
+        return federacion;
+    }
+
+    public void setFederacion(String federacion) {
+        this.federacion = federacion;
     }
 
     public String getNivel() {

@@ -139,9 +139,14 @@ public class MainActivity extends AppCompatActivity {
                 String anterior = extras.getString("anterior");
                 Toast.makeText(this, "anterior --> " + anterior, Toast.LENGTH_SHORT).show();
                 if(anterior != null) {
-                    boolean ant = anterior.equals("settings");
-                    Toast.makeText(this, "anterior.equals('settings') --> " + ant, Toast.LENGTH_SHORT).show();
-                    if(!ant) {
+                    //boolean ant = anterior.equals("settings");
+                    //Toast.makeText(this, "anterior.equals('settings') --> " + ant, Toast.LENGTH_SHORT).show();
+                    if((!anterior.equals("settings")) &&
+                            (!anterior.equals("detalleCamp")) &&
+                            (!anterior.equals("detalleArbi")) &&
+                            (!anterior.equals("detalleComp")) &&
+                            (!anterior.equals("detalleCombate")) &&
+                            (!anterior.equals("dialogProx"))) {
                         comprobarEstadoUsuario(mUid);
                     }
                 } else {
