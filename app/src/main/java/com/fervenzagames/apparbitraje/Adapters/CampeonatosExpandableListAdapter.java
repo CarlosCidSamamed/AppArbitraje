@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.R;
 
@@ -17,9 +18,9 @@ public class CampeonatosExpandableListAdapter extends BaseExpandableListAdapter 
 
     private Context context;
     private List<String> expandableListTitle;
-    private List<String> expandableListDetail;
+    private HashMap<String, List<String>> expandableListDetail;
 
-    public CampeonatosExpandableListAdapter(Context context, List<String> expandableListTitle, List<String> expandableListDetail){
+    public CampeonatosExpandableListAdapter(Context context, List<String> expandableListTitle, HashMap<String, List<String>> expandableListDetail){
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
@@ -27,7 +28,8 @@ public class CampeonatosExpandableListAdapter extends BaseExpandableListAdapter 
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return this.expandableListDetail.get(expandedListPosition);
+        Toast.makeText(context, "listPosition : " + listPosition + " ||| expandedListPosition : " + expandedListPosition, Toast.LENGTH_SHORT).show();
+        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).get(expandedListPosition);
     }
 
     @Override
@@ -52,8 +54,8 @@ public class CampeonatosExpandableListAdapter extends BaseExpandableListAdapter 
 
     @Override
     public int getChildrenCount(int listPosition) {
-        if(this.expandableListDetail.size() > 0) {
-            return this.expandableListDetail.size();
+        if(this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size() > 0) {
+            return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size();
         } else {
             return 0;
         }

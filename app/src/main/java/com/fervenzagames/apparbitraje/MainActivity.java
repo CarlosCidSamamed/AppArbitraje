@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -20,6 +21,8 @@ import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.fervenzagames.apparbitraje.Utils.Login_Logout;
 import com.fervenzagames.apparbitraje.Utils.SectionsPagerAdapterTablet;
 import com.fervenzagames.apparbitraje.Utils.SectionsPagerAdapterMobile;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,11 +31,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
+
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -112,6 +120,22 @@ public class MainActivity extends AppCompatActivity {
 
         // Voy a usar el valor de tipo para delimitar las activities que se pueden ver y cargar desde un móvil o desde una tablet.
         // Esto será así porque los árbitros de SILLA usarán móviles y los de MESA usarán TABLETS.
+
+        // Firebase Cloud Messaging
+        // Obtener el Token de registro de este dispositivo cuando se inicia la app.
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if(!task.isSuccessful()){
+                    Log.d(TAG, task.getException().getMessage());
+                    return;
+                }
+                // Obtener el Instance ID Token
+                String token = task.getResult().getToken();
+                String msg = getString(R.string.fcm_token, token);
+                Log.d(TAG, msg);
+            }
+        });
 
     }
 

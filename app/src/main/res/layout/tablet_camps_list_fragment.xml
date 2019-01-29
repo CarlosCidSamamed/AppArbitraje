@@ -17,14 +17,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/cinturon" />
 
-    <ExpandableListView
+    <!--<ExpandableListView
         android:id="@+id/tablet_camps_list"
         android:layout_width="850dp"
         android:layout_height="340dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tablet_camps_list_text1"></ExpandableListView>
+        app:layout_constraintTop_toBottomOf="@+id/tablet_camps_list_text1"></ExpandableListView>-->
+
+    <ListView
+        android:id="@+id/tablet_camps_list"
+        android:layout_width="850dp"
+        android:layout_height="340dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tablet_camps_list_text1">
+
+    </ListView>
 
     <TextView
         android:id="@+id/tablet_camps_list_text1"
@@ -54,16 +65,18 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:completionHint="@string/SuNombre"
+        android:completionThreshold="1"
+        android:inputType="textAutoComplete"
         android:hint="@string/SuNombre"
-        android:text="@string/SuNombre"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintHorizontal_bias="0.956"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tablet_camps_list_text2" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tablet_camps_list_text3"
@@ -77,8 +90,8 @@
         android:text="@string/fecha"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
-        app:layout_constraintStart_toEndOf="@+id/tablet_camps_list_nombreAuto"
+        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tablet_camps_list_text2" />
 
     <Spinner
@@ -91,8 +104,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.07"
-        app:layout_constraintStart_toEndOf="@+id/tablet_camps_list_nombreAuto"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tablet_camps_list_text3" />
 
     <TextView

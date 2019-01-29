@@ -289,4 +289,7 @@
         <item>Seleccione</item>
     </array>
 
+    <!-- Firebase Cloud Messaging -->
+    <string name="fcm_token">FCM Token: %s</string>
+
 </resources>

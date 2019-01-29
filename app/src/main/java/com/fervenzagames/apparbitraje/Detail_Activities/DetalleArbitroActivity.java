@@ -195,26 +195,26 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                                 // mListaCampsListView.setAdapter(adapter);
 
                                 // Pasarle los datos al ExpandableListView
-                                mListaCampFechasAdapter = new CampeonatosExpandableListAdapter(DetalleArbitroActivity.this, mListaTitulos, mListaDetalle);
-                                mListaCampeonatosFechas.setAdapter(mListaCampFechasAdapter);
+                                //mListaCampFechasAdapter = new CampeonatosExpandableListAdapter(DetalleArbitroActivity.this, mListaTitulos, mListaDetalle);
+                                //mListaCampeonatosFechas.setAdapter(mListaCampFechasAdapter);
                                 // Expansión de un grupo
-                                mListaCampeonatosFechas.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+                                /*mListaCampeonatosFechas.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                                     @Override
                                     public void onGroupExpand(int groupPosition) {
                                         Toast.makeText(DetalleArbitroActivity.this,
                                                 "Se ha expandido el grupo de " + mListaTitulos.get(groupPosition),
                                                 Toast.LENGTH_SHORT).show();
                                     }
-                                });
+                                });*/
                                 // Colapso de un grupo
-                                mListaCampeonatosFechas.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+                                /*mListaCampeonatosFechas.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
                                     @Override
                                     public void onGroupCollapse(int groupPosition) {
                                         Toast.makeText(DetalleArbitroActivity.this,
                                                 "Se ha colapsado el grupo de " + mListaTitulos.get(groupPosition),
                                                 Toast.LENGTH_SHORT).show();
                                     }
-                                });
+                                });*/
                                 /*// Click en uno de los hijos.
                                 mListaCampeonatosFechas.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
                                     @Override
