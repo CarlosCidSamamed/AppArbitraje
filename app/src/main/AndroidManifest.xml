@@ -126,6 +126,8 @@
             </intent-filter>
         </service>
 
+        <receiver android:name=".Notifications.NotificationReceiver"/>
+
     </application>
 
 </manifest>

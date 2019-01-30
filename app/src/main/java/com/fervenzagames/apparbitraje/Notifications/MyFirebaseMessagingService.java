@@ -3,6 +3,7 @@ package com.fervenzagames.apparbitraje.Notifications;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.R;
@@ -25,6 +27,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Random;
 
 import static android.support.constraint.Constraints.TAG;
+import static com.google.firebase.messaging.RemoteMessage.PRIORITY_HIGH;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public MyFirebaseMessagingService() {
@@ -60,6 +63,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            super.onMessageReceived(remoteMessage);
+            showNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -119,16 +124,45 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         }
 
-        //Para versiones anteriores a Oreo
+        // Notification sin modificar
+        /*//Para versiones anteriores a Oreo
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.logo_app1)
+                .setSmallIcon(R.drawable.luchar)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setContentInfo("Info");
-        notificationManager.notify(new Random().nextInt(), notificationBuilder.build());
+        notificationManager.notify(new Random().nextInt(), notificationBuilder.build());*/
+
+        // Custom Notification
+        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_collapsed);
+        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
+
+        Intent clickIntent = new Intent(this, NotificationReceiver.class);
+        PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this, 0, clickIntent, 0);
+
+        expandedView.setOnClickPendingIntent(R.id.myNotification_expanded_info, clickPendingIntent);
+        String info = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
+                "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut " +
+                "aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit " +
+                "in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint " +
+                "occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+        expandedView.setTextViewText(R.id.myNotification_expanded_info, info);
+        expandedView.setTextViewText(R.id.myNotification_expanded_title, "Aviso de AppArbitraje");
+
+
+        Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setCustomContentView(collapsedView)
+                .setCustomContentView(expandedView)
+                .setSmallIcon(R.drawable.boxeo)
+                .setPriority(PRIORITY_HIGH)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .build();
+
+        notificationManager.notify(1, notification);
     }
 }
 
