@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -30,6 +31,10 @@ import static android.support.constraint.Constraints.TAG;
 import static com.google.firebase.messaging.RemoteMessage.PRIORITY_HIGH;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+    String NOTIFICATION_CHANNEL_ID = "com.fervenzagames.apparbitraje.Notifications";
+
+
     public MyFirebaseMessagingService() {
         //myGetToken(this);
     }
@@ -55,7 +60,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 // Handle message within 10 seconds
                 //handleNow();
                 super.onMessageReceived(remoteMessage);
-                showNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+                // Gestionar los mensajes de tipo DATA
+                showNotificationData(remoteMessage);
             }
 
         }
@@ -112,7 +118,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void showNotification(String title, String body){
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICATION_CHANNEL_ID = "com.fervenzagames.apparbitraje.Notifications";
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){ // Versión Oreo (26 y 27) (Android 8.0 y 8.1) o superior
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "Notificaciones", NotificationManager.IMPORTANCE_DEFAULT);
@@ -140,8 +145,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_collapsed);
         RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
 
+        /* Los extras que debemos mandar para poder abrir la actividad de SillaArbitraje:
+            idCategoría
+            idCombate
+            idAsalto
+           Dichos extras deberán enviarse desde la App de la Mesa.
+        */
+
         Intent clickIntent = new Intent(this, NotificationReceiver.class);
-        PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this, 0, clickIntent, 0);
+        PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // https://developer.android.com/reference/android/app/PendingIntent
+        // FLAG_UPDATE_CURRENT
+        // Flag indicating that if the described PendingIntent already exists, then keep it but replace its extra data with what is in this new Intent.
+        // Para poder enviar extras a través del PendingIntent
 
         expandedView.setOnClickPendingIntent(R.id.myNotification_expanded_info, clickPendingIntent);
         String info = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
@@ -153,16 +170,41 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         expandedView.setTextViewText(R.id.myNotification_expanded_info, info);
         expandedView.setTextViewText(R.id.myNotification_expanded_title, "Aviso de AppArbitraje");
 
+        collapsedView.setTextViewText(R.id.myNotification_collapsed_title, "Aviso de AppArbitraje");
+        collapsedView.setTextViewText(R.id.myNotification_collapsed_info, "Pulse para expandir");
+
 
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setCustomContentView(collapsedView)
-                .setCustomContentView(expandedView)
+                .setCustomBigContentView(expandedView)
                 .setSmallIcon(R.drawable.boxeo)
                 .setPriority(PRIORITY_HIGH)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .build();
 
         notificationManager.notify(1, notification);
+    }
+
+    private void showNotificationData(RemoteMessage remoteMessage){
+
+        // Custom Notification
+        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_collapsed);
+        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
+
+        collapsedView.setTextViewText(R.id.myNotification_collapsed_title, remoteMessage.getData().get("title"));
+        collapsedView.setTextViewText(R.id.myNotification_collapsed_info, "Pulse para expandir");
+
+        expandedView.setTextViewText(R.id.myNotification_collapsed_title, remoteMessage.getData().get("title"));
+        expandedView.setTextViewText(R.id.myNotification_expanded_info, remoteMessage.getData().get("body"));
+
+        Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setCustomContentView(collapsedView)
+                .setCustomBigContentView(expandedView)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .build();
+
+        NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
+        manager.notify(2, notification);
     }
 }
 
