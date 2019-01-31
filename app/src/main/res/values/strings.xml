@@ -291,5 +291,6 @@
 
     <!-- Firebase Cloud Messaging -->
     <string name="fcm_token">FCM Token: %s</string>
+    <string name="enviar_notificaciones">Enviar Notificaciones</string>
 
 </resources>

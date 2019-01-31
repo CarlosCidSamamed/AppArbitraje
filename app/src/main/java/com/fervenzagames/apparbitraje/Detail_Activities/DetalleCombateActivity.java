@@ -275,6 +275,8 @@ public class DetalleCombateActivity extends AppCompatActivity {
                 extras.putString("urlFotoAzul", urlFotAzul);
                 extras.putString("idRojo", mIdRojo);
                 extras.putString("idAzul", mIdAzul);
+                extras.putString("idZona", idZona);
+                extras.putString("idCamp", idCamp);
                 Intent detalleAsaltoIntent = new Intent(DetalleCombateActivity.this, DetalleAsaltoActivity.class);
                 detalleAsaltoIntent.putExtras(extras);
                 startActivity(detalleAsaltoIntent);

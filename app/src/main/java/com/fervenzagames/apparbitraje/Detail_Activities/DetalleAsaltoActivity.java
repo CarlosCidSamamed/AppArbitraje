@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.IncidenciasExpandableListAdapter;
 import com.fervenzagames.apparbitraje.Adapters.PuntuacionesExpandableListAdapter;
+import com.fervenzagames.apparbitraje.Arbitraje_Activities.LobbyArbitraje;
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.MesaArbitrajeActivity;
 import com.fervenzagames.apparbitraje.Dialogs.DetalleIncidenciaDialog;
 import com.fervenzagames.apparbitraje.Dialogs.DetallePuntuacionDialog;
@@ -77,6 +78,8 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private String mIdRojo;
     private String mIdAzul;
     private String mIdCat;
+    private String mIdZona;
+    private String mIdCamp;
 
     private DatabaseReference mPuntsDB;
     private DatabaseReference mIncsDB;
@@ -134,6 +137,8 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
             mIdRojo = extras.getString("idRojo");
             mIdAzul = extras.getString("idAzul");
 
+            mIdZona = extras.getString("idZona");
+            mIdCamp = extras.getString("idCamp");
 
             Query consulta = mAsaltoDB;
             consulta.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -372,9 +377,14 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         extras.putString("idRojo", mIdRojo);
         extras.putString("idAzul", mIdAzul);
         extras.putString("idCat", mIdCat);
-        Intent arbitrarIntent = new Intent(DetalleAsaltoActivity.this, MesaArbitrajeActivity.class);
+        /*Intent arbitrarIntent = new Intent(DetalleAsaltoActivity.this, MesaArbitrajeActivity.class);
         arbitrarIntent.putExtras(extras);
-        startActivity(arbitrarIntent);
+        startActivity(arbitrarIntent);*/
+        extras.putString("idZona", mIdZona);
+        extras.putString("idCamp", mIdCamp);
+        Intent lobbyArbitrar = new Intent(DetalleAsaltoActivity.this, LobbyArbitraje.class);
+        lobbyArbitrar.putExtras(extras);
+        startActivity(lobbyArbitrar);
     }
 
 }
