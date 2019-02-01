@@ -337,6 +337,7 @@ public class AsignarArbitroActivity extends AppCompatActivity {
                     ArbitrosList adapter = new ArbitrosList(AsignarArbitroActivity.this, mLista);
                     adapter.setDropDownViewResource(R.layout.arbitro_single_layout);
                     mListaArbis.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
                 }
 
             }

@@ -40,7 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detalle_zona_app_bar" />
 
-    <ExpandableListView
+    <!--<ExpandableListView
         android:id="@+id/detalle_zona_listaCombates"
         android:layout_width="753dp"
         android:layout_height="357dp"
@@ -52,7 +52,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detalle_zona_numCombates" />
+        app:layout_constraintTop_toBottomOf="@+id/detalle_zona_numCombates" />-->
+
+    <ListView
+        android:id="@+id/detalle_zona_listaCombates"
+        android:layout_width="750dp"
+        android:layout_height="350dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="46dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detalle_zona_numCombates"></ListView>
 
     <Button
         android:id="@+id/detalle_zona_editarBtn"
