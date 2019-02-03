@@ -49,9 +49,9 @@ public class ArbitrosMiniList extends ArrayAdapter<Arbitros> {
         }
 
         if(arbi.getConectado() == true){
-            Picasso.get().load(R.drawable.punto_verde).into(estado);
+            Picasso.get().load(R.drawable.online).into(estado);
         } else {
-            Picasso.get().load(R.drawable.punto_rojo).into(estado);
+            Picasso.get().load(R.drawable.offline).into(estado);
         }
 
         nombre.setText(arbi.getNombre());

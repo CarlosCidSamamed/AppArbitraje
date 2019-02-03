@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.ArbitrosMiniList;
@@ -21,9 +22,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LobbyArbitraje extends AppCompatActivity {
 
@@ -33,6 +37,8 @@ public class LobbyArbitraje extends AppCompatActivity {
     private Button mIniciarBtn;
 
     private ImageView mConectado;
+    private CircleImageView mFoto;
+    private TextView mNombre;
 
     private DatabaseReference mArbisDB;
     private DatabaseReference mZonaDB;
@@ -60,6 +66,8 @@ public class LobbyArbitraje extends AppCompatActivity {
         mIniciarBtn = findViewById(R.id.lobby_arbitraje_iniciarBtn);
 
         mConectado = findViewById(R.id.arb_single_mini_estado);
+        mFoto = findViewById(R.id.arb_single_mini_foto);
+        mNombre = findViewById(R.id.arb_single_mini_nombre);
 
         mArbisDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros");
         mZonaDB = FirebaseDatabase.getInstance().getReference("Arbitraje/ZonasCombate");
@@ -113,10 +121,12 @@ public class LobbyArbitraje extends AppCompatActivity {
                             // si los hubiera, para poder comprobar su estado de disponiblidad
                             mListaIDsArbis = mDatosCombate.getListaIDsArbis();
                             for(int i = 0; i < mListaIDsArbis.size(); i++){
+                                Toast.makeText(LobbyArbitraje.this, "mListaIDsArbis( " + i + " ) " + mListaIDsArbis.get(i), Toast.LENGTH_SHORT).show();
                                 recuperarDisponibilidadArbitro(mListaIDsArbis.get(i));
                             }
                             // Mostrar lista con los datos.
                             ArbitrosMiniList adapter = new ArbitrosMiniList(LobbyArbitraje.this, mLista);
+                            adapter.setDropDownViewResource(R.layout.arbitro_single_layout_mini);
                             mListView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         } else {
@@ -148,20 +158,10 @@ public class LobbyArbitraje extends AppCompatActivity {
                 if(!dataSnapshot.exists()){
                     Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Error al localizar al Árbitro en la BD. (idArbitro => " + idArbitro + " )", Toast.LENGTH_SHORT).show();
                 } else {
+                    Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Ruta consulta Árbitro --> " + dataSnapshot.getRef(), Toast.LENGTH_SHORT).show();
                     Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                    Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Nombre Árbitro --> " + arbi.getNombre(), Toast.LENGTH_SHORT).show();
                     mLista.add(arbi); // Añadir el Árbitro a la lista que se mostrará en pantalla.
-                    // Una vez localizado el árbitro debemos comprobar el valor de CONECTADO
-                    boolean conectado = arbi.getConectado();
-                    // Modificar la imagen del layout arbitro_single_layout_mini según el valor de conectado.
-                    if(conectado){ // TRUE
-                        // Modificar imagen
-                        mConectado.setImageResource(R.drawable.online);
-                        // Aumentar el contador
-                        mContadorOK++;
-                    } else { // FALSE
-                        // Modificar imagen
-                        mConectado.setImageResource(R.drawable.offline);
-                    }
                 }
             }
 
