@@ -24,6 +24,7 @@ import com.fervenzagames.apparbitraje.Add_Activities.AddZonaCombateActivity;
 import com.fervenzagames.apparbitraje.Add_Activities.AsignarArbitroActivity;
 import com.fervenzagames.apparbitraje.CampeonatosActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
+import com.fervenzagames.apparbitraje.Models.Campeonatos;
 import com.fervenzagames.apparbitraje.Models.Modalidades;
 import com.fervenzagames.apparbitraje.Models.ZonasCombate;
 import com.fervenzagames.apparbitraje.R;
@@ -60,6 +61,8 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
     private List<Arbitros> mListaArbitros;
     private List<Modalidades> mListaModalidades;
     private List<ZonasCombate> mListaZonas;
+
+    private List<String> mListaIDsArbis;
 
     private Button mAddArbitroBtn;
     private Button mAddModalidadBtn;
@@ -101,6 +104,8 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         mListaModalidades = new ArrayList<>();
         mListaZonas = new ArrayList<>();
 
+        mListaIDsArbis = new ArrayList<>();
+
         mAddArbitroBtn = (Button) findViewById(R.id.camp_detalle_add_arb);
         mAddModalidadBtn = (Button) findViewById(R.id.camp_detalle_add_mod);
         mAddZonaBtn = findViewById(R.id.camp_detalle_add_zona);
@@ -108,7 +113,7 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
         idCamp = getIntent().getStringExtra("idCamp");
         campDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
         modsDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idCamp);
-        arbisDB = campDB.child("listaArbitros");
+        arbisDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros");
         zonasDB = FirebaseDatabase.getInstance().getReference("Arbitraje/ZonasCombate").child(idCamp);
 
         campDB.addValueEventListener(new ValueEventListener() {
@@ -137,6 +142,8 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
                 mTipo.setText(tipo);
 
                 numZonasCombate = dataSnapshot.child("numZonasCombate").getValue().toString();
+
+                mListaIDsArbis = dataSnapshot.getValue(Campeonatos.class).getListaArbitros();
 
             }
 
@@ -273,7 +280,12 @@ public class DetalleCampeonatoActivity extends AppCompatActivity {
                         mListaArbitros.clear();
                         for(DataSnapshot arbiSnapshot:dataSnapshot.getChildren()){
                             Arbitros arbi = arbiSnapshot.getValue(Arbitros.class);
-                            mListaArbitros.add(arbi);
+                            for(int i = 0; i < mListaIDsArbis.size(); i++){
+                                if(mListaIDsArbis.get(i).equals(arbi.getIdArbitro())){
+                                    Toast.makeText(DetalleCampeonatoActivity.this, "mListaIDsArbis ( " + i + " ) --> " + mListaIDsArbis.get(i), Toast.LENGTH_SHORT).show();
+                                    mListaArbitros.add(arbi);
+                                }
+                            }
                         }
                         ArbitrosMiniList adapter = new ArbitrosMiniList(DetalleCampeonatoActivity.this, mListaArbitros);
                         mListaArbitrosView.setAdapter(adapter);

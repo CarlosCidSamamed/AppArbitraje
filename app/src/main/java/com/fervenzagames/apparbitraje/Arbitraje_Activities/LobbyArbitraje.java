@@ -121,7 +121,7 @@ public class LobbyArbitraje extends AppCompatActivity {
                             // si los hubiera, para poder comprobar su estado de disponiblidad
                             mListaIDsArbis = mDatosCombate.getListaIDsArbis();
                             for(int i = 0; i < mListaIDsArbis.size(); i++){
-                                Toast.makeText(LobbyArbitraje.this, "mListaIDsArbis( " + i + " ) " + mListaIDsArbis.get(i), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(LobbyArbitraje.this, "mListaIDsArbis( " + i + " ) " + mListaIDsArbis.get(i), Toast.LENGTH_SHORT).show();
                                 recuperarDisponibilidadArbitro(mListaIDsArbis.get(i));
                             }
                             // Mostrar lista con los datos.
@@ -158,9 +158,9 @@ public class LobbyArbitraje extends AppCompatActivity {
                 if(!dataSnapshot.exists()){
                     Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Error al localizar al Árbitro en la BD. (idArbitro => " + idArbitro + " )", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Ruta consulta Árbitro --> " + dataSnapshot.getRef(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Ruta consulta Árbitro --> " + dataSnapshot.getRef(), Toast.LENGTH_SHORT).show();
                     Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
-                    Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Nombre Árbitro --> " + arbi.getNombre(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Nombre Árbitro --> " + arbi.getNombre(), Toast.LENGTH_SHORT).show();
                     mLista.add(arbi); // Añadir el Árbitro a la lista que se mostrará en pantalla.
                 }
             }

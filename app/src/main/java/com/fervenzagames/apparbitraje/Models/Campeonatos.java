@@ -13,11 +13,7 @@ public class Campeonatos {
     public String lugar;
     public String tipo;
 
-    public List<Arbitros> listaArbitros; // Lista de los árbitros asignados al Campeonato en cuestión.
-    // Esta lista se usará para limitar el acceso y login a los árbitros que estén registrados en la app (o se registren como nuevos usuarios)
-    // y no estén en la lista de árbitros asignados al campeonato. En el caso de que no estén en dicha lista e inicien sesión
-    // se les mostrará un mensaje en pantalla informándoles de que no podrán acceder a los datos de la BD al no estar en la lista de
-    // usuarios con los permisos necesarios.
+    public List<String> listaArbitros; // Lista de los árbitros asignados al Campeonato en cuestión.
 
     public List<Modalidades> listaModalidades; // Firebase Database --> Rama Camp_Mod almacena las modalidades para un campeonato dado.
 
@@ -29,7 +25,7 @@ public class Campeonatos {
     public Campeonatos() {
     }
 
-    public Campeonatos(String idCamp, String nombre, String fecha, String lugar, String tipo, List<Arbitros> listaArbitros, List<Modalidades> listaModalidades, int numZonasCombate) {
+    public Campeonatos(String idCamp, String nombre, String fecha, String lugar, String tipo, List<String> listaArbitros, List<Modalidades> listaModalidades, int numZonasCombate) {
         this.idCamp = idCamp;
         this.nombre = nombre;
         this.fecha = fecha;
@@ -81,20 +77,20 @@ public class Campeonatos {
         this.tipo = tipo;
     }
 
-    public List<Arbitros> getListaArbitros() {
+    public List<String> getListaArbitros() {
         return listaArbitros;
     }
 
-    public void setListaArbitros(List<Arbitros> listaArbitros) {
+    public void setListaArbitros(List<String> listaArbitros) {
        this.listaArbitros = listaArbitros;
     }
 
-    public void addToListaArbitros(Arbitros arbi){
+    public void addToListaArbitros(String idArbi){
         if(this.listaArbitros == null){
-            List<Arbitros> nuevaLista = new ArrayList<>();
+            List<String> nuevaLista = new ArrayList<>();
             this.listaArbitros = nuevaLista;
         }
-        this.listaArbitros.add(arbi);
+        this.listaArbitros.add(idArbi);
     }
 
     public void removeFromListaArbitros(int posicion){

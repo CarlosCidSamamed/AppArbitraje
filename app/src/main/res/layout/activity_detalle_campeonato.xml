@@ -15,6 +15,7 @@
         android:layout_marginRight="8dp"
         android:text="@string/anadir"
         app:layout_constraintEnd_toStartOf="@+id/camp_detalle_add_mod"
+        app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toEndOf="@+id/camp_detalle_add_arb"
         app:layout_constraintTop_toBottomOf="@+id/camp_detalle_listaZonas" />
 
@@ -96,7 +97,7 @@
 
     <ListView
         android:id="@+id/camp_detalle_listaArbitros"
-        android:layout_width="220dp"
+        android:layout_width="268dp"
         android:layout_height="180dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -169,8 +170,8 @@
         android:id="@+id/camp_detalle_add_arb"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginStart="140dp"
-        android:layout_marginLeft="140dp"
+        android:layout_marginStart="184dp"
+        android:layout_marginLeft="184dp"
         android:layout_marginTop="16dp"
         android:text="@string/anadir"
         app:layout_constraintStart_toStartOf="parent"
@@ -215,6 +216,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toStartOf="@+id/camp_detalle_listaModalidades"
+        app:layout_constraintHorizontal_bias="0.346"
         app:layout_constraintStart_toEndOf="@+id/camp_detalle_listaArbitros"
         app:layout_constraintTop_toBottomOf="@+id/listaZonas" />
 

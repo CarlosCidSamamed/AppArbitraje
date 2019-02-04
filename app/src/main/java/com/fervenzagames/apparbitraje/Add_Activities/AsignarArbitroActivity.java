@@ -418,7 +418,7 @@ public class AsignarArbitroActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
-                            camp.addToListaArbitros(arbi);
+                            camp.addToListaArbitros(arbi.getIdArbitro());
                             Map<String, Object> nuevoCamp = camp.toMap(); // Convertirlo en Map
 
                             Map<String, Object> childUpdates = new HashMap<>();
