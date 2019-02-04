@@ -36,7 +36,7 @@
         android:layout_marginRight="8dp"
         android:contentDescription="@string/estado_de_conexion"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.07"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/arb_detalle_foto"
         app:srcCompat="@drawable/punto_verde" />
@@ -156,24 +156,10 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/arb_detalle_listaCampsZonas"
+        app:layout_constraintStart_toEndOf="@+id/arb_detalle_listaCampsZonasListView"
         app:layout_constraintTop_toBottomOf="@+id/arb_detalle_listaTitulo" />
 
-    <!--<ListView
-        android:id="@+id/arb_detalle_listaCampeonatosListView"
-        android:layout_width="470dp"
-        android:layout_height="252dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.04"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arb_detalle_listaTitulo2" />-->
-
-    <ExpandableListView
+    <!--<ExpandableListView
         android:id="@+id/arb_detalle_listaCampsZonas"
         android:layout_width="470dp"
         android:layout_height="256dp"
@@ -185,7 +171,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.048"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arb_detalle_listaTitulo2" />
+        app:layout_constraintTop_toBottomOf="@+id/arb_detalle_listaTitulo2" />-->
+
+    <ListView
+        android:id="@+id/arb_detalle_listaCampsZonasListView"
+        android:layout_width="470dp"
+        android:layout_height="256dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.061"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arb_detalle_listaTitulo2"></ListView>
 
     <TextView
         android:id="@+id/arb_detalle_listaTitulo2"

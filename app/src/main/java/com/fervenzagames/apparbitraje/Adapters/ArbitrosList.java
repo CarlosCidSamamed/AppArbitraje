@@ -50,10 +50,10 @@ public class ArbitrosList extends ArrayAdapter<Arbitros> {
 
         if(arbi.getConectado() == true){
             // Picasso.get().load(R.drawable.punto_verde).into(estado);
-            estado.setImageResource(R.drawable.punto_verde);
+            estado.setImageResource(R.drawable.online);
         } else {
             //Picasso.get().load(R.drawable.punto_rojo).into(estado);
-            estado.setImageResource(R.drawable.punto_rojo);
+            estado.setImageResource(R.drawable.offline);
         }
 
         nombre.setText(arbi.getNombre());

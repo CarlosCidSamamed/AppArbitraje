@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.CampeonatosExpandableListAdapter;
+import com.fervenzagames.apparbitraje.Adapters.CampeonatosList;
+import com.fervenzagames.apparbitraje.Adapters.CampeonatosMiniList;
 import com.fervenzagames.apparbitraje.Adapters.CombatesList;
 import com.fervenzagames.apparbitraje.Edit_Activities.EditArbitroActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
@@ -56,11 +58,15 @@ public class DetalleArbitroActivity extends AppCompatActivity {
     private TextView mZona;*/
     // private ListView mListaCampsListView;
 
-    private ExpandableListView mListaCampeonatosFechas;
-    private ExpandableListAdapter mListaCampFechasAdapter;
-    private List<String> mListaTitulos; // Nombre de los Campeonatos
+    //private ExpandableListView mListaCampeonatosFechas;
+    //private ExpandableListAdapter mListaCampFechasAdapter;
+    //private List<String> mListaTitulos; // Nombre de los Campeonatos
     //private HashMap<String, List<String>> mListaDetalle; // Lista con las zonas de combate
-    private List<String> mListaDetalle;
+    //private List<String> mListaDetalle;
+
+    private List<Campeonatos> mListaCampeonatosFechas;
+    private ListView mCampeonatosListView;
+    private CampeonatosMiniList mCampAdapter;
 
     private List<Combates> mListaCombates;
     private ListView mListaCombatesListView;
@@ -73,6 +79,7 @@ public class DetalleArbitroActivity extends AppCompatActivity {
     private DatabaseReference mZonasDB;
 
     private List<Campeonatos> mListaCamps;
+    private List<String> mListaIDsCamps;
 
     private Bundle extras;
 
@@ -105,10 +112,11 @@ public class DetalleArbitroActivity extends AppCompatActivity {
         // mZona = findViewById(R.id.arb_detalle_zonaCombate);
         // mListaCampsListView = findViewById(R.id.arb_detalle_listaCampeonatosListView);
 
-        mListaCampeonatosFechas = findViewById(R.id.arb_detalle_listaCampsZonas);
-        mListaTitulos = new ArrayList<>();
+        mCampeonatosListView = findViewById(R.id.arb_detalle_listaCampsZonasListView);
+        //mListaTitulos = new ArrayList<>();
         //mListaDetalle = new HashMap<>();
-        mListaDetalle = new ArrayList<>();
+        //mListaDetalle = new ArrayList<>();
+        mListaCampeonatosFechas = new ArrayList<>();
 
         mListaCombates = new ArrayList<>();
         mListaCombatesListView = findViewById(R.id.arb_detalle_listaCombates);
@@ -159,96 +167,44 @@ public class DetalleArbitroActivity extends AppCompatActivity {
 
                     // Estado de conexión
                     if(conectado.equals("true")){
-                        mConectado.setImageResource(R.drawable.punto_verde);
+                        mConectado.setImageResource(R.drawable.online);
                     } else if(conectado.equals("false")){
-                        mConectado.setImageResource(R.drawable.punto_rojo);
+                        mConectado.setImageResource(R.drawable.offline);
                     }
 
-                    // Recorrer la lista de Campeonatos en los que ha participado este árbitro para recuperar la info de dichos campeonatos y mostrarla
-                    // en el spinner.
+                    final List<String> lista = arbi.getListaCamps();
 
-                    List<String> lista = arbi.getListaCamps();
+                    //Toast.makeText(DetalleArbitroActivity.this, "(DetalleArbitro) Tamaño lista Campeonatos " + lista.size(), Toast.LENGTH_SHORT).show();
 
-                    for(int i = 0; i < lista.size(); i++){
-                        Query consulta = mCampDB.orderByChild("idCamp");
-
-                        final String id = lista.get(i);
-
-                        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                mListaTitulos.clear();
-                                for(DataSnapshot campSnapshot:dataSnapshot.getChildren()){
-                                    Campeonatos camp = campSnapshot.getValue(Campeonatos.class);
-                                    try {
+                    Query consulta = mCampDB;
+                    consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(!dataSnapshot.exists()){
+                                Toast.makeText(DetalleArbitroActivity.this, "(DetalleArbitro) No existen Campeonatos en la BD", Toast.LENGTH_SHORT).show();
+                            } else {
+                                for(DataSnapshot campSnap: dataSnapshot.getChildren()){
+                                    Campeonatos camp = campSnap.getValue(Campeonatos.class);
+                                    // Comparar el id del campeonato que hemos recuperado de la BD con los ids de la lista de campeonatos de este árbitro.
+                                    for(int i = 0; i < lista.size(); i++){
+                                        String id = lista.get(i);
                                         if(camp.getIdCamp().equals(id)){
-                                            mListaTitulos.add(camp.getNombre()); // Obtener cabecera (header)
-                                            //mListaDetalle = camp.getHashMapZonasCombate(camp); // Obtener detalle (detail)
-                                            mListaDetalle.add(camp.getFecha());
+                                            mListaCamps.add(camp);
                                         }
-                                    } catch (NullPointerException e) {
-                                        e.printStackTrace();
                                     }
+                                    mCampAdapter = new CampeonatosMiniList(DetalleArbitroActivity.this, mListaCamps);
+                                    mCampeonatosListView.setAdapter(mCampAdapter);
+                                    mCampAdapter.notifyDataSetChanged();
                                 }
-                                // ArrayAdapter adapter = new CampeonatosMiniList(DetalleArbitroActivity.this, mListaCamps);
-                                // adapter.setDropDownViewResource(R.layout.camp_single_layout);
-                                // mListaCampsListView.setAdapter(adapter);
-
-                                // Pasarle los datos al ExpandableListView
-                                //mListaCampFechasAdapter = new CampeonatosExpandableListAdapter(DetalleArbitroActivity.this, mListaTitulos, mListaDetalle);
-                                //mListaCampeonatosFechas.setAdapter(mListaCampFechasAdapter);
-                                // Expansión de un grupo
-                                /*mListaCampeonatosFechas.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-                                    @Override
-                                    public void onGroupExpand(int groupPosition) {
-                                        Toast.makeText(DetalleArbitroActivity.this,
-                                                "Se ha expandido el grupo de " + mListaTitulos.get(groupPosition),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                });*/
-                                // Colapso de un grupo
-                                /*mListaCampeonatosFechas.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-                                    @Override
-                                    public void onGroupCollapse(int groupPosition) {
-                                        Toast.makeText(DetalleArbitroActivity.this,
-                                                "Se ha colapsado el grupo de " + mListaTitulos.get(groupPosition),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                });*/
-                                /*// Click en uno de los hijos.
-                                mListaCampeonatosFechas.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                                    @Override
-                                    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                                        mListaCombates.clear(); // Borrar la lista anterior de Combates
-                                        Toast.makeText(DetalleArbitroActivity.this,
-                                                mListaTitulos.get(groupPosition) + " - > " +
-                                                        mListaDetalle.get(childPosition),
-                                                Toast.LENGTH_SHORT).show();
-                                        // Añadir llamada a método que cargue los combates correspondientes al campeonato y a la zona de combate correspondientes.
-                                        // El Campeonato lo obtenemos de groupPosition --> mListaTitulos.get(groupPosition) nos devuelve el nombre del Campeonato.
-                                        // A partir del nombre podemos buscar en la BD y obtener el resto de datos.
-                                        // La Zona de Combate la obtenemos de childPosition --> mListaDetalle.get(mListaTitulos.get(groupPosition)).get(childPosition)
-                                        // nos devuelve el número de la zona de combate. A partir de ese número y el id del Campeonato podemos buscar el resto de datos
-                                        // de la zona de combate.
-                                        String idCamp = mListaTitulos.get(groupPosition);
-                                        String idZona = mListaDetalle.get(childPosition);
-                                        List<String> listaIDs = buscarIDsCombates(idCamp, idZona); // Localizar los IDs.
-                                        buscarCombates(listaIDs);   // Localizar los Combates correspondientes a los IDs. En este método se actualiza mListaCombates.
-                                        // Ahora debemos mostrar los datos de mListaCombates en mListaCombatesListView.
-                                        ArrayAdapter adapter = new CombatesList(DetalleArbitroActivity.this, mListaCombates);
-                                        adapter.setDropDownViewResource(R.layout.combate_single_layout);
-                                        mListaCombatesListView.setAdapter(adapter);
-                                        return false;
-                                    }
-                                });*/
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                        });
-                    }
+                        }
+                    });
+
 
                 } catch (NullPointerException e) {
                     e.printStackTrace();
