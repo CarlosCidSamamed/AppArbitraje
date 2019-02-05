@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.fervenzagames.apparbitraje.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -206,5 +208,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
         manager.notify(2, notification);
     }
+
 }
 

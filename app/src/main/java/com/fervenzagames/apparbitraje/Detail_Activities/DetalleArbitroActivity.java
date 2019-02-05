@@ -205,6 +205,8 @@ public class DetalleArbitroActivity extends AppCompatActivity {
                         }
                     });
 
+                    // TODO mostrar lista Combates del Árbitro
+
 
                 } catch (NullPointerException e) {
                     e.printStackTrace();
