@@ -81,6 +81,8 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private String mIdZona;
     private String mIdCamp;
 
+    private String mNombreMod;
+
     private DatabaseReference mPuntsDB;
     private DatabaseReference mIncsDB;
 
@@ -139,6 +141,8 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
             mIdZona = extras.getString("idZona");
             mIdCamp = extras.getString("idCamp");
+
+            mNombreMod = extras.getString("nombreMod");
 
             Query consulta = mAsaltoDB;
             consulta.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -382,6 +386,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         startActivity(arbitrarIntent);*/
         extras.putString("idZona", mIdZona);
         extras.putString("idCamp", mIdCamp);
+        extras.putString("nombreMod", mNombreMod);
         Intent lobbyArbitrar = new Intent(DetalleAsaltoActivity.this, LobbyArbitraje.class);
         lobbyArbitrar.putExtras(extras);
         startActivity(lobbyArbitrar);

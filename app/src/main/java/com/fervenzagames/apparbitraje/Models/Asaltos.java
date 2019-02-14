@@ -1,6 +1,8 @@
 package com.fervenzagames.apparbitraje.Models;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Asaltos {
 
@@ -152,5 +154,24 @@ public class Asaltos {
         }
 
         return res;
+    }
+
+    // Para actualizar un Asalto
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("id", id);
+        result.put("numAsalto", numAsalto);
+        result.put("ganador", ganador);
+        result.put("motivo", motivo);
+        result.put("descripcion", descripcion);
+        result.put("puntuacionRojo", puntuacionRojo);
+        result.put("puntuacionAzul", puntuacionAzul);
+        result.put("duracion", duracion);
+        result.put("listaPuntuaciones", listaPuntuaciones);
+        result.put("listaIncidencias", listaIncidencias);
+        result.put("estado", estado);
+
+        return result;
     }
 }

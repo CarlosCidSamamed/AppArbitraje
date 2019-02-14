@@ -25,7 +25,7 @@
         android:id="@+id/grupoAzul"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ptosAzulText,un_punto_Azul_btn,proy_1_Azul_btn,patada_1_Azul_btn,proy_2_Azul_btn,dos_puntos_Azul_btn,punch_Azul_btn,patada_2_Azul_btn" />
+        app:constraint_referenced_ids="puntosAzulText,un_punto_Azul_btn,proy_1_Azul_btn,patada_1_Azul_btn,proy_2_Azul_btn,dos_puntos_Azul_btn,punch_Azul_btn,patada_2_Azul_btn" />
 
     <TextView
         android:id="@+id/ptosRojoText"
@@ -47,7 +47,7 @@
         app:layout_constraintTop_toBottomOf="@+id/silla_arbitraje_bar" />
 
     <TextView
-        android:id="@+id/ptosAzulText"
+        android:id="@+id/puntosAzulText"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
@@ -154,7 +154,7 @@
         android:text="@string/combate"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/ptosAzulText"
+        app:layout_constraintEnd_toStartOf="@+id/puntosAzulText"
         app:layout_constraintHorizontal_bias="0.456"
         app:layout_constraintStart_toEndOf="@+id/ptosRojoText"
         app:layout_constraintTop_toBottomOf="@+id/silla_arbitraje_bar" />
@@ -171,7 +171,7 @@
         android:text="@string/asalto"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/ptosAzulText"
+        app:layout_constraintEnd_toStartOf="@+id/puntosAzulText"
         app:layout_constraintHorizontal_bias="0.462"
         app:layout_constraintStart_toEndOf="@+id/ptosRojoText"
         app:layout_constraintTop_toBottomOf="@+id/combateText" />
@@ -290,7 +290,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.951"
         app:layout_constraintStart_toEndOf="@+id/punch_Rojo_btn"
-        app:layout_constraintTop_toBottomOf="@+id/ptosAzulText" />
+        app:layout_constraintTop_toBottomOf="@+id/puntosAzulText" />
 
     <Button
         android:id="@+id/patada_2_Azul_btn"
