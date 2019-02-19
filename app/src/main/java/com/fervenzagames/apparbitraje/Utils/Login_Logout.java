@@ -22,8 +22,9 @@ import com.google.firebase.database.ValueEventListener;
 public class Login_Logout {
 
     private static DatabaseReference mUsuarioDB;
+    private static DatabaseReference mArbitroDB;
 
-    public static void actualizarEstadoUsuario(String uid, final String estado, final Context context){
+    public static void actualizarEstadoUsuario(final String uid, final String estado, final Context context){
         mUsuarioDB = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
         Query usuario = mUsuarioDB;
         usuario.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -37,7 +38,7 @@ public class Login_Logout {
                             // si el estado es false es porque deberemos realizar el logout después de haber modificado el valor en la BD
                             if(estado.equals("false")){
                                 //Toast.makeText(context, "(Login Logout) Cerrar Sesión tras modificar conectado a false...", Toast.LENGTH_SHORT).show();
-                                logoutUser();
+                                logoutUser(uid, estado);
                             }
                         } else {
                             Toast.makeText(context, "(Login_Logout) Error al modificar el valor de ESTADO...", Toast.LENGTH_SHORT).show();
@@ -52,9 +53,48 @@ public class Login_Logout {
 
             }
         });
+
+        // Modificar el valor de CONECTADO del Árbitro
+        mArbitroDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(uid);
+        Query arbi = mArbitroDB;
+        arbi.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(estado.equals("true")){
+                    mArbitroDB.child("conectado").setValue(true);
+                } else if(estado.equals("false")){
+                    mArbitroDB.child("conectado").setValue(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
-    public static void logoutUser(){
+    public static void logoutUser(String uid, final String estado){
+        // Modificar el valor de CONECTADO del Árbitro
+        mArbitroDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(uid);
+        Query arbi = mArbitroDB;
+        arbi.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(estado.equals("true")){
+                    mArbitroDB.child("conectado").setValue(true);
+                } else if(estado.equals("false")){
+                    mArbitroDB.child("conectado").setValue(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
     }

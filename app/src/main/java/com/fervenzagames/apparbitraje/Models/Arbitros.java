@@ -22,6 +22,7 @@ public class Arbitros {
     private String nivel;
     private String cargo;
 
+    private String idZona;
     private int zonaCombate;
     /* En el caso de que en un campeonato haya distintas zonas de combate o competición deberemos identificar la zona
      * a la que pertenece tanto el árbitro de Mesa como los de Silla. */
@@ -36,13 +37,14 @@ public class Arbitros {
     // determinar la zona de combate que le corresponde. A partir de la zona de combate se le podrá asignar la lista de combates correspondientes a dicha zona de combate.
 
     private boolean conectado; // Especifica si el árbitro está conectado mediante su usuario a la aplicación (Firebase Auth)
+    private boolean listo; // Especifica si el árbitro está listo para comenzar a arbitrar.
 
     public List<Combates> listaCombates;
 
     public Arbitros(String idArbitro, String nombre, String dni,
                     String email, String password, String foto,
                     String pais, String federacion,
-                    String nivel, String cargo, int zonaCombate,
+                    String nivel, String cargo, String idZona, int zonaCombate,
                     String idCamp, boolean conectado, List<Combates> listaCombates) {
         this.idArbitro = idArbitro;
         this.nombre = nombre;
@@ -54,6 +56,7 @@ public class Arbitros {
         this.federacion = federacion;
         this.nivel = nivel;
         this.cargo = cargo;
+        this.idZona = idZona;
         this.zonaCombate = zonaCombate;
         this.idCamp = idCamp;
 
@@ -149,6 +152,14 @@ public class Arbitros {
         this.cargo = cargo;
     }
 
+    public String getIdZona() {
+        return idZona;
+    }
+
+    public void setIdZona(String idZona) {
+        this.idZona = idZona;
+    }
+
     public int getZonaCombate() {
         return zonaCombate;
     }
@@ -192,6 +203,14 @@ public class Arbitros {
 
     public void setConectado(boolean conectado) {
         this.conectado = conectado;
+    }
+
+    public boolean getListo() {
+        return listo;
+    }
+
+    public void setListo(boolean listo) {
+        this.listo = listo;
     }
 
     public Map<String, Object> toMap(){

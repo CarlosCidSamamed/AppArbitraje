@@ -131,6 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userMap.put("imagen_thumb", "default");
                             userMap.put("email", email);
                             userMap.put("conectado", "true"); // Por defecto el usuario se conecta al crear la cuenta.
+                            userMap.put("listo", "false");
 
                             mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -152,7 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
                             // Los datos de cada Árbitro se almacenan en una rama cuyo ID es el ID del Usuario correspondiente.
                             // Se crea un nuevo Árbitro
                             List<Combates> lista = new ArrayList<>();
-                            Arbitros arbi = new Arbitros(uid, display_name, "DNI", email, password, "default", "", "", "Nivel 1", "Silla", 0, "", true,  lista);
+                            Arbitros arbi = new Arbitros(uid, display_name, "DNI", email, password, "default", "", "", "Nivel 1", "Silla", "", 0, "", true,  lista);
                             // Se guardan los datos del árbitro en la BD.
                             mDatabase.setValue(arbi).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

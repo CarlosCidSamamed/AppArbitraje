@@ -495,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
                             if(estado.equals("true")){
                                 // Aviso
                                 alertDialogBuilder.show();
-                                Login_Logout.logoutUser();
+                                Login_Logout.logoutUser(uid, "false");
                                 //sendToStart(uid);
                             }
                         } catch (NullPointerException e) {

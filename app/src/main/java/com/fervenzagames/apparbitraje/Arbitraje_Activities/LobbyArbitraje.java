@@ -214,7 +214,7 @@ public class LobbyArbitraje extends AppCompatActivity {
                     Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
                     //Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Nombre Árbitro --> " + arbi.getNombre(), Toast.LENGTH_SHORT).show();
                     // Comprobar si el árbitro está conectado o no
-                    if(arbi.getConectado()) {
+                    if(arbi.getListo()) { // Se muestra si ha confirmado o no su disponibilidad.
                         mLista.add(arbi); // Añadir el Árbitro a la lista que se mostrará en pantalla solo si el valor de conectado es true.
                     }
                     // Mostrar lista con los datos.
