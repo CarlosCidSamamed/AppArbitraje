@@ -15,6 +15,8 @@ public class Arbitros {
     private String email;
     private String password;
 
+    private String tokenIDFCM;
+
     private String foto; // URL de la foto
     private String pais;
     private String federacion;
@@ -42,8 +44,8 @@ public class Arbitros {
     public List<Combates> listaCombates;
 
     public Arbitros(String idArbitro, String nombre, String dni,
-                    String email, String password, String foto,
-                    String pais, String federacion,
+                    String email, String password, String tokenIDFCM,
+                    String foto, String pais, String federacion,
                     String nivel, String cargo, String idZona, int zonaCombate,
                     String idCamp, boolean conectado, List<Combates> listaCombates) {
         this.idArbitro = idArbitro;
@@ -51,6 +53,7 @@ public class Arbitros {
         this.dni = dni;
         this.email = email;
         this.password = password;
+        this.tokenIDFCM = tokenIDFCM;
         this.foto = foto;
         this.pais = pais;
         this.federacion = federacion;
@@ -110,6 +113,14 @@ public class Arbitros {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getTokenIDFCM() {
+        return tokenIDFCM;
+    }
+
+    public void setTokenIDFCM(String tokenIDFCM) {
+        this.tokenIDFCM = tokenIDFCM;
     }
 
     public String getFoto() {
@@ -232,6 +243,8 @@ public class Arbitros {
         result.put("conectado", conectado);
         result.put("idCamp", idCamp);
         result.put("listaCamps", listaCamps);
+        result.put("listo", listo);
+        result.put("tokenIDFCM", tokenIDFCM);
 
         return result;
     }

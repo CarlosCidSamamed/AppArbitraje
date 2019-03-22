@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -18,15 +19,30 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Arbitraje_Activities.LobbyArbitraje;
+import com.fervenzagames.apparbitraje.Arbitraje_Activities.SillaArbitrajeActivity;
+import com.fervenzagames.apparbitraje.MainActivity;
+import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.R;
+import com.fervenzagames.apparbitraje.StartActivity;
+import com.fervenzagames.apparbitraje.User_Activities.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import static android.support.constraint.Constraints.TAG;
@@ -35,10 +51,23 @@ import static com.google.firebase.messaging.RemoteMessage.PRIORITY_HIGH;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     String NOTIFICATION_CHANNEL_ID = "com.fervenzagames.apparbitraje.Notifications";
+    String mTipo = "";
+    PendingIntent mPendingIntent;
+    Bundle mBundle;
 
+    DatabaseReference mRootDB;
+    DatabaseReference mArbiDB;
+    FirebaseAuth mAuth;
+    String mUid;
 
     public MyFirebaseMessagingService() {
         //myGetToken(this);
+        mAuth = FirebaseAuth.getInstance();
+        try{
+            mUid = mAuth.getCurrentUser().getUid();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
     String token;
@@ -55,16 +84,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (/* Check if data needs to be processed by long running job */ true) {
+            /*if (*//* Check if data needs to be processed by long running job *//* true) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
                 //scheduleJob();
-            } else {
-                // Handle message within 10 seconds
-                //handleNow();
-                super.onMessageReceived(remoteMessage);
-                // Gestionar los mensajes de tipo DATA
-                showNotificationData(remoteMessage);
-            }
+            } else {*/
+            // Handle message within 10 seconds
+            //handleNow();
+            super.onMessageReceived(remoteMessage);
+            // Gestionar los mensajes de tipo DATA
+            showNotificationData(remoteMessage);
+
+            //}
 
         }
 
@@ -199,14 +229,97 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         expandedView.setTextViewText(R.id.myNotification_collapsed_title, remoteMessage.getData().get("title"));
         expandedView.setTextViewText(R.id.myNotification_expanded_info, remoteMessage.getData().get("body"));
 
+        mTipo = remoteMessage.getData().get("type");
+
+        // Evaluar mTipo y lanzar la Activity correspondiente
+        switch(mTipo){
+            case "inicioAsalto":{
+                /*Info Necesaria
+                    idCamp
+                    idCat
+                    idComb
+                    idZona
+                    idAsalto
+                */
+                obtenerDatosCloudFunction();
+                Intent arbitrarIntent = new Intent(this, SillaArbitrajeActivity.class);
+                mPendingIntent = PendingIntent.getActivity(this, 0, arbitrarIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                break;
+            }
+            case "confirmacion":{
+                Intent inicioIntent = new Intent(this , MainActivity.class);
+                mPendingIntent = PendingIntent.getActivity(this, 0, inicioIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                if(mUid != null) {
+                    modificarListo(mUid); // Cambiar el valor de Arbitro.Listo a TRUE.
+                }
+                break;
+            }
+            case "login":{
+                Intent loginIntent = new Intent(this, LoginActivity.class);
+                mPendingIntent = PendingIntent.getActivity(this, 0, loginIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                break;
+            }
+            default:{
+                Intent inicioIntent = new Intent(this, StartActivity.class);
+                mPendingIntent = PendingIntent.getActivity(this, 0, inicioIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                break;
+            }
+        }
+
+        collapsedView.setOnClickPendingIntent(R.id.myNotification_collapsed_info, mPendingIntent);
+        expandedView.setOnClickPendingIntent(R.id.myNotification_expanded_info, mPendingIntent);
+
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
+                .setContentIntent(mPendingIntent) // Se indica la Activity que se debe abrir al pulsar sobre la notificación.
+                .setSmallIcon(R.drawable.logo_app1)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setAutoCancel(true)
                 .build();
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
         manager.notify(2, notification);
+    }
+
+    // En este método voy a invocar una función de las Cloud Functions que he definido en TypeScript para este proyecto de Firebase
+    // Dicha invocación me devolverá los datos que necesito para poder llamar a la activity SillaArbitraje de manera correcta.
+    // La funcion que voy a invocar se llama recuperarDatos y tiene esta cabecera
+    //          export function recuperarDatos(idZona: string, idCamp: string, idArbitro: string)
+    // Es decir, que necesita tres parámetros idZona, idCamp e idArbitro.
+
+    // Documentación a seguir para esta llamada directa a la Cloud Function --> https://firebase.google.com/docs/functions/callable?hl=es-419 (Llama a funciones desde tu app)
+
+    // La Cloud Function devolverá los datos en formato JSON.
+    private void obtenerDatosCloudFunction() {
+
+    }
+
+
+    private void modificarListo(String idArbi){
+        mRootDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
+        mArbiDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(idArbi);
+        Query consulta = mArbiDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    // No se encuentra el Arbitro con ese ID
+                } else {
+                    Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                    arbi.setListo(true);
+                    Map<String, Object> arbiMap = arbi.toMap();
+                    HashMap<String, Object> updates = new HashMap<>();
+                    updates.put("Arbitros/" + arbi.getIdArbitro(), arbiMap);
+                    mRootDB.updateChildren(updates);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

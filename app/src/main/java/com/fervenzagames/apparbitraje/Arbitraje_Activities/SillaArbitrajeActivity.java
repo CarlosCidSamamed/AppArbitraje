@@ -26,6 +26,9 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
 
     private Toolbar mTooolbar;
 
+    private TextView mCombateText;
+    private TextView mAsaltoText;
+
     private Button mPuñoRojo;
     private Button mPatUnoRojo;
     private Button mPatDosRojo;
@@ -45,6 +48,9 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
     private Button mCartulinas;
 
     private TextView mCrono;
+
+    private DatabaseReference mAsaltoDB;
+    private DatabaseReference mCombateDB;
 
     private DatabaseReference mPuntDB;
     private DatabaseReference mIncDB;
@@ -68,6 +74,9 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
         mTooolbar = findViewById(R.id.silla_arbitraje_bar);
         setSupportActionBar(mTooolbar);
         getSupportActionBar().setTitle("Arbitraje Silla");
+
+        mAsaltoText = findViewById(R.id.asaltoText);
+        mCombateText = findViewById(R.id.combateText);
 
         mPuñoRojo = findViewById(R.id.punch_Rojo_btn);
         mPatUnoRojo = findViewById(R.id.patada_1_Rojo_btn);
