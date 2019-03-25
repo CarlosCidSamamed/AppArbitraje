@@ -263,7 +263,7 @@ public class LobbyArbitraje extends AppCompatActivity {
         consultaArbis.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mLista.clear();
+                //mLista.clear();
                 if(!dataSnapshot.exists()){
                     Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Error al localizar al Árbitro en la BD. (idArbitro => " + idArbitro + " )", Toast.LENGTH_SHORT).show();
                 } else {

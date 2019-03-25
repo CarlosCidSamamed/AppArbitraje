@@ -27,6 +27,23 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="puntosAzulText,un_punto_Azul_btn,proy_1_Azul_btn,patada_1_Azul_btn,proy_2_Azul_btn,dos_puntos_Azul_btn,punch_Azul_btn,patada_2_Azul_btn" />
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/silla_foto_Rojo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:civ_border_color="@color/colorRojo"
+        app:civ_border_width="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/ptosRojoText"
+        app:layout_constraintHorizontal_bias="0.688"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/silla_arbitraje_bar" />
+
     <TextView
         android:id="@+id/ptosRojoText"
         android:layout_width="100dp"
@@ -44,6 +61,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.194"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/silla_arbitraje_bar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/silla_foto_Azul"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/default_avatar"
+        app:civ_border_color="@color/colorAccent2"
+        app:civ_border_width="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.446"
+        app:layout_constraintStart_toEndOf="@+id/puntosAzulText"
         app:layout_constraintTop_toBottomOf="@+id/silla_arbitraje_bar" />
 
     <TextView

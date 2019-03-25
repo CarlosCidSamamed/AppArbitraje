@@ -59,6 +59,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     DatabaseReference mArbiDB;
     FirebaseAuth mAuth;
     String mUid;
+    Bundle extras;
 
     public MyFirebaseMessagingService() {
         //myGetToken(this);
@@ -241,8 +242,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     idZona
                     idAsalto
                 */
-                obtenerDatosCloudFunction();
+                Bundle extras = obtenerDatosCloudFunction(remoteMessage);
                 Intent arbitrarIntent = new Intent(this, SillaArbitrajeActivity.class);
+                arbitrarIntent.putExtras(extras);
                 mPendingIntent = PendingIntent.getActivity(this, 0, arbitrarIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 break;
             }
@@ -291,8 +293,32 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     // Documentación a seguir para esta llamada directa a la Cloud Function --> https://firebase.google.com/docs/functions/callable?hl=es-419 (Llama a funciones desde tu app)
 
     // La Cloud Function devolverá los datos en formato JSON.
-    private void obtenerDatosCloudFunction() {
+    private Bundle obtenerDatosCloudFunction(RemoteMessage remoteMessage) {
+        Bundle extras = new Bundle();
 
+        // Obtener los datos del payload del mensaje con getData()
+        Map<String, String> datosMensaje = remoteMessage.getData();
+
+        try {
+            String idCamp = datosMensaje.get("idCamp");
+            String idZona = datosMensaje.get("idZona");
+            String idCat = datosMensaje.get("idCat");
+            String idCombate = datosMensaje.get("idCombateActual");
+            String idAsalto = datosMensaje.get("idAsaltoActual");
+            String idRojo = datosMensaje.get("idRojo");
+            String idAzul = datosMensaje.get("idAzul");
+            extras.putString("idCamp", idCamp);
+            extras.putString("idZona", idZona);
+            extras.putString("idCat", idCat);
+            extras.putString("idCombate", idCombate);
+            extras.putString("idAsalto", idAsalto);
+            extras.putString("idRojo", idRojo);
+            extras.putString("idAzul", idAzul);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return extras;
     }
 
 

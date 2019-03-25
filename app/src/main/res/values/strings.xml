@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">AppArbitraje</string>
-    <string name="MensajeBienvenida">Bienvenido a AppAbitraje</string>
+    <string name="MensajeBienvenida">Bienvenido a AppArbitraje</string>
     <string name="RegistrarNuevaCuenta">Registrar Nueva Cuenta</string>
     <string name="SuNombre">Nombre</string>
     <string name="SuEmail">Email</string>

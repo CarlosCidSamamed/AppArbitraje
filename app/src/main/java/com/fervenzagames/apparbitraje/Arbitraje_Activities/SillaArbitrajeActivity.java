@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje.Arbitraje_Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,9 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Adapters.MiSpinnerAdapter;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
+import com.fervenzagames.apparbitraje.Models.Asaltos;
+import com.fervenzagames.apparbitraje.Models.Combates;
+import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.fervenzagames.apparbitraje.Models.Incidencias;
 import com.fervenzagames.apparbitraje.Models.Puntuaciones;
 import com.fervenzagames.apparbitraje.R;
@@ -21,6 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SillaArbitrajeActivity extends AppCompatActivity {
 
@@ -28,6 +35,9 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
 
     private TextView mCombateText;
     private TextView mAsaltoText;
+
+    private CircleImageView mFotoRojo;
+    private CircleImageView mFotoAzul;
 
     private Button mPuñoRojo;
     private Button mPatUnoRojo;
@@ -51,6 +61,7 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
 
     private DatabaseReference mAsaltoDB;
     private DatabaseReference mCombateDB;
+    private DatabaseReference mCompetidorDB;
 
     private DatabaseReference mPuntDB;
     private DatabaseReference mIncDB;
@@ -65,6 +76,7 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
     private String mIdRojo;
     private String mIdAzul;
 
+    private Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +89,9 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
 
         mAsaltoText = findViewById(R.id.asaltoText);
         mCombateText = findViewById(R.id.combateText);
+
+        mFotoRojo = findViewById(R.id.silla_foto_Rojo);
+        mFotoAzul = findViewById(R.id.silla_foto_Azul);
 
         mPuñoRojo = findViewById(R.id.punch_Rojo_btn);
         mPatUnoRojo = findViewById(R.id.patada_1_Rojo_btn);
@@ -101,6 +116,8 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
         mIncDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Incidencias");
         mArbisDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros");
 
+        mCompetidorDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Competidores");
+
         try {
             mIdJuez = FirebaseAuth.getInstance().getCurrentUser().getUid();
             getDniJuez(mIdJuez);
@@ -109,7 +126,7 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         
-        Bundle extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
         try {
             mIdAsalto = extras.getString("idAsalto");
         } catch (NullPointerException e) {
@@ -128,6 +145,9 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
             Toast.makeText(this, "(SillaArbitraje) El bundle de extras no incluye el ID del Competidor AZUL. ", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+
+        // Cargar los datos del Combate y del Asalto a arbitrar.
+        cargarDatosUI();
 
         //region Click Botones
         //region ROJO
@@ -380,4 +400,95 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
         });
     }
 
+    // Método que carga el número del combate, el número del asalto
+    private void cargarDatosUI(){
+
+        // Obtener los datos del combate a partir de los siguientes IDs: idCat e idCombate
+        // Para obtener los datos del Asalto deberemos usar el idAsalto
+        try {
+            String idCat = extras.getString("idCat");
+            final String idCombate = extras.getString("idCombate");
+            final String idAsalto = extras.getString("idAsalto");
+            // Acceso a RTDB
+            // Combate
+            mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates/");
+            Query consultaCombate = mCombateDB.child(idCat).child(idCombate);
+            consultaCombate.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.exists()){
+                        Toast.makeText(SillaArbitrajeActivity.this, "(SillaArbitraje) Error al localizar el Combate cuyo id es " + idCombate, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Combates combate = dataSnapshot.getValue(Combates.class);
+                        String numCombate = "Combate " + combate.getNumCombate();
+                        mCombateText.setText(numCombate);
+                        // Foto Rojo
+                        cargarFotoCompetidor(combate, "Rojo");
+                        // Foto Azul
+                        cargarFotoCompetidor(combate, "Azul");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            // Asalto
+            mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos/");
+            Query consultaAsalto = mAsaltoDB.child(idCombate).child(idAsalto);
+            consultaAsalto.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.exists()){
+                        Toast.makeText(SillaArbitrajeActivity.this, "(SillaArbitraje) Error al localizar el Asalto cuyo id es " + idAsalto, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Asaltos asalto = dataSnapshot.getValue(Asaltos.class);
+                        int num = asalto.getNumAsalto();
+                        String n = "Asalto " + Integer.toString(num);
+                        mAsaltoText.setText(n);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Localiza la foto del competidor a partir del objeto de tipo Combates y el lado (Rojo o Azul)
+    private void cargarFotoCompetidor(Combates combate, final String lado){
+        String idComp = "";
+        if(lado.equals("Rojo")){
+            idComp = combate.getIdRojo();
+        } else if(lado.equals("Azul")){
+            idComp = combate.getIdAzul();
+        }
+        // Acceso a la RTDB
+        Query consultaComp = mCompetidorDB.child(idComp);
+        consultaComp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(SillaArbitrajeActivity.this, "(SillaArbitraje) Error al localizar al Competidor " + lado , Toast.LENGTH_SHORT).show();
+                } else {
+                    Competidores comp = dataSnapshot.getValue(Competidores.class);
+                    if(lado.equals("Rojo")){
+                        Picasso.get().load(comp.getFoto()).into(mFotoRojo);
+                    } else if(lado.equals("Azul")){
+                        Picasso.get().load(comp.getFoto()).into(mFotoAzul);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
