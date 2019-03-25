@@ -41,6 +41,7 @@ public class ArbitrosMiniList extends ArrayAdapter<Arbitros> {
         TextView nombre = convertView.findViewById(R.id.arb_single_mini_nombre);
         TextView zona = convertView.findViewById(R.id.arb_single_mini_zona);
         ImageView estado = convertView.findViewById(R.id.arb_single_mini_estado);
+        ImageView listo = convertView.findViewById(R.id.arb_single_mini_listo);
 
         if(arbi.getFoto().equals("default")){
             Picasso.get().load(R.drawable.default_avatar).into(foto);
@@ -52,6 +53,12 @@ public class ArbitrosMiniList extends ArrayAdapter<Arbitros> {
             Picasso.get().load(R.drawable.online).into(estado);
         } else {
             Picasso.get().load(R.drawable.offline).into(estado);
+        }
+
+        if(arbi.getListo() == true){
+            Picasso.get().load(R.drawable.online).into(listo);
+        } else {
+            Picasso.get().load(R.drawable.offline).into(listo);
         }
 
         nombre.setText(arbi.getNombre());

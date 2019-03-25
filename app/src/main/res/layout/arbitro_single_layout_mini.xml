@@ -67,4 +67,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/punto_verde" />
 
+    <ImageView
+        android:id="@+id/arb_single_mini_listo"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:contentDescription="@string/listo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/arb_single_mini_estado"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/punto_verde" />
+
 </android.support.constraint.ConstraintLayout>

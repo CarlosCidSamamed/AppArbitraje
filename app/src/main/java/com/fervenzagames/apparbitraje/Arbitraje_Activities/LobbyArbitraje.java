@@ -263,7 +263,7 @@ public class LobbyArbitraje extends AppCompatActivity {
         consultaArbis.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //mLista.clear();
+                mLista.clear();
                 if(!dataSnapshot.exists()){
                     Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Error al localizar al Árbitro en la BD. (idArbitro => " + idArbitro + " )", Toast.LENGTH_SHORT).show();
                 } else {
@@ -274,7 +274,10 @@ public class LobbyArbitraje extends AppCompatActivity {
                     if(arbi.getListo()) { // Se muestra si ha confirmado o no su disponibilidad.
                         mLista.add(arbi); // Añadir el Árbitro a la lista que se mostrará en pantalla solo si el valor de conectado es true.
                     }*/
-                    mLista.add(arbi); // Se añade a todos los árbitros de la zona para mostrar si han confirmado o no su disponibilidad.
+                    // Añadir a la lista a los árbitros de silla y solo a los de silla.
+                    if (arbi.getCargo().equals("Silla")){
+                        mLista.add(arbi);
+                    }
                     // Mostrar lista con los datos.
                     ArbitrosMiniList adapter = new ArbitrosMiniList(LobbyArbitraje.this, mLista);
                     adapter.setDropDownViewResource(R.layout.arbitro_single_layout_mini);
