@@ -13,7 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Arbitraje_Activities.LobbyArbitraje"></activity>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/logo_app1" />
+
+        <activity android:name=".Arbitraje_Activities.LobbyArbitraje" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -118,6 +123,10 @@
         <activity
             android:name=".Detail_Activities.DetalleAsaltoActivity"
             android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".Arbitraje_Activities.SalaEsperaArbitroActivity"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".Notifications.MyFirebaseMessagingService">
             <intent-filter>

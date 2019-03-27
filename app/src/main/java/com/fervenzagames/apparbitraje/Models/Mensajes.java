@@ -11,36 +11,36 @@ import java.lang.reflect.Type;
 public class Mensajes {
 
     public static final String TITULO_LOGIN = "Combate Pendiente. Inicie Sesión en la app.";
-    public static final String CUERPO_LOGIN = "Al pulsar sobre esta notificación accederá a la pantalla de Inicio de Sesión de la app";
+    public static final String CUERPO_LOGIN = "¿Desea acceder a la pantalla de Inicio de Sesión de la app?";
     public static final String TIPO_LOGIN = "login";
 
     public static final String TITULO_CONF = "El Juez de Mesa espera su confirmación para comenzar el Asalto";
-    public static final String CUERPO_CONF = "Al pulsar sobre esta notificación confirmará su disponibilidad para comenzar a arbitrar.";
+    public static final String CUERPO_CONF = "¿Desea confirmar su disponibilidad para comenzar a arbitrar?";
     public static final String TIPO_CONF = "confirmacion";
 
     public static final String TITULO_ASALTO = "Inicio del Asalto";
-    public static final String CUERPO_ASALTO = "Se cargará la interfaz para comenzar con el Arbitraje";
+    public static final String CUERPO_ASALTO = "¿Desea cargar la interfaz para comenzar con el Arbitraje?";
     public static final String TIPO_ASALTO = "inicioAsalto";
 
     // Datos comunes a todos los tipos de mensajes
-    String idMensaje;
-    String emisor;
-    String receptor;
-    String fechaHora;
-    boolean leido;
+    private String idMensaje;
+    private String emisor;
+    private String receptor;
+    private String fechaHora;
+    private boolean leido;
 
-    String titulo;
-    String cuerpo;
-    String tipo;
+    private String titulo;
+    private String cuerpo;
+    private String tipo;
 
     // Datos extra para el mensaje de Inicio de Sesión
-    String idCamp;
-    String idZona;
-    String idCat;
-    String idCombateActual;
-    String idAsaltoActual;
-    String idRojo;
-    String idAzul;
+    private String idCamp;
+    private String idZona;
+    private String idCat;
+    private String idCombateActual;
+    private String idAsaltoActual;
+    private String idRojo;
+    private String idAzul;
 
     public Mensajes(String idMensaje, String emisor, String receptor, String fechaHora, String titulo, String cuerpo, String tipo, String idCamp, String idZona, String idCat, String idCombateActual, String idAsaltoActual, String idRojo, String idAzul) {
         this.idMensaje = idMensaje;

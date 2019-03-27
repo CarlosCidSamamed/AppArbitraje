@@ -15,11 +15,13 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.NotificationCompat.Action;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.LobbyArbitraje;
+import com.fervenzagames.apparbitraje.Arbitraje_Activities.SalaEsperaArbitroActivity;
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.SillaArbitrajeActivity;
 import com.fervenzagames.apparbitraje.MainActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
@@ -227,8 +229,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         collapsedView.setTextViewText(R.id.myNotification_collapsed_title, remoteMessage.getData().get("title"));
         collapsedView.setTextViewText(R.id.myNotification_collapsed_info, "Pulse para expandir");
 
-        expandedView.setTextViewText(R.id.myNotification_collapsed_title, remoteMessage.getData().get("title"));
+        expandedView.setTextViewText(R.id.myNotification_expanded_title, remoteMessage.getData().get("title"));
         expandedView.setTextViewText(R.id.myNotification_expanded_info, remoteMessage.getData().get("body"));
+
 
         mTipo = remoteMessage.getData().get("type");
 
@@ -249,11 +252,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 break;
             }
             case "confirmacion":{
-                Intent inicioIntent = new Intent(this , MainActivity.class);
-                mPendingIntent = PendingIntent.getActivity(this, 0, inicioIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                if(mUid != null) {
+                Intent listoIntent = new Intent(this , SalaEsperaArbitroActivity.class);
+                /*Bundle extras = new Bundle();
+                extras.putString("anterior", "confirmacionListo");
+                listoIntent.putExtras(extras);*/
+                mPendingIntent = PendingIntent.getActivity(this, 0, listoIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                /*if(mUid != null) {
                     modificarListo(mUid); // Cambiar el valor de Arbitro.Listo a TRUE.
-                }
+                }*/
                 break;
             }
             case "login":{
@@ -271,13 +277,31 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         collapsedView.setOnClickPendingIntent(R.id.myNotification_collapsed_info, mPendingIntent);
         expandedView.setOnClickPendingIntent(R.id.myNotification_expanded_info, mPendingIntent);
 
+        Intent inicioIntent = new Intent(this , MainActivity.class);
+        //Acción para el botón de SÍ
+        Action accionSI = new Action(
+                R.drawable.pulgar_arriba,
+                getString(R.string.si),
+                mPendingIntent // Si se pulsa sobre SÍ se abrirá la activity correspondiente a cada tipo de Mensaje
+        );
+        // Acción para el botón de NO
+        Action accionNO = new Action(
+                R.drawable.pulgar_abajo,
+                getString(R.string.no),
+                PendingIntent.getActivity(this, 0, inicioIntent, PendingIntent.FLAG_UPDATE_CURRENT) // Si se pulsa sobre NO se va a la MainActivity
+        );
+
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
-                .setContentIntent(mPendingIntent) // Se indica la Activity que se debe abrir al pulsar sobre la notificación.
-                .setSmallIcon(R.drawable.logo_app1)
+                //.setContentIntent(mPendingIntent) // Se indica la Activity que se debe abrir al pulsar sobre la notificación.
+                //.setSmallIcon(R.drawable.logo_app1)
+                .setSmallIcon(R.drawable.boxeo)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setAutoCancel(true)
+                // Botones de Acción para la Notificación
+                .addAction(accionSI)
+                .addAction(accionNO)
                 .build();
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());

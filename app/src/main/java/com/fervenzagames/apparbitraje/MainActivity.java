@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.fervenzagames.apparbitraje.Add_Activities.AddCompetidorActivity;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
+import com.fervenzagames.apparbitraje.Notifications.MyFirebaseMessagingService;
 import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.fervenzagames.apparbitraje.Utils.Login_Logout;
 import com.fervenzagames.apparbitraje.Utils.SectionsPagerAdapterTablet;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private String mUid;
     private DatabaseReference mArbitrosDB;
     private DatabaseReference mRootDB;
+    private DatabaseReference mArbiDB;
     private DatabaseReference mUsuariosDB;
 
     private AlertDialog.Builder alertDialogBuilder;
@@ -194,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }*/
     }
-
 
     private void sendToStart(String uid) {
         /*if(uid != null){
