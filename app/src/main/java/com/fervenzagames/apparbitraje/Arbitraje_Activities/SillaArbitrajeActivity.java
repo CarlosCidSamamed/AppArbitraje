@@ -2,6 +2,7 @@ package com.fervenzagames.apparbitraje.Arbitraje_Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,6 +61,12 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
     private Button mCartulinas;
 
     private TextView mCrono;
+    private CountDownTimer mCountDownTimer;
+    private static final long START_TIME_IN_MILLIS = 60000;    // Un minuto
+    private static final long START_TIME_IN_MILLIS_2 = 120000; // Dos minutos
+    private static final long START_TIME_IN_MILLIS_3 = 180000; // Tres minutos
+    private long mTimeLeftInMillis = START_TIME_IN_MILLIS_2;
+    private boolean mTimerRunning;
 
     private DatabaseReference mAsaltoDB;
     private DatabaseReference mCombateDB;
@@ -77,6 +86,9 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
     private String mIdAzul;
 
     private Bundle extras;
+
+    private enum Estado  {COMBATE, DESCANSO_ENTRE_ASALTOS, DESCANSO_ENTRE_COMBATES}
+    private Estado estado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -490,5 +502,66 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    // Métodos para implementar el funcionamiento del CRONO
+    public void iniciarCrono () {
+        mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mTimeLeftInMillis = millisUntilFinished;
+                actualizarCrono();
+            }
+
+            @Override
+            public void onFinish() {
+                estado = Estado.DESCANSO_ENTRE_ASALTOS;
+                mTimerRunning = false;
+            }
+        }.start(); // Iniciar el CountDownTimer que hemos creado.
+
+        mTimerRunning = true;
+    }
+
+    public void pausarCrono (){ // PAUSE
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+        actualizarCrono();
+    }
+
+    public void reiniciarCrono (long startTime){ // RESET
+        // estado = Estado.COMBATE;
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+        mTimeLeftInMillis = startTime;
+        actualizarCrono();
+    }
+
+    public void actualizarCrono() { // Actualizar el TextView con el crono
+        int minutos = (int) mTimeLeftInMillis / 1000 / 60;
+        int segundos = (int) mTimeLeftInMillis / 1000 % 60;
+
+        String tiempoFormateado = String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos);
+
+        // Dependiendo del valor del atributo Estado se deberá modificar el color del Texto.
+        switch (estado) {
+            case COMBATE:{
+                mCrono.setTextColor(getResources().getColor(R.color.colorVerde));
+                break;
+            }
+            case DESCANSO_ENTRE_ASALTOS:{
+                mCrono.setTextColor(getResources().getColor(R.color.colorRojo));
+                break;
+            }
+            case DESCANSO_ENTRE_COMBATES:{
+                mCrono.setTextColor(getResources().getColor(R.color.common_google_signin_btn_text_light));
+                break;
+            }
+            default:{
+                mCrono.setTextColor(getResources().getColor(R.color.common_google_signin_btn_text_light));
+                break;
+            }
+        }
+        mCrono.setText(tiempoFormateado);
     }
 }

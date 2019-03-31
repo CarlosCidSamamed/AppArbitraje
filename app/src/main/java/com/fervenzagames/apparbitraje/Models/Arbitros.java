@@ -43,11 +43,16 @@ public class Arbitros {
 
     public List<Combates> listaCombates;
 
+    private String idCombate; // ID del Combate actual de un Árbitro. Este ID se actulizará cuando el árbitro confirme su disponibilidad para arbitrar un combate.
+    // El idCombate se enviará con el mensaje de confirmación
+    private String idCat;
+
     public Arbitros(String idArbitro, String nombre, String dni,
                     String email, String password, String tokenIDFCM,
                     String foto, String pais, String federacion,
                     String nivel, String cargo, String idZona, int zonaCombate,
-                    String idCamp, boolean conectado, List<Combates> listaCombates) {
+                    String idCamp, boolean conectado, List<Combates> listaCombates,
+                    String idCombate, String idCat) {
         this.idArbitro = idArbitro;
         this.nombre = nombre;
         this.dni = dni;
@@ -70,6 +75,9 @@ public class Arbitros {
 
         this.conectado = conectado;
         this.listaCombates = listaCombates;
+
+        this.idCombate = idCombate;
+        this.idCat = idCat;
     }
 
     public Arbitros() {
@@ -208,6 +216,22 @@ public class Arbitros {
         this.listaCombates = listaCombates;
     }
 
+    public String getIdCombate() {
+        return idCombate;
+    }
+
+    public String getIdCat() {
+        return idCat;
+    }
+
+    public void setIdCat(String idCat) {
+        this.idCat = idCat;
+    }
+
+    public void setIdCombate(String idCombate) {
+        this.idCombate = idCombate;
+    }
+
     public boolean getConectado() {
         return conectado;
     }
@@ -242,9 +266,12 @@ public class Arbitros {
         result.put("listaCombates", listaCombates);
         result.put("conectado", conectado);
         result.put("idCamp", idCamp);
+        result.put("idZona", idZona);
         result.put("listaCamps", listaCamps);
         result.put("listo", listo);
         result.put("tokenIDFCM", tokenIDFCM);
+        result.put("idCombate", idCombate);
+        result.put("idCat", idCat);
 
         return result;
     }

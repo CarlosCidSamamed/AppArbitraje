@@ -16,12 +16,14 @@ public class DatosExtraZonasCombate {
     private String numCombate;
     private int numArbisAsignados;
     private List<String> listaIDsArbis;
+    private int numArbisConfirmados;
 
-    public DatosExtraZonasCombate(String idCombate, String numCombate, int numArbisAsignados, List<String> listaIDsArbis) {
+    public DatosExtraZonasCombate(String idCombate, String numCombate, int numArbisAsignados, List<String> listaIDsArbis, int numArbisConfirmados) {
         this.idCombate = idCombate;
         this.numCombate = numCombate;
         this.numArbisAsignados = numArbisAsignados;
         this.listaIDsArbis = listaIDsArbis;
+        this.numArbisConfirmados = numArbisConfirmados;
     }
 
     public DatosExtraZonasCombate() {
@@ -77,12 +79,21 @@ public class DatosExtraZonasCombate {
         }
     }
 
+    public int getNumArbisConfirmados() {
+        return numArbisConfirmados;
+    }
+
+    public void setNumArbisConfirmados(int numArbisConfirmados) {
+        this.numArbisConfirmados = numArbisConfirmados;
+    }
+
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
         result.put("idCombate", idCombate);
         result.put("numCombate", numCombate);
         result.put("numArbisAsignados", numArbisAsignados);
         result.put("listaIDsArbis", listaIDsArbis);
+        result.put("numArbisConfirmados", numArbisConfirmados);
         return  result;
     }
 }

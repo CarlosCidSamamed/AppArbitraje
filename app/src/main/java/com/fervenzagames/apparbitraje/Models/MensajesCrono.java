@@ -2,14 +2,14 @@ package com.fervenzagames.apparbitraje.Models;
 
 public class MensajesCrono {
 
-    public static final String TITULO = "Mensaje Crono";
+    public static final String TITULO_CRONO = "Mensaje Crono";
 
     public static final String CUERPO_INICIO = "Iniciando el CRONO";
     public static final String CUERPO_PAUSA = "Pausando el CRONO";
     public static final String CUERPO_REANUDAR = "Reanudando el CRONO";
     public static final String CUERPO_REINICIAR = "Reiniciando el CRONO";
-    public static final String FIN_ASALTO = "Fin ASALTO -- Deteniendo el CRONO";
-    public static final String FIN_COMBATE = "Fin COMBATE -- Deteniendo el CRONO";
+    public static final String CUERPO_FIN_ASALTO = "Fin ASALTO -- Deteniendo el CRONO";
+    public static final String CUERPO_FIN_COMBATE = "Fin COMBATE -- Deteniendo el CRONO";
 
     private String idMensaje;
     private String emisor;

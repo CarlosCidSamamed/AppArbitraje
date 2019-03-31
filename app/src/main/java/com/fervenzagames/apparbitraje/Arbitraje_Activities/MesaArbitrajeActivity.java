@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,12 +22,16 @@ import com.fervenzagames.apparbitraje.Models.Combates;
 import com.fervenzagames.apparbitraje.Models.Competidores;
 import com.fervenzagames.apparbitraje.Models.DatosExtraZonasCombate;
 import com.fervenzagames.apparbitraje.Models.Incidencias;
+import com.fervenzagames.apparbitraje.Models.MensajesCrono;
 import com.fervenzagames.apparbitraje.Models.Modalidades;
 import com.fervenzagames.apparbitraje.Models.Puntuaciones;
 import com.fervenzagames.apparbitraje.Models.ZonasCombate;
 import com.fervenzagames.apparbitraje.R;
 import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.fervenzagames.apparbitraje.StartActivity;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,9 +40,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.FirebaseFunctionsException;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -60,6 +71,8 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
     //      8 puntos de ventaja --> FIN COMBATE
 
     private String mModalidadCombate;
+
+    private final static String TAG = "MesaArbitrajeActivity";
 
     private final static String SANDA = "Sanda SD";
     private final static String QINGDA = "Qingda QD";
@@ -99,11 +112,16 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
     private long mTimeLeftInMillis = START_TIME_IN_MILLIS_2; // DOS MINUTOS
 
-    private enum Estado  {COMBATE, DESCANSO_ENTRE_ASALTOS, DESCANSO_ENTRE_COMBATES}
+    public enum Estado  {COMBATE, DESCANSO_ENTRE_ASALTOS, DESCANSO_ENTRE_COMBATES}
     private Estado estado;
+
+    private FirebaseFunctions mFunctions;
+    private List<String> mListaIDsArbis;
 
     private Button mStartPauseBtn;
     private Button mResetBtn;
+
+    private Button mComenzarCombateBtn;
 
     private Button mFinAsalto;
     private Button mFinCombate;
@@ -158,6 +176,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
     private String mIdAsalto;
     private String mIdCombate;
     private String mIdCat;
+    private String mIdZona;
 
     private String mDNIJuezUno;
     private String mDNIJuezDos;
@@ -313,6 +332,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mesa_arbitraje);
 
         mRootDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
+        mFunctions = FirebaseFunctions.getInstance();
 
         mModalidadCombate = "";
         mAcabarAsalto = false;
@@ -338,6 +358,8 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("SD -85 M ABS");
 
+        mComenzarCombateBtn = findViewById(R.id.comenzar_combate);
+
         mCrono = findViewById(R.id.crono);
         mStartPauseBtn = findViewById(R.id.pausa_btn);
         mStartPauseBtn.setText("Iniciar");
@@ -355,7 +377,32 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         // Reproducir Sonido Campana
         final MediaPlayer player = MediaPlayer.create(MesaArbitrajeActivity.this, R.raw.bell);
 
+        //region Datos Bundle Extra y DBref
+        Intent intent =  getIntent();
+        Bundle extras = intent.getExtras();
+        final String idComb = extras.getString("idCombate");
+        mIdCombate = idComb;
+
+        final String idAsalto = extras.getString("idAsalto");
+        mIdAsalto = idAsalto;
+
+        mIdCamp = extras.getString("idCamp");
+        //String idMod = extras.getString("idMod");
+        mIdCat = extras.getString("idCat");
+        mIdZona = extras.getString("idZona");
+
+
         //region Botones CRONO
+        mComenzarCombateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                estado = Estado.COMBATE;
+                iniciarCrono();
+                player.start();
+                realizarEnvio(null, "inicio");
+            }
+        });
+
         mStartPauseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -409,18 +456,7 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         actualizarCrono();
         //endregion
 
-        //region Datos Bundle Extra y DBref
-        Intent intent =  getIntent();
-        Bundle extras = intent.getExtras();
-        final String idComb = extras.getString("idCombate");
-        mIdCombate = idComb;
 
-        final String idAsalto = extras.getString("idAsalto");
-        mIdAsalto = idAsalto;
-
-        mIdCamp = extras.getString("idCamp");
-        //String idMod = extras.getString("idMod");
-        mIdCat = extras.getString("idCat");
         //mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates").child(idCat);   // Lista de Combates de esta Categoría.
         mCompetidoresDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Competidores");          // Lista de Compatidores de la BD.
 
@@ -943,6 +979,45 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
                 break;
             }
         }
+    }
+
+    // Obtiene todos los IDs de los Jueces de la Zona
+    private void obtenerListaIDsArbis(String idZona, final String idCombate){
+        mZonaDB = FirebaseDatabase.getInstance().getReference("Arbitraje/ZonasCombate").child(mIdCamp).child(idZona);
+        mListaIDsArbis = new ArrayList<>();
+        Query consultaZona = mZonaDB;
+        consultaZona.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(MesaArbitrajeActivity.this, "(MesaArbitraje) No se encuentran los datos de la Zona cuyo ID es " + mIdZona, Toast.LENGTH_SHORT).show();
+                } else {
+                    ZonasCombate zona = dataSnapshot.getValue(ZonasCombate.class);
+                    try {
+                        if(zona.getListaDatosExtraCombates() == null){
+                            Toast.makeText(MesaArbitrajeActivity.this, "(MesaArbitraje) Esta zona de combate no tiene árbitros asignados.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Localizar el combate que queremos de todos los combates que puedan estar asignados a esta zona.
+                            List<DatosExtraZonasCombate> listaDatosExtra = zona.getListaDatosExtraCombates();
+                            //DatosExtraZonasCombate datosCombate = null;
+                            for(int i = 0; i < listaDatosExtra.size(); i++){
+                                DatosExtraZonasCombate datosCombate = listaDatosExtra.get(i);
+                                if(datosCombate.getIdCombate().equals(idCombate)){
+                                     mListaIDsArbis = datosCombate.getListaIDsArbis();
+                                }
+                            }
+                        }
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //endregion
@@ -1939,6 +2014,193 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
         });
     }
 
+    //region Envío Mensaje CRONO
+
+    // Este método realizará la llamada https a la cloud function que enviará los mensajes del tipo correcto a los árbitros correspondientes.
+    public Task<String> enviarMensajeCrono(final String idArbitro, final String tipo) {
+        // Crear los argumentos para la función (Callable Function)
+        final Map<String, Object> data = new HashMap<>();
+        // Primero deberemos localizar al Árbitro en la BD
+        Query consulta = mArbisDB.child(idArbitro);
+        // Si no se encuentra el Árbitro --> AVISO DE ERROR
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    Toast.makeText(MesaArbitrajeActivity.this, "(LobbyArbitraje) Error al localizar al Árbitro receptor del mensaje...", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Si se encuentra el Árbitro deberemos confeccionar el mensaje evaluando arbi.conectado y arbi.listo
+
+                    // Crear Mensaje
+                    MensajesCrono mensaje = new MensajesCrono();
+                    // Añadir datos
+                    mensaje.setEmisor(mAuth.getCurrentUser().getUid()); // ID del usuario que ha iniciado sesión en la tablet (MESA)
+                    mensaje.setReceptor(idArbitro);
+                    Calendar cal = Calendar.getInstance();
+                    DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // Fecha y hora actual con el formato indicado.
+                    mensaje.setFechaHora(sdf.format(cal.getTime()));
+
+                    data.put("emisor", mensaje.getEmisor());
+                    data.put("receptor", mensaje.getReceptor());
+                    data.put("fechaHora", mensaje.getFechaHora());
+
+                    Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                    // Si el Árbitro no está conectado a la app
+                    if (!arbi.getConectado()) {
+                        Toast.makeText(MesaArbitrajeActivity.this, "(MesaArbitraje) El Árbitro " + arbi.getNombre() + " no está conectado a la app.", Toast.LENGTH_SHORT).show();
+                    } else if (!arbi.getListo()){
+                        Toast.makeText(MesaArbitrajeActivity.this, "(MesaArbitraje) El Árbitro " + arbi.getNombre() + " no está listo para arbitrar.", Toast.LENGTH_SHORT).show();
+                    } else { // Árbitro Conectado y Listo
+                        // Dependiendo del tipo de mensaje que se quiera enviar se añadirán unos datos u otros al mensaje.
+                        mensaje.setTitulo(MensajesCrono.TITULO_CRONO);
+                        switch(tipo){
+                            case "inicio":{
+                                mensaje.setCuerpo(MensajesCrono.CUERPO_INICIO);
+                                mensaje.setTipo("inicio");
+                                mensaje.setTiempoAsalto(mTimeLeftInMillis);
+
+                                data.put("mensaje", mensaje.getCuerpo());
+                                data.put("tipo", mensaje.getTipo());
+                                data.put("tiempoAsalto", mensaje.getTiempoAsalto());
+                                break;
+                            }
+                            case "reinicio":{
+                                mensaje.setCuerpo(MensajesCrono.CUERPO_REINICIAR);
+                                mensaje.setTipo("reinicio");
+                                mensaje.setTiempoAsalto(mTimeLeftInMillis);
+
+                                data.put("mensaje", mensaje.getCuerpo());
+                                data.put("tipo", mensaje.getTipo());
+                                data.put("tiempoAsalto", mensaje.getTiempoAsalto());
+                                break;
+                            }
+                            case "reanudar": {
+                                mensaje.setCuerpo(MensajesCrono.CUERPO_REANUDAR);
+                                mensaje.setTipo("reanudar");
+                                mensaje.setTiempoAsalto(mTimeLeftInMillis);
+
+                                data.put("mensaje", mensaje.getCuerpo());
+                                data.put("tipo", mensaje.getTipo());
+                                data.put("tiempoAsalto", mensaje.getTiempoAsalto());
+                                break;
+                            }
+                            case "pausa":{
+                                mensaje.setCuerpo(MensajesCrono.CUERPO_PAUSA);
+                                mensaje.setTipo("pausa");
+
+                                data.put("mensaje", mensaje.getCuerpo());
+                                data.put("tipo", mensaje.getTipo());
+                                break;
+                            }
+                            case "finAsalto":{
+                                mensaje.setCuerpo(MensajesCrono.CUERPO_FIN_ASALTO);
+                                mensaje.setTipo("finAsalto");
+                                mensaje.setFinAsalto(true);
+
+                                data.put("mensaje", mensaje.getCuerpo());
+                                data.put("tipo", mensaje.getTipo());
+                                data.put("finAsalto", mensaje.isFinAsalto());
+                                break;
+                            }
+                            case "finCombate":{
+                                mensaje.setCuerpo(MensajesCrono.CUERPO_FIN_COMBATE);
+                                mensaje.setTipo("finCombate");
+                                mensaje.setFinCombate(true);
+
+                                data.put("mensaje", mensaje.getCuerpo());
+                                data.put("tipo", mensaje.getTipo());
+                                data.put("finCombate", mensaje.isFinCombate());
+                                break;
+                            }
+                        }
+                    }
+                    // Comprobación de la estructura del mensaje
+                    Toast.makeText(MesaArbitrajeActivity.this, "(MesaArbitraje) Mensaje a enviar --> " + data, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MesaArbitrajeActivity.this, "Contenido del Mensaje -->" + data.get("mensaje").toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // Se devuelve el resultado de la petición HTTPS para invocar a la Cloud Function llamada solicitarEnvioCrono con los datos especificados en data.
+        return mFunctions
+                .getHttpsCallable("solicitarEnvioCrono")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, String>() {
+                    @Override
+                    public String then(@NonNull Task<HttpsCallableResult> task) throws NullPointerException {
+                        try {
+                            Map<String, Object> result = (Map<String, Object>) task.getResult().getData();
+                            return (String) result.get("mensaje");
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                });
+    }
+
+    // Este método invocará a enviarMensajeCrono para enviar los mensajes correspondientes según los botones que se hayan pulsado en el crono de Mesa.
+    private void realizarEnvio(final String idArbi, String tipo){
+        if(idArbi != null){ // Enviar el mensaje a un árbitro en específico
+            enviarMensajeCrono(idArbi, tipo).addOnCompleteListener(new OnCompleteListener<String>() {
+                @Override
+                public void onComplete(@NonNull Task<String> task) {
+                    if(!task.isSuccessful()){ // Error al enviar el mensaje
+                        Exception e = task.getException();
+                        if(e instanceof FirebaseFunctionsException){
+                            FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                            FirebaseFunctionsException.Code code = ffe.getCode();
+                            Object details = ffe.getDetails();
+                            Log.w(TAG, "enviarMensajeCrono:FirebaseFunctionsException // Code : " + code + " // Details : "+ details);
+                        }
+                        Log.w(TAG, "enviarMensaje:onFailure", e);
+                        Toast.makeText(MesaArbitrajeActivity.this, "(LobbyArbitraje) Error al enviar el mensaje al Árbitro cuyo ID es " + idArbi, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MesaArbitrajeActivity.this, "(LobbyArbitraje) Excepción enviarMensajeCrono --> " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    String result = task.getResult();
+                    Toast.makeText(MesaArbitrajeActivity.this, "(LobbyArbitraje) Result --> " + result, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else { // Enviar el mensaje a todos los árbitros de la zona
+            obtenerListaIDsArbis(mIdZona, mIdCombate);
+            // Recorrer la lista de IDs de Árbitros y enviar el mensaje a cada uno de ellos.
+            if (mListaIDsArbis.size() > 0) { // Si la lista de IDs de los Árbitros asignados a una zona contiene datos enviaremos los mensajes a esos Árbitros
+                for(int i = 0; i < mListaIDsArbis.size(); i++){
+                    String id = mListaIDsArbis.get(i);
+                    // Enviar el mensaje a todos los árbitros excepto al de Mesa, es decir, el juez que ha iniciado sesión en la app de Mesa (mIdJuez)
+                    if (!id.equals(mIdJuez)) {
+                        enviarMensajeCrono(id, tipo).addOnCompleteListener(new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                if (!task.isSuccessful()) { // Error al enviar el mensaje
+                                    Exception e = task.getException();
+                                    if (e instanceof FirebaseFunctionsException) {
+                                        FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                        FirebaseFunctionsException.Code code = ffe.getCode();
+                                        Object details = ffe.getDetails();
+                                        Log.w(TAG, "enviarMensajeCrono:FirebaseFunctionsException // Code : " + code + " // Details : " + details);
+                                    }
+                                    Log.w(TAG, "enviarMensaje:onFailure", e);
+                                    Toast.makeText(MesaArbitrajeActivity.this, "(LobbyArbitraje) Error al enviar el mensaje al Árbitro cuyo ID es " + idArbi, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MesaArbitrajeActivity.this, "(LobbyArbitraje) Excepción enviarMensajeCrono --> " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                String result = task.getResult();
+                                Toast.makeText(MesaArbitrajeActivity.this, "(LobbyArbitraje) Result --> " + result, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    }
+    //endregion
 
     /*--------------------------------------------------- MENU PRINCIPAL ---------------------------------------------------*/
     //region Menú Principal

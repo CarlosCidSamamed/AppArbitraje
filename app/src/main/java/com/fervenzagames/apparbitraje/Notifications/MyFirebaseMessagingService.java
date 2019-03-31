@@ -253,9 +253,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
             case "confirmacion":{
                 Intent listoIntent = new Intent(this , SalaEsperaArbitroActivity.class);
-                /*Bundle extras = new Bundle();
-                extras.putString("anterior", "confirmacionListo");
-                listoIntent.putExtras(extras);*/
+                Bundle extras = new Bundle();
+                String idCombate = remoteMessage.getData().get("idCombate");
+                String idCat = remoteMessage.getData().get("idCat");
+                extras.putString("idCombate", idCombate);
+                extras.putString("idCat", idCat);
+                listoIntent.putExtras(extras);
                 mPendingIntent = PendingIntent.getActivity(this, 0, listoIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 /*if(mUid != null) {
                     modificarListo(mUid); // Cambiar el valor de Arbitro.Listo a TRUE.

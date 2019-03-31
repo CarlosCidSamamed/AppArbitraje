@@ -481,7 +481,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
             // Zona de Combate
             // Modificar lista de Combates para añadir la entrada correspondiente al Combate indicado.
             // Crear nuevo objeto con los datos extras para la Zona Seleccionada
-            DatosExtraZonasCombate datos = new DatosExtraZonasCombate(mCombateSeleccionado.getId(), mCombateSeleccionado.getNumCombate(), 0, null);
+            DatosExtraZonasCombate datos = new DatosExtraZonasCombate(mCombateSeleccionado.getId(), mCombateSeleccionado.getNumCombate(), 0, null, 0);
             //Buscar el IdCombate del objeto recién creado para evitar duplicados.
             // Si existe --> Mensaje de AVISO
             buscarDatosDuplicados(datos.getIdCombate(), mZonaSeleccionada.getListaDatosExtraCombates());
@@ -586,7 +586,7 @@ public class AddZonaCombateActivity extends AppCompatActivity {
                         // Crear objeto de clase DatosExtraZonasCombate
                         // Se obtienen el idCombate y numCombate del objeto extraido de la lista
                         // y la información de árbitros se deja sin cubrir hasta que se especifique más adelante.
-                        DatosExtraZonasCombate datos = new DatosExtraZonasCombate(comb.getId(), comb.getNumCombate(), 0, null);
+                        DatosExtraZonasCombate datos = new DatosExtraZonasCombate(comb.getId(), comb.getNumCombate(), 0, null,0);
                         // Añadir esos datos a la lista de la Zona de Combate
                         try {
                             zona.addToListaDatosExtraCombate(datos);

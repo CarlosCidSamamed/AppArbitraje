@@ -1217,7 +1217,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
                             emp.getIdRojo(), emp.getIdAzul(),
                             listaAsaltos,
                             idCamp,"", idMod, idCat,
-                            Combates.EstadoCombate.Pendiente);
+                            Combates.EstadoCombate.Pendiente, 0);
                     // Insertar dicho objeto en la BD.
                     mCombatesDB.child(idCat).child(idCombate).setValue(comb);
                     Toast.makeText(MostrarEmparejamientosActivity.this,

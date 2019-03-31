@@ -135,8 +135,8 @@ public class LobbyArbitraje extends AppCompatActivity {
         idAzul = extras.getString("idAzul");
 
 
-        recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
-        mNumArbisConfirmados = mListaIDsArbis.size();
+        //recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
+        mNumArbisConfirmados = 0;
 
         // Obtener el NOMBRE de la MODALIDAD
         mNombreMod = extras.getString("nombreMod");
@@ -144,7 +144,7 @@ public class LobbyArbitraje extends AppCompatActivity {
             case "Sanda SD":
             case "Qingda QD":
             case "Kungfu Combat KC":{
-                mNumArbisMinimo = 3;
+                mNumArbisMinimo = 1; //3;
                 Toast.makeText(this, "(LobbyArbitraje) El número mínimo de árbitros para esta modalidad " +  mNombreMod + " es de " + mNumArbisMinimo, Toast.LENGTH_SHORT).show();
                 break;
             }
@@ -154,12 +154,12 @@ public class LobbyArbitraje extends AppCompatActivity {
                 break;
             }
         }
-        if(mNumArbisConfirmados < mNumArbisMinimo){ // Si el número de arbitros que han confirmado su disponiblidad se informa de ello y se oculta el botón para iniciar el asalto.
+        /*if(mNumArbisConfirmados < mNumArbisMinimo){ // Si el número de arbitros que han confirmado su disponiblidad se informa de ello y se oculta el botón para iniciar el asalto.
             //Toast.makeText(this, "(LobbyArbitraje) El número de árbitros preparados para arbitrar el combate es inferior al mínimo permitido.", Toast.LENGTH_SHORT).show();
             mIniciarBtn.setVisibility(View.INVISIBLE);
         } else {
             mIniciarBtn.setVisibility(View.VISIBLE);
-        }
+        }*/
 
         mIniciarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,6 +194,34 @@ public class LobbyArbitraje extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Query consultaArbis = mArbisDB;
+        consultaArbis.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Error al recuperar los datos de los árbitros de la Zona", Toast.LENGTH_SHORT).show();
+                } else {
+                    recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
+                    Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Número de Árbitros Confirmados --> " + mNumArbisConfirmados, Toast.LENGTH_SHORT).show();
+                    if(mNumArbisConfirmados < mNumArbisMinimo){ // Si el número de arbitros que han confirmado su disponiblidad se informa de ello y se oculta el botón para iniciar el asalto.
+                        //Toast.makeText(this, "(LobbyArbitraje) El número de árbitros preparados para arbitrar el combate es inferior al mínimo permitido.", Toast.LENGTH_SHORT).show();
+                        mIniciarBtn.setVisibility(View.INVISIBLE);
+                    } else {
+                        mIniciarBtn.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     // Recuperar el estado de disponibilidad de los árbitros de la zona de combate indicada para el combate correcto.
@@ -278,6 +306,7 @@ public class LobbyArbitraje extends AppCompatActivity {
                     if (arbi.getCargo().equals("Silla")){
                         mLista.add(arbi);
                     }
+
                     // Mostrar lista con los datos.
                     ArbitrosMiniList adapter = new ArbitrosMiniList(LobbyArbitraje.this, mLista);
                     adapter.setDropDownViewResource(R.layout.arbitro_single_layout_mini);
@@ -441,6 +470,8 @@ public class LobbyArbitraje extends AppCompatActivity {
                         mensaje.setTitulo(Mensajes.TITULO_CONF);
                         mensaje.setCuerpo(Mensajes.CUERPO_CONF);
                         mensaje.setTipo(Mensajes.TIPO_CONF);
+                        mensaje.setIdCombateActual(mIdCombate);
+                        mensaje.setIdCat(mIdCat);
                         // Una vez definido el mensaje a enviar se procede a preparar el objeto data para invocar la Cloud Function
                         data.put("tipo", "confirmacion");
                         //Gson gson = new GsonBuilder().create();
@@ -451,6 +482,8 @@ public class LobbyArbitraje extends AppCompatActivity {
                         Toast.makeText(LobbyArbitraje.this, "(Mensajes.serializetoJson) --> " + m, Toast.LENGTH_SHORT).show();
                         data.put("mensaje", mensaje.getCuerpo());
                         data.put("titulo", mensaje.getTitulo());
+                        data.put("idCombateActual", mensaje.getIdCombateActual());
+                        data.put("idCat", mensaje.getIdCat());
                     } else { // Conectado == TRUE ... Listo == TRUE --> Mensaje de Inicio de Asalto
                         // Título, cuerpo y tipo para Inicio de Asalto
                         mensaje.setTitulo(Mensajes.TITULO_ASALTO);

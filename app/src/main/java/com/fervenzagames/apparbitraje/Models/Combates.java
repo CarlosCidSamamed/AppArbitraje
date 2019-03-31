@@ -24,13 +24,15 @@ public class Combates {
     private String idZonaCombate;
     public enum EstadoCombate {Pendiente, Finalizado, Cancelado};
     private EstadoCombate estadoCombate;
+    private int numArbisConfirmados;
 
     public Combates() {
     }
 
     public Combates(String id, String numCombate, String ganador, String perdedor,String motivo, String enlaceVideo,
                     String idRojo, String idAzul, List<Asaltos> listaAsaltos, String campeonato, String idZonaCombate,
-                    String modalidad, String categoria, EstadoCombate estadoCombate) {
+                    String modalidad, String categoria, EstadoCombate estadoCombate,
+                    int numArbisConfirmados) {
         this.id = id;
         this.numCombate = numCombate;
         this.ganador = ganador;
@@ -45,6 +47,7 @@ public class Combates {
         this.campeonato = campeonato;
         this.idZonaCombate = idZonaCombate;
         this.estadoCombate = estadoCombate;
+        this.numArbisConfirmados = numArbisConfirmados;
     }
 
     public String getId() {
@@ -200,6 +203,14 @@ public class Combates {
         return estado;
     }
 
+    public int getNumArbisConfirmados() {
+        return numArbisConfirmados;
+    }
+
+    public void setNumArbisConfirmados(int numArbisConfirmados) {
+        this.numArbisConfirmados = numArbisConfirmados;
+    }
+
     public HashMap<String , String> getHashMapDetalleCombate(Combates comb){
 
         HashMap<String, String> hashMapDetalle = new HashMap<>();
@@ -228,6 +239,7 @@ public class Combates {
         result.put("campeonato",campeonato);
         result.put("idZonaCombate", idZonaCombate);
         result.put("estadoCombate", estadoCombate);
+        result.put("numArbisConfirmados", numArbisConfirmados);
 
         return result;
     }

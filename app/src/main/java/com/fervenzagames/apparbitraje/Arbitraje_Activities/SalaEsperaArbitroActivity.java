@@ -32,6 +32,9 @@ public class SalaEsperaArbitroActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String mUid;
 
+    private String mIdCombate;
+    private String mIdCat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,15 +51,18 @@ public class SalaEsperaArbitroActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         try{
+            mIdCombate = getIntent().getExtras().getString("idCombate");
+            mIdCat = getIntent().getExtras().getString("idCat");
             mUid = mAuth.getCurrentUser().getUid();
-            modificarListo(mUid);
+            modificarListo(mUid, mIdCat);
+            //modificarIdCombate(mUid, mIdCombate);
         } catch (NullPointerException e){
             e.printStackTrace();
         }
 
     }
 
-    private void modificarListo(String idArbi){
+    private void modificarListo(String idArbi, final String idCat){
         mRootDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
         mArbiDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(idArbi);
         Query consulta = mArbiDB;
@@ -68,6 +74,33 @@ public class SalaEsperaArbitroActivity extends AppCompatActivity {
                 } else {
                     Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
                     arbi.setListo(true);
+                    arbi.setIdCat(idCat);
+                    Map<String, Object> arbiMap = arbi.toMap();
+                    HashMap<String, Object> updates = new HashMap<>();
+                    updates.put("Arbitros/" + arbi.getIdArbitro(), arbiMap);
+                    mRootDB.updateChildren(updates);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void modificarIdCombate(String idArbi, final String idCombate){
+        mRootDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
+        mArbiDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(idArbi);
+        Query consulta = mArbiDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    // No se encuentra el Arbitro con ese ID
+                } else {
+                    Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                    arbi.setIdCombate(idCombate);
                     Map<String, Object> arbiMap = arbi.toMap();
                     HashMap<String, Object> updates = new HashMap<>();
                     updates.put("Arbitros/" + arbi.getIdArbitro(), arbiMap);

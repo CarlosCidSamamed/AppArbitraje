@@ -64,7 +64,7 @@ public class Login_Logout {
                     mArbitroDB.child("conectado").setValue(true);
                 } else if(estado.equals("false")){
                     mArbitroDB.child("conectado").setValue(false);
-                    mArbitroDB.child("listo").setValue(false);
+                    //mArbitroDB.child("listo").setValue(false);
                 }
             }
 
