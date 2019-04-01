@@ -63,6 +63,7 @@ public class LobbyArbitraje extends AppCompatActivity {
     private ListView mListView;
     private Button mEnviarBtn;
     private Button mIniciarBtn;
+    private Button mRefreshBtn;
 
     private ImageView mConectado;
     private CircleImageView mFoto;
@@ -112,6 +113,7 @@ public class LobbyArbitraje extends AppCompatActivity {
         mListView = findViewById(R.id.lobby_arbitraje_lista);
         mEnviarBtn = findViewById(R.id.lobyy_arbitraje_enviarBtn);
         mIniciarBtn = findViewById(R.id.lobby_arbitraje_iniciarBtn);
+        mRefreshBtn = findViewById(R.id.lobby_arbitraje_refreshBtn);
 
         mConectado = findViewById(R.id.arb_single_mini_estado);
         mFoto = findViewById(R.id.arb_single_mini_foto);
@@ -193,6 +195,13 @@ public class LobbyArbitraje extends AppCompatActivity {
             }
         });
 
+        mRefreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refrescarDatosDisponibilidad();
+            }
+        });
+
 
     }
 
@@ -207,13 +216,6 @@ public class LobbyArbitraje extends AppCompatActivity {
                     Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Error al recuperar los datos de los árbitros de la Zona", Toast.LENGTH_SHORT).show();
                 } else {
                     recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
-                    Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Número de Árbitros Confirmados --> " + mNumArbisConfirmados, Toast.LENGTH_SHORT).show();
-                    if(mNumArbisConfirmados < mNumArbisMinimo){ // Si el número de arbitros que han confirmado su disponiblidad se informa de ello y se oculta el botón para iniciar el asalto.
-                        //Toast.makeText(this, "(LobbyArbitraje) El número de árbitros preparados para arbitrar el combate es inferior al mínimo permitido.", Toast.LENGTH_SHORT).show();
-                        mIniciarBtn.setVisibility(View.INVISIBLE);
-                    } else {
-                        mIniciarBtn.setVisibility(View.VISIBLE);
-                    }
                 }
             }
 
@@ -222,6 +224,18 @@ public class LobbyArbitraje extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void refrescarDatosDisponibilidad(){
+        recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
+        getNumArbisConfirmados();
+        //Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Número de Árbitros Confirmados --> " + mNumArbisConfirmados, Toast.LENGTH_SHORT).show();
+        if(mNumArbisConfirmados < mNumArbisMinimo){ // Si el número de arbitros que han confirmado su disponiblidad se informa de ello y se oculta el botón para iniciar el asalto.
+            //Toast.makeText(this, "(LobbyArbitraje) El número de árbitros preparados para arbitrar el combate es inferior al mínimo permitido.", Toast.LENGTH_SHORT).show();
+            mIniciarBtn.setVisibility(View.INVISIBLE);
+        } else {
+            mIniciarBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     // Recuperar el estado de disponibilidad de los árbitros de la zona de combate indicada para el combate correcto.
@@ -306,6 +320,14 @@ public class LobbyArbitraje extends AppCompatActivity {
                     if (arbi.getCargo().equals("Silla")){
                         mLista.add(arbi);
                     }
+
+                    /*if (arbi.getListo()){
+                        mNumArbisConfirmados++;
+                    } else if ((!arbi.getListo()) && (mNumArbisConfirmados > 0)){
+                        mNumArbisConfirmados--;
+                    }
+
+                    Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Número de Árbitros Confirmados --> " + mNumArbisConfirmados, Toast.LENGTH_SHORT).show();*/
 
                     // Mostrar lista con los datos.
                     ArbitrosMiniList adapter = new ArbitrosMiniList(LobbyArbitraje.this, mLista);
@@ -542,5 +564,34 @@ public class LobbyArbitraje extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    // En este método voy a recuperar el número de árbitros que han confirmado su disponibilidad a partir del valor que se ha modificado en la RTDB con las cofirmaciones de los
+    // distintos árbitros que están asignados al combate actual.
+    public void getNumArbisConfirmados(){
+        mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates/").child(mIdCat).child(mIdCombate);
+        Query consulta = mCombateDB;
+        consulta.addValueEventListener(new ValueEventListener() { // addBalurEventListener para que se quede escuchando los cambios en este valor
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) No se ha encontrado ese Combate en la BD", Toast.LENGTH_SHORT).show();
+                } else {
+                    Combates combate = dataSnapshot.getValue(Combates.class);
+                    try {
+                        mNumArbisConfirmados = combate.getNumArbisConfirmados();
+                        Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Número de Árbitros Confirmados --> " + mNumArbisConfirmados, Toast.LENGTH_SHORT).show();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }
