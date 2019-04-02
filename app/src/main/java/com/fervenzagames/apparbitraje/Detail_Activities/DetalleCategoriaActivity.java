@@ -11,14 +11,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Adapters.CombatesList;
 import com.fervenzagames.apparbitraje.Add_Activities.AddCombateActivity;
 import com.fervenzagames.apparbitraje.GenerarEmparejamientosActivity;
+import com.fervenzagames.apparbitraje.Models.Combates;
 import com.fervenzagames.apparbitraje.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetalleCategoriaActivity extends AppCompatActivity {
 
@@ -27,7 +33,8 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
     private TextView mSexo;
     private TextView mEdad;
     private TextView mPeso;
-    private ListView mListaCombates;
+    private ListView mListaCombatesView;
+    private List<Combates> mLista;
     private Button mAddCombateBtn;
 
     private Button mGenerarEmpBtn;
@@ -37,32 +44,43 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
     private DatabaseReference mCatDB;
     private DatabaseReference mCombatesDB;
 
+    private String mIdCamp;
+    private String mIdMod;
+    private String mIdCat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_categoria);
 
-        mToolbar = (Toolbar) findViewById(R.id.cat_detalle_bar);
+        mToolbar =  findViewById(R.id.cat_detalle_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Detalle Categoría");
 
-        mNombreCat = (TextView) findViewById(R.id.cat_detalle_nombre);
-        mSexo = (TextView) findViewById(R.id.cat_detalle_sexo);
-        mEdad = (TextView) findViewById(R.id.cat_detalle_edad);
-        mPeso = (TextView) findViewById(R.id.cat_detalle_peso);
+        mNombreCat = findViewById(R.id.cat_detalle_nombre);
+        mSexo = findViewById(R.id.cat_detalle_sexo);
+        mEdad = findViewById(R.id.cat_detalle_edad);
+        mPeso = findViewById(R.id.cat_detalle_peso);
 
-        mListaCombates = (ListView) findViewById(R.id.cat_detalle_listaCombatesView);
-        mAddCombateBtn = (Button) findViewById(R.id.cat_detalle_addCombate_btn);
+        mListaCombatesView = findViewById(R.id.cat_detalle_listaCombatesView);
+        mLista = new ArrayList<>();
+        mAddCombateBtn = findViewById(R.id.cat_detalle_addCombate_btn);
 
-        mGenerarEmpBtn = (Button) findViewById(R.id.cat_detalle_generarEmp_btn);
+        mGenerarEmpBtn = findViewById(R.id.cat_detalle_generarEmp_btn);
 
-        final String idCamp = getIntent().getExtras().getString("idCamp");
-        final String idMod = getIntent().getExtras().getString("idMod");
-        final String idCat = getIntent().getExtras().getString("idCat");
+        try {
+            mIdCamp = getIntent().getExtras().getString("idCamp");
+            mIdMod = getIntent().getExtras().getString("idMod");
+            mIdCat = getIntent().getExtras().getString("idCat");
 
-        mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(idCamp);
-        mModDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(idMod);
-        mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(idMod).child(idCat);
+            mCampDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Campeonatos").child(mIdCamp);
+            mModDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Modalidades").child(mIdMod);
+            mCatDB = FirebaseDatabase.getInstance().getReference("Arbitraje").child("Categorias").child(mIdMod).child(mIdCat);
+            mCombatesDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates");
+            cargarCombatesCategoria(mIdCat);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
 /*        Toast.makeText(DetalleCategoriaActivity.this, "ID MOD --> " + idMod, Toast.LENGTH_LONG).show();
         Toast.makeText(DetalleCategoriaActivity.this, "ID CATEGORIA " + idCat, Toast.LENGTH_LONG).show();*/
@@ -94,14 +112,10 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
                 *  Pasaremos esos mismos datos como extra a Añadir Combate
                 */
 
-                String idCamp = getIntent().getExtras().getString("idCamp");
-                String idMod = getIntent().getExtras().getString("idMod");
-                String idCat = getIntent().getExtras().getString("idCat");
-
                 Bundle extras = new Bundle();
-                extras.putString("idCamp", idCamp);
-                extras.putString("idMod", idMod);
-                extras.putString("idCat", idCat);
+                extras.putString("idCamp", mIdCamp);
+                extras.putString("idMod", mIdMod);
+                extras.putString("idCat", mIdCat);
 
                 Intent addCombateIntent = new Intent(DetalleCategoriaActivity.this, AddCombateActivity.class);
                 addCombateIntent.putExtras(extras);
@@ -114,9 +128,9 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent generarIntent = new Intent(DetalleCategoriaActivity.this, GenerarEmparejamientosActivity.class);
                 Bundle extras = new Bundle();
-                extras.putString("idCamp", idCamp);
-                extras.putString("idMod", idMod);
-                extras.putString("idCat", idCat);
+                extras.putString("idCamp", mIdCamp);
+                extras.putString("idMod", mIdMod);
+                extras.putString("idCat", mIdCat);
 
                 mCatDB.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -143,5 +157,31 @@ public class DetalleCategoriaActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void cargarCombatesCategoria(String idCat){
+        Query consulta = mCombatesDB.child(idCat);
+        consulta.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(DetalleCategoriaActivity.this, "(DetalleCategoria) Error al localizar los combates de la Categoría", Toast.LENGTH_SHORT).show();
+                } else {
+                    mLista.clear();
+                    for(DataSnapshot combateSnapshot: dataSnapshot.getChildren()){
+                        Combates combate = combateSnapshot.getValue(Combates.class);
+                        mLista.add(combate);
+                    }
+                    CombatesList adapter = new CombatesList(DetalleCategoriaActivity.this, mLista);
+                    mListaCombatesView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

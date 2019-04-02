@@ -1072,7 +1072,7 @@ public class MostrarEmparejamientosActivity extends AppCompatActivity {
     }
     // Este método se encarga de pintar del color correcto la línea correspondiente al competidor que gana un combate
     public void pintarLinea(int idLinea, int color){
-        View linea = (View) findViewById(idLinea);
+        View linea = findViewById(idLinea);
 
         linea.setBackgroundColor(color);
     }
