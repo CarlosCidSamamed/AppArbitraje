@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.fervenzagames.apparbitraje.Models.Arbitros;
@@ -25,6 +27,7 @@ public class SalaEsperaArbitroActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private TextView mTexto;
+    private Button mDenegarBtn;
 
     private DatabaseReference mRootDB;
     private DatabaseReference mArbiDB;
@@ -49,20 +52,31 @@ public class SalaEsperaArbitroActivity extends AppCompatActivity {
             mTexto.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
 
+        mDenegarBtn = findViewById(R.id.sala_espera_arbi_denegarBtn);
+
         mAuth = FirebaseAuth.getInstance();
         try{
             mIdCombate = getIntent().getExtras().getString("idCombate");
             mIdCat = getIntent().getExtras().getString("idCat");
             mUid = mAuth.getCurrentUser().getUid();
-            modificarListo(mUid, mIdCat);
+            modificarListo(mUid, mIdCat, true);
             //modificarIdCombate(mUid, mIdCombate);
         } catch (NullPointerException e){
             e.printStackTrace();
         }
 
+        mDenegarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                modificarListo(mUid, mIdCat, false);
+                mTexto.setText(R.string.mensaje_denegar_disponiblidad);
+                mDenegarBtn.setVisibility(View.INVISIBLE);
+            }
+        });
+
     }
 
-    private void modificarListo(String idArbi, final String idCat){
+    private void modificarListo(String idArbi, final String idCat, final boolean valor){
         mRootDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
         mArbiDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(idArbi);
         Query consulta = mArbiDB;
@@ -73,7 +87,7 @@ public class SalaEsperaArbitroActivity extends AppCompatActivity {
                     // No se encuentra el Arbitro con ese ID
                 } else {
                     Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
-                    arbi.setListo(true);
+                    arbi.setListo(valor);
                     arbi.setIdCat(idCat);
                     Map<String, Object> arbiMap = arbi.toMap();
                     HashMap<String, Object> updates = new HashMap<>();

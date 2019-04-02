@@ -96,6 +96,8 @@ public class LobbyArbitraje extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private List<Arbitros> mListaArbis;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +127,7 @@ public class LobbyArbitraje extends AppCompatActivity {
         mLista = new ArrayList<>();
         mListaIDsArbis = new ArrayList<>();
         mListaDatosExtraZona = new ArrayList<>();
+        mListaArbis = new ArrayList<>();
 
         Bundle extras = getIntent().getExtras();
         mIdCamp = extras.getString("idCamp");
@@ -187,13 +190,13 @@ public class LobbyArbitraje extends AppCompatActivity {
             }
         });
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Arbitros arbi = mLista.get(i);
                 activarTriggerNotificaciones(arbi.getIdArbitro()); // Enviar la notificación al árbitro que se ha pulsado.
             }
-        });
+        });*/
 
         mRefreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +218,8 @@ public class LobbyArbitraje extends AppCompatActivity {
                 if(!dataSnapshot.exists()){
                     Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Error al recuperar los datos de los árbitros de la Zona", Toast.LENGTH_SHORT).show();
                 } else {
-                    recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
+                    //recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
+                    recuperarDisponibilidadArbitros(mIdCamp, mIdZona, mIdCombate);
                 }
             }
 
@@ -227,7 +231,8 @@ public class LobbyArbitraje extends AppCompatActivity {
     }
 
     private void refrescarDatosDisponibilidad(){
-        recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
+        //recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
+        recuperarDisponibilidadArbitros(mIdCamp, mIdZona, mIdCombate);
         getNumArbisConfirmados();
         //Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Número de Árbitros Confirmados --> " + mNumArbisConfirmados, Toast.LENGTH_SHORT).show();
         if(mNumArbisConfirmados < mNumArbisMinimo){ // Si el número de arbitros que han confirmado su disponiblidad se informa de ello y se oculta el botón para iniciar el asalto.
@@ -240,6 +245,7 @@ public class LobbyArbitraje extends AppCompatActivity {
 
     // Recuperar el estado de disponibilidad de los árbitros de la zona de combate indicada para el combate correcto.
     private void recuperarDispArbitros(String idCamp, final String idZona, final String idCombate){
+
         // Obtener el id del campeonato al que pertenece la zona indicada
         Query consultaZona = mZonaDB.child(idCamp).child(idZona);
         consultaZona.addValueEventListener(new ValueEventListener() {
@@ -250,6 +256,7 @@ public class LobbyArbitraje extends AppCompatActivity {
                     Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) ID ZONA --> " + mIdZona, Toast.LENGTH_SHORT).show();
                 } else {
                     try {
+                        mListaArbis.clear();
                         //mLista.clear();
                         ZonasCombate zona = dataSnapshot.getValue(ZonasCombate.class);
                         //mIdCamp = zona.getIdCamp();
@@ -273,11 +280,11 @@ public class LobbyArbitraje extends AppCompatActivity {
                                 //Toast.makeText(LobbyArbitraje.this, "mListaIDsArbis( " + i + " ) " + mListaIDsArbis.get(i), Toast.LENGTH_SHORT).show();
                                 recuperarDisponibilidadArbitro(mListaIDsArbis.get(i));
                             }
-                            /*// Mostrar lista con los datos.
-                            ArbitrosMiniList adapter = new ArbitrosMiniList(LobbyArbitraje.this, mLista);
+                            // Mostrar lista con los datos.
+                            ArbitrosMiniList adapter = new ArbitrosMiniList(LobbyArbitraje.this, mListaArbis);
                             adapter.setDropDownViewResource(R.layout.arbitro_single_layout_mini);
                             mListView.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();*/
+                            adapter.notifyDataSetChanged();
 
                         } else {
                             Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) No existen Árbitros asignados a la zona y combate indicados.", Toast.LENGTH_SHORT).show();
@@ -305,7 +312,7 @@ public class LobbyArbitraje extends AppCompatActivity {
         consultaArbis.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mLista.clear();
+                //mLista.clear();
                 if(!dataSnapshot.exists()){
                     Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Error al localizar al Árbitro en la BD. (idArbitro => " + idArbitro + " )", Toast.LENGTH_SHORT).show();
                 } else {
@@ -318,7 +325,7 @@ public class LobbyArbitraje extends AppCompatActivity {
                     }*/
                     // Añadir a la lista a los árbitros de silla y solo a los de silla.
                     if (arbi.getCargo().equals("Silla")){
-                        mLista.add(arbi);
+                        mListaArbis.add(arbi);
                     }
 
                     /*if (arbi.getListo()){
@@ -330,10 +337,10 @@ public class LobbyArbitraje extends AppCompatActivity {
                     Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Número de Árbitros Confirmados --> " + mNumArbisConfirmados, Toast.LENGTH_SHORT).show();*/
 
                     // Mostrar lista con los datos.
-                    ArbitrosMiniList adapter = new ArbitrosMiniList(LobbyArbitraje.this, mLista);
+                    /*ArbitrosMiniList adapter = new ArbitrosMiniList(LobbyArbitraje.this, mLista);
                     adapter.setDropDownViewResource(R.layout.arbitro_single_layout_mini);
                     mListView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
+                    adapter.notifyDataSetChanged();*/
                 }
             }
 
@@ -343,6 +350,80 @@ public class LobbyArbitraje extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void recuperarDisponibilidadArbitros(final String idCamp, String idZona, final String idCombate){
+        mZonaDB = FirebaseDatabase.getInstance().getReference("Arbitraje/ZonasCombate");
+        Query consultaZona = mZonaDB.child(idCamp).child(idZona);
+        consultaZona.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(LobbyArbitraje.this,
+                            "(LoobyArbitraje - recuperarDisponibilidadArbitros) Error al leer los datos de la Zona",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    mListaArbis.clear();
+                    // Obtener datos Zona
+                    ZonasCombate zona = dataSnapshot.getValue(ZonasCombate.class);
+                    // Obtener Datos Extra
+                    List<DatosExtraZonasCombate> listaDatosExtra =  zona.getListaDatosExtraCombates();
+                    // Obtener datos del Combate deseado
+                    for(int i = 0; i < listaDatosExtra.size(); i++) {
+                        if(listaDatosExtra.get(i).getIdCombate().equals(idCombate)){
+                            mDatosCombate = listaDatosExtra.get(i);
+                        }
+                    }
+                    int numArbisAsignados = mDatosCombate.getNumArbisAsignados();
+                    if (numArbisAsignados > 0){
+                        mListaIDsArbis = mDatosCombate.getListaIDsArbis();
+                        for (int j = 0; j < mListaIDsArbis.size(); j++){
+                            final String idArbi = mListaIDsArbis.get(j);
+                            // Consulta para el Árbitro
+                            Query consultaArbi = mArbisDB.child(idArbi);
+                            consultaArbi.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(!dataSnapshot.exists()){
+                                        Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) Error al leer los datos del Árbitro ID : " + idArbi, Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Obtener los datos del Árbitro
+                                        Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                                        // Vamos a ver si ese arbitro ya está en la lista. Si está lo eliminamos y lo añadimos de nuevo.
+                                        if(mListaArbis.indexOf(arbi) != -1){
+                                            int index = mListaArbis.indexOf(arbi);
+                                            mListaArbis.remove(index);
+                                        }
+                                        // Añadir a la lista a los árbitros de Silla
+                                        if(arbi.getCargo().equals("Silla")){
+                                            mListaArbis.add(arbi);
+                                        }
+                                        // Crear el adapter y mostrar los datos de la lista en el ListView
+                                        ArbitrosMiniList adapter = new ArbitrosMiniList(LobbyArbitraje.this, mListaArbis);
+                                        adapter.setDropDownViewResource(R.layout.arbitro_single_layout_mini);
+                                        mListView.setAdapter(adapter);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    } else {
+                        Toast.makeText(LobbyArbitraje.this, "(LobbyArbitraje) No existen Árbitros asignados a la zona y combate indicados.", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     // Este método se encarga de enviar las notificaciones a los árbitros de la zona de combate para que estos confirmen su disponibilidad para comenzar a arbitrar.

@@ -165,6 +165,8 @@
     <string name="si">Sí</string>
     <string name="no">No</string>
 
+    <string name="mensaje_denegar_disponiblidad">"Ha informado al Árbitro de Mesa de que no está disponible para arbitrar en este momento."</string>
+
     <!-- Vamos a definir un array con los valores que deberá mostrar el spinner de elección de Tipo de Campeonato (Formulario de Añadir Campeonato)-->
     <array name="tiposCampeonato">
         <item>Abierto</item>
@@ -297,5 +299,6 @@
     <string name="listo">Listo</string>
     <string name="MensajeConfirmacionDisponibilidad">Ha confirmado su Disponibilidad para Arbitrar.
         \n Espere a que los demás Árbitros de su Zona de Combate hagan lo mismo.</string>
+    <string name="denegar">Denegar</string>
 
 </resources>

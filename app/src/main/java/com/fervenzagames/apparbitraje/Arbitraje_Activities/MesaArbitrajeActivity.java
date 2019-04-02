@@ -515,12 +515,12 @@ public class MesaArbitrajeActivity extends AppCompatActivity {
 
             }
         });
-        mPuntAzulText = findViewById(R.id.puntosAzulText);
+        mPuntAzulText = findViewById(R.id.ptosAzulText);
         //endregion
 
         //region Número de Combate y de Asalto
-        cargarDatosCombate(mIdCat, idComb);
-        cargarDatosAsalto(idComb, idAsalto);
+        cargarDatosCombate(mIdCat, mIdCombate);
+        cargarDatosAsalto(mIdCombate, mIdAsalto);
         //endregion
 
         mAmRojoBtn = findViewById(R.id.am_rojo_btn);

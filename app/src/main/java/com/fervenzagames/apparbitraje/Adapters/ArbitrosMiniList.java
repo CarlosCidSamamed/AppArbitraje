@@ -49,13 +49,13 @@ public class ArbitrosMiniList extends ArrayAdapter<Arbitros> {
             Picasso.get().load(arbi.getFoto()).into(foto);
         }
 
-        if(arbi.getConectado() == true){
+        if(arbi.getConectado()){
             Picasso.get().load(R.drawable.online).into(estado);
         } else {
             Picasso.get().load(R.drawable.offline).into(estado);
         }
 
-        if(arbi.getListo() == true){
+        if(arbi.getListo()){
             Picasso.get().load(R.drawable.online).into(listo);
         } else {
             Picasso.get().load(R.drawable.offline).into(listo);
@@ -63,7 +63,8 @@ public class ArbitrosMiniList extends ArrayAdapter<Arbitros> {
 
         nombre.setText(arbi.getNombre());
         String z = String.valueOf(arbi.getZonaCombate());
-        zona.setText("Zona de Combate:  " + z);
+        String texto = "Zona de Combate:  ";
+        zona.setText( texto + z);
 
         return convertView;
 

@@ -270,6 +270,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 mPendingIntent = PendingIntent.getActivity(this, 0, loginIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 break;
             }
+            //region Mensajes CRONO
+            case "inicio":{ // Al iniciar el crono recargamos la actividad con los datos del crono
+                Bundle extras = obtenerDatosCloudFunction(remoteMessage);
+                String tiempoAsalto = remoteMessage.getData().get("tiempoAsalto");
+                extras.putString("tiempoAsalto", tiempoAsalto);
+                Intent iniciarCronoIntent = new Intent(this, SillaArbitrajeActivity.class);
+                iniciarCronoIntent.putExtras(extras);
+                mPendingIntent = PendingIntent.getActivity(this, 0, iniciarCronoIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+            //endregion
             default:{
                 Intent inicioIntent = new Intent(this, StartActivity.class);
                 mPendingIntent = PendingIntent.getActivity(this, 0, inicioIntent, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -42,6 +42,10 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
     private CircleImageView mFotoRojo;
     private CircleImageView mFotoAzul;
 
+    private TextView mPtosRojoText;
+    private TextView mPtosAzulText;
+
+
     private Button mPuñoRojo;
     private Button mPatUnoRojo;
     private Button mPatDosRojo;
@@ -104,6 +108,9 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
 
         mFotoRojo = findViewById(R.id.silla_foto_Rojo);
         mFotoAzul = findViewById(R.id.silla_foto_Azul);
+
+        mPtosRojoText = findViewById(R.id.ptosRojoText);
+        mPtosAzulText = findViewById(R.id.ptosAzulText);
 
         mPuñoRojo = findViewById(R.id.punch_Rojo_btn);
         mPatUnoRojo = findViewById(R.id.patada_1_Rojo_btn);
@@ -459,6 +466,14 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
                         int num = asalto.getNumAsalto();
                         String n = "Asalto " + Integer.toString(num);
                         mAsaltoText.setText(n);
+                        // Puntuación ROJO
+                        int pRojo = asalto.getPuntuacionRojo();
+                        String pR = Integer.toString(pRojo);
+                        mPtosRojoText.setText(pR);
+                        // Puntuación AZUL
+                        int pAzul = asalto.getPuntuacionAzul();
+                        String pA = Integer.toString(pAzul);
+                        mPtosAzulText.setText(pA);
                     }
                 }
 

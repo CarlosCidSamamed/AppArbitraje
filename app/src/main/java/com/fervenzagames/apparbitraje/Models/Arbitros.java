@@ -259,6 +259,8 @@ public class Arbitros {
         result.put("email", email);
         result.put("password", password);
         result.put("foto", foto);
+        result.put("pais", pais);
+        result.put("federacion", federacion);
         result.put("nivel", nivel);
         result.put("cargo", cargo);
         result.put("nivel_cargo", nivel_cargo);
