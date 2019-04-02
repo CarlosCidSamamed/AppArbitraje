@@ -140,7 +140,8 @@ public class LobbyArbitraje extends AppCompatActivity {
         idAzul = extras.getString("idAzul");
 
 
-        //recuperarDispArbitros(mIdCamp, mIdZona, mIdCombate);
+        /*recuperarDisponibilidadArbitros(mIdCamp, mIdZona, mIdCombate);
+        Toast.makeText(this, "(LobbyArbitraje) Tamaño de la lista de Árbitros de la Zona --> " + mListaArbis.size(), Toast.LENGTH_SHORT).show();*/
         mNumArbisConfirmados = 0;
 
         // Obtener el NOMBRE de la MODALIDAD
@@ -190,13 +191,20 @@ public class LobbyArbitraje extends AppCompatActivity {
             }
         });
 
-        /*mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Arbitros arbi = mLista.get(i);
-                activarTriggerNotificaciones(arbi.getIdArbitro()); // Enviar la notificación al árbitro que se ha pulsado.
+                try {
+                    Arbitros arbi = mLista.get(i);
+                    activarTriggerNotificaciones(arbi.getIdArbitro()); // Enviar la notificación al árbitro que se ha pulsado.
+                } catch (IndexOutOfBoundsException e) {
+                    Toast.makeText(LobbyArbitraje.this,
+                            "(LobbyArbitraje) Click en ListView Index --> " + i + "// Size --> " + mLista.size(),
+                            Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
             }
-        });*/
+        });
 
         mRefreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
