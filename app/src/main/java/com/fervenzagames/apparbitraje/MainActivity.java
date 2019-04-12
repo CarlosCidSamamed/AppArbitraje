@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.fervenzagames.apparbitraje.User_Activities.SettingsActivity;
 import com.fervenzagames.apparbitraje.Utils.Login_Logout;
 import com.fervenzagames.apparbitraje.Utils.SectionsPagerAdapterTablet;
 import com.fervenzagames.apparbitraje.Utils.SectionsPagerAdapterMobile;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +34,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private FirebaseFunctions mFunctions;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -63,10 +68,14 @@ public class MainActivity extends AppCompatActivity {
 
     private AlertDialog.Builder alertDialogBuilder;
 
+    private String mFCMToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mFunctions = FirebaseFunctions.getInstance(); // Inicializar la instancia para poder usar Firebase Cloud Functions
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -123,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         // Voy a usar el valor de tipo para delimitar las activities que se pueden ver y cargar desde un móvil o desde una tablet.
         // Esto será así porque los árbitros de SILLA usarán móviles y los de MESA usarán TABLETS.
 
+
         // Firebase Cloud Messaging
         // Obtener el Token de registro de este dispositivo cuando se inicia la app.
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -133,12 +143,48 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 // Obtener el Instance ID Token
-                String token = task.getResult().getToken();
-                String msg = getString(R.string.fcm_token, token);
+                mFCMToken = task.getResult().getToken();
+                String msg = getString(R.string.fcm_token, mFCMToken);
                 Log.d(TAG, msg);
+
+                // Realizar la llamada a la Cloud Function solicitarTokenIDFCM
+                actualizarTokenIDFCM().addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if(!task.isSuccessful()){
+                            Log.d(TAG, task.getException().getMessage());
+                            return;
+                        }
+                        Log.d(TAG, "Se ha actualizado el tokenIDFCM para el Árbitro " + mUid);
+                        String result = task.getResult();
+                        Toast.makeText(MainActivity.this, "(MainActivity) Result --> " + result, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
+
+
+    }
+
+    public Task<String> actualizarTokenIDFCM (){
+        final Map<String, Object> data = new HashMap<>();
+        data.put("token", mFCMToken);
+
+        return mFunctions.getHttpsCallable("solicitarTokenIDFCM")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, String>() {
+                    @Override
+                    public String then(@NonNull Task<HttpsCallableResult> task) throws NullPointerException {
+                        try{
+                            Map<String, Object> result = (Map<String, Object>) task.getResult().getData();
+                            return (String) result.get("token");
+                        } catch (NullPointerException e){
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                });
     }
 
     @Override
@@ -160,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
             sendToStart(null);
         } else {
             mUid = currentUser.getUid();
-            Bundle extras = getIntent().getExtras();
+            /*Bundle extras = getIntent().getExtras();
             try {
                 String anterior = extras.getString("anterior");
                 Toast.makeText(this, "anterior --> " + anterior, Toast.LENGTH_SHORT).show();
@@ -180,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } catch (NullPointerException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
         /*else {
             Toast.makeText(this, "Current User UID ----> " + currentUser.getUid(), Toast.LENGTH_SHORT).show();
@@ -195,6 +241,20 @@ public class MainActivity extends AppCompatActivity {
                 actualizarEstadoArbitro(mUid, true);
             }
         }*/
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch(keyCode){
+            case KeyEvent.KEYCODE_HOME:
+            case KeyEvent.KEYCODE_MENU:{
+                if(mUid != null) {
+                    Login_Logout.logoutUser(mUid, "false");
+                }
+                break;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void sendToStart(String uid) {

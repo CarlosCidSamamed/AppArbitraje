@@ -1,6 +1,9 @@
 package com.fervenzagames.apparbitraje.Models;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Emparejamientos{
     private String id;
     private String numeroCombate;
@@ -98,5 +101,21 @@ public class Emparejamientos{
 
     public void setIdPerdedor(String idPerdedor) {
         this.idPerdedor = idPerdedor;
+    }
+
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("id", id);
+        result.put("numeroCombate", numeroCombate);
+        result.put("idRojo", idRojo);
+        result.put("idAzul", idAzul);
+        result.put("sigCombateGanador", sigCombateGanador);
+        result.put("sigCombatePerdedor", sigCombatePerdedor);
+        result.put("esFinal", esFinal.toString());
+        result.put("idGanador", idGanador);
+        result.put("idPerdedor", idPerdedor);
+
+        return result;
     }
 }
