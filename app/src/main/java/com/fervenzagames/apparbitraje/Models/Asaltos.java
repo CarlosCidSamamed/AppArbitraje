@@ -1,5 +1,6 @@
 package com.fervenzagames.apparbitraje.Models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,12 @@ public class Asaltos {
     }
 
     public List<Puntuaciones> getListaPuntuaciones() {
-        return listaPuntuaciones;
+        if (this.listaPuntuaciones == null){
+            List<Puntuaciones> lista = new ArrayList<>();
+            return lista;
+        } else {
+            return listaPuntuaciones;
+        }
     }
 
     public void setListaPuntuaciones(List<Puntuaciones> listaPuntuaciones) {
@@ -173,5 +179,22 @@ public class Asaltos {
         result.put("estado", estado);
 
         return result;
+    }
+
+    // Para añadir Puntuaciones a la listaPuntuaciones
+    public void addToListaPuntuaciones (Puntuaciones punt){
+        if(this.listaPuntuaciones == null){
+            List<Puntuaciones> listaPunt = new ArrayList<>();
+            this.listaPuntuaciones = listaPunt;
+        }
+        this.listaPuntuaciones.add(punt);
+    }
+    // Para añadir Incidencias a la listaIncidencias
+    public void addToListaIncidencias (Incidencias inc){
+        if(this.listaIncidencias == null){
+            List<Incidencias> listaInc = new ArrayList<>();
+            this.listaIncidencias = listaInc;
+        }
+        this.listaIncidencias.add(inc);
     }
 }

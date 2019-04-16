@@ -28,7 +28,11 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -80,10 +84,13 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
     private DatabaseReference mIncDB;
     private DatabaseReference mArbisDB;
 
+    private DatabaseReference mRootDB;
+
     private String mIdJuez;
     private String mIdAsalto;
     private String mIdPunt; // Se obtiene mediante el PUSH a la BD.
     private String mIdInc;  // Se obtiene mediante el PUSH a la BD.
+    private String mIdCombate;
     
     private String mDniJuez;
     private String mIdRojo;
@@ -137,6 +144,8 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
 
         mCompetidorDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Competidores");
 
+        mRootDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
+
         try {
             mIdJuez = FirebaseAuth.getInstance().getCurrentUser().getUid();
             getDniJuez(mIdJuez);
@@ -162,6 +171,12 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
             mIdAzul = extras.getString("idAzul");
         } catch (NullPointerException e) {
             Toast.makeText(this, "(SillaArbitraje) El bundle de extras no incluye el ID del Competidor AZUL. ", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        try {
+            mIdCombate = extras.getString("idCombate");
+        } catch (NullPointerException e){
+            Toast.makeText(this, "(SillaArbitraje) El bundle de extras no incluye el ID del Combate. ", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
@@ -262,6 +277,7 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
 
     // Este método recibe un objeto de tipo Puntuaciones y lo inserta en la BD
     public void insertarPuntuacionBD (final Puntuaciones puntuacion){
+        // 1. Insertar la Puntuación en la rama que le corresponde
         mIdPunt = mPuntDB.child(mIdAsalto).push().getKey(); // Puntuaciones --- idAsalto --- idPunt --- datos de la puntuación
         puntuacion.setId(mIdPunt); // Se actualiza el ID al generarlo
         /* NO será necesario comporbar si existen duplicados porque cada una de las puntuaciones de un asalto tendrán los siguientes datos que las diferencien:
@@ -283,6 +299,44 @@ public class SillaArbitrajeActivity extends AppCompatActivity {
 
             }
         });
+        // 2. Añadir dicha puntuación a la lista de Puntuaciones del Asalto.
+        mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos").child(mIdCombate).child(mIdAsalto); // Referencia al asalto
+        Query consultaPuntDB = mAsaltoDB;
+        consultaPuntDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Asaltos asalto = dataSnapshot.getValue(Asaltos.class);
+                // Añadir la puntuación a la listaPuntuaciones y actualizar posteriormente el asalto con la lista actualizada
+                try {
+                    if(asalto.getListaPuntuaciones() == null){
+                        List<Puntuaciones> listaP = new ArrayList<>();
+                        asalto.setListaPuntuaciones(listaP);
+                        asalto.addToListaPuntuaciones(puntuacion);
+                    } else {
+                        asalto.addToListaPuntuaciones(puntuacion);
+                    }
+
+                    Map<String, Object> postValues = asalto.toMap();
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("/Asaltos/"+ mIdCombate + "/" + mIdAsalto, postValues);
+                    mRootDB.updateChildren(updates);
+
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    Toast.makeText(SillaArbitrajeActivity.this,
+                            "(SillaArbitraje) Excepción al añadir la puntuación a la lista correspondiente al asalto", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SillaArbitrajeActivity.this, "Excepción --> " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 
