@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -301,14 +302,22 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                                 return false;
                             }
                         });*/
-                        /*mListaPuntsRojoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        mListaPuntsRojoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                if(listaPunts.size() > 0){
-                                    String
-                                }
+                                Puntuaciones p = listaPuntsRojo.get(i);
+                                String idPunt = p.getId();
+                                abrirDialogPunt(idPunt, mIdAsalto);
                             }
-                        });*/
+                        });
+                        mListaPuntsAzulView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                Puntuaciones p = listaPuntsAzul.get(i);
+                                String idPunt = p.getId();
+                                abrirDialogPunt(idPunt, mIdAsalto);
+                            }
+                        });
                         //endregion
                         //region Click en una Incidencia
                         /*mListaIncsView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
