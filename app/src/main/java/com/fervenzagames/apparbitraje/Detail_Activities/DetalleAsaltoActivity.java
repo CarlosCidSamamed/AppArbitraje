@@ -10,14 +10,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fervenzagames.apparbitraje.Adapters.IncidenciasExpandableListAdapter;
-import com.fervenzagames.apparbitraje.Adapters.PuntuacionesExpandableListAdapter;
+import com.fervenzagames.apparbitraje.Adapters.PuntuacionesAdapter;
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.LobbyArbitraje;
-import com.fervenzagames.apparbitraje.Arbitraje_Activities.MesaArbitrajeActivity;
 import com.fervenzagames.apparbitraje.Dialogs.DetalleIncidenciaDialog;
 import com.fervenzagames.apparbitraje.Dialogs.DetallePuntuacionDialog;
 import com.fervenzagames.apparbitraje.Models.Asaltos;
@@ -34,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -54,12 +53,18 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private TextView mMotivo;
     private TextView mDesc;
     private TextView mDuracion;
-    private ExpandableListView mListaPuntsView;
-    private ExpandableListView mListaIncsView;
+    //private ExpandableListView mListaPuntsRojoView;
+    private ListView mListaPuntsRojoView;
+    private ListView mListaPuntsAzulView;
+    //private ExpandableListView mListaIncsView;
+    private ListView mListaIncsView;
     private Button mIniciarBtn;
 
     private List<Puntuaciones> listaPunts;
     private List<Incidencias> listaIncs;
+
+    private List<Puntuaciones> listaPuntsRojo;
+    private List<Puntuaciones> listaPuntsAzul;
 
     private List<String> listaTitulosPunts;
     private List<String> listaDetallesPunts;
@@ -69,6 +74,8 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
     private List<String> listaIDsPunts;
     private List<String> listaIDsIncs;
+
+    private HashMap<String, List<String>> mDetallesHashMap;
 
     private DatabaseReference mAsaltoDB;
     private DatabaseReference mGanadorDB;
@@ -107,7 +114,8 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         mMotivo = findViewById(R.id.detalle_asalto_motivo);
         mDesc = findViewById(R.id.detalle_asalto_desc);
         mDuracion = findViewById(R.id.detalle_asalto_duracion);
-        mListaPuntsView = findViewById(R.id.detalle_asalto_listaPunts);
+        mListaPuntsRojoView = findViewById(R.id.detalle_asalto_listaPuntsRojo);
+        mListaPuntsAzulView = findViewById(R.id.detalle_asalto_listaPuntsAzul);
         mListaIncsView   = findViewById(R.id.detalle_asalto_listaIncs);
         mIniciarBtn = findViewById(R.id.detalle_asalto_iniciarBtn);
 
@@ -117,12 +125,17 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         listaPunts = new ArrayList<>();
         listaIncs = new ArrayList<>();
 
+        listaPuntsRojo = new ArrayList<>();
+        listaPuntsAzul = new ArrayList<>();
+
         listaTitulosPunts = new ArrayList<>();
         listaDetallesPunts = new ArrayList<>();
         listaTitulosIncs = new ArrayList<>();
         listaDetallesIncs = new ArrayList<>();
         listaIDsPunts = new ArrayList<>();
         listaIDsIncs = new ArrayList<>();
+
+        mDetallesHashMap = new HashMap<>();
 
         Bundle extras = getIntent().getExtras();
         try {
@@ -236,12 +249,26 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                             Toast.makeText(DetalleAsaltoActivity.this, "No existen Puntuaciones para este Asalto", Toast.LENGTH_SHORT).show();
                         } else {
                             // Procesar lista para obtener Headers y Children para el ExpandableListView
-                            procesarListaPuntuaciones(listaPunts);
+                            //procesarListaPuntuaciones(listaPunts);
+                            //procesarListasPuntuaciones2(listaPunts);
                             // Crear Adapter
-                            PuntuacionesExpandableListAdapter adapterPunts = new PuntuacionesExpandableListAdapter(DetalleAsaltoActivity.this, listaTitulosPunts, listaDetallesPunts);
+                            //PuntuacionesExpandableListAdapter adapterPunts = new PuntuacionesExpandableListAdapter(DetalleAsaltoActivity.this, listaTitulosPunts, listaDetallesPunts);
+                            //PuntuacionesExpandableListAdapter adapterPunts = new PuntuacionesExpandableListAdapter(DetalleAsaltoActivity.this,
+                            //        listaTitulosPunts, mDetallesHashMap);
+
+                            // Obtener lista Puntuaciones Rojo y Azul
+                            listaPuntsRojo = getListaPuntsRojoAzul(mIdRojo, listaPunts);
+                            listaPuntsAzul = getListaPuntsRojoAzul(mIdAzul, listaPunts);
+
+                            PuntuacionesAdapter adapterPuntsRojo = new PuntuacionesAdapter(DetalleAsaltoActivity.this, listaPuntsRojo, "Rojo");
                             // Asignar el adapter al View
-                            mListaPuntsView.setAdapter(adapterPunts);
-                            adapterPunts.notifyDataSetChanged();
+                            //mListaPuntsRojoView.setAdapter(adapterPunts);
+                            mListaPuntsRojoView.setAdapter(adapterPuntsRojo);
+                            adapterPuntsRojo.notifyDataSetChanged();
+
+                            PuntuacionesAdapter adapterPuntsAzul = new PuntuacionesAdapter(DetalleAsaltoActivity.this, listaPuntsAzul, "Azul");
+                            mListaPuntsAzulView.setAdapter(adapterPuntsAzul);
+                            adapterPuntsAzul.notifyDataSetChanged();
                         }
                         //endregion
                         //region Lista Incs
@@ -253,16 +280,17 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                             Toast.makeText(DetalleAsaltoActivity.this, "No existen Incidencias para este Asalto", Toast.LENGTH_SHORT).show();
                         } else {
                             // Procesar lista para obtener Headers y Children para el ExpandableListView
-                            procesarListaIncidencias(listaIncs);
+                            //procesarListaIncidencias(listaIncs);
                             // Crear Adapter
-                            IncidenciasExpandableListAdapter adapterIncs = new IncidenciasExpandableListAdapter(DetalleAsaltoActivity.this, listaTitulosIncs, listaDetallesIncs);
+                            //IncidenciasExpandableListAdapter adapterIncs = new IncidenciasExpandableListAdapter(DetalleAsaltoActivity.this,
+                            //        listaTitulosIncs, listaDetallesIncs);
                             // Asignar el adapter al View
-                            mListaIncsView.setAdapter(adapterIncs);
-                            adapterIncs.notifyDataSetChanged();
+                            //mListaIncsView.setAdapter(adapterIncs);
+                            //adapterIncs.notifyDataSetChanged();
                         }
                         //endregion
                         //region Click en una Puntuación
-                        mListaPuntsView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                        /*mListaPuntsRojoView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
                             @Override
                             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                                 listaPunts.clear();
@@ -272,10 +300,18 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                                 }
                                 return false;
                             }
-                        });
+                        });*/
+                        /*mListaPuntsRojoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                if(listaPunts.size() > 0){
+                                    String
+                                }
+                            }
+                        });*/
                         //endregion
                         //region Click en una Incidencia
-                        mListaIncsView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                        /*mListaIncsView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
                             @Override
                             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                                 listaIncs.clear();
@@ -285,7 +321,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                                 }
                                 return false;
                             }
-                        });
+                        });*/
                         //endregion
                         //region Click en mIniciarBtn
                         mIniciarBtn.setOnClickListener(new View.OnClickListener() {
@@ -325,6 +361,17 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         }
     }
 
+    private List<Puntuaciones> getListaPuntsRojoAzul(String idComp, List<Puntuaciones> listaPunt){
+        List<Puntuaciones> nuevaLista = new ArrayList<>();
+        for(int i = 0; i < listaPunt.size(); i++){
+            Puntuaciones p = listaPunt.get(i);
+            if(p.getIdCompetidor().equals(idComp)){
+                nuevaLista.add(p);
+            }
+        }
+        return nuevaLista;
+    }
+
     private void procesarListaPuntuaciones(List<Puntuaciones> lista){
         List<String> titulos = new ArrayList<>();
         List<String> detalles = new ArrayList<>();
@@ -338,6 +385,32 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         listaDetallesPunts = detalles;
         listaIDsPunts = listaIDs;
         Toast.makeText(this, "Tamaño de la lista de Puntuaciones para este Asalto : " + lista.size(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void procesarListasPuntuaciones2(List<Puntuaciones> lista){
+        List<String> titulos = new ArrayList<>();
+        HashMap<String, List<String>> detallesHashMap = new HashMap<>();
+        List<String> listaIDs = new ArrayList<>();
+        // Para cada puntuación vamos a obtener su concepto, lo pondremos como título y la lista con un elemento será el detalle.
+        for(int i = 0; i < lista.size(); i++){
+            String titulo = lista.get(i).getConcepto();
+            titulos.add(titulo);
+            listaIDs.add(lista.get(i).getId());
+            List<String> detalles = obtenerDetalle(lista.get(i));
+            Toast.makeText(this, "Detalle --> " + detalles.get(0), Toast.LENGTH_SHORT).show();
+            //detalles.add(lista.get(i).getTipoAtaque());
+            detallesHashMap.put(titulo, detalles);
+        }
+        listaTitulosPunts = titulos;
+        listaIDsPunts = listaIDs;
+        mDetallesHashMap = detallesHashMap;
+    }
+
+    private List<String> obtenerDetalle(Puntuaciones p){
+        List<String> detalle = new ArrayList<>();
+        detalle.add(p.getTipoAtaque());
+        //Toast.makeText(this, "Detalle --> " + p.getTipoAtaque(), Toast.LENGTH_SHORT).show();
+        return detalle;
     }
 
     private void procesarListaIncidencias(List<Incidencias> lista){

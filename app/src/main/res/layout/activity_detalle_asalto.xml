@@ -218,7 +218,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_puntRojo" />
 
-    <ExpandableListView
+    <!--<ExpandableListView
         android:id="@+id/detalle_asalto_listaPunts"
         android:layout_width="386dp"
         android:layout_height="338dp"
@@ -226,6 +226,25 @@
         android:layout_marginLeft="44dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_titulo1" />-->
+    <ListView
+        android:id="@+id/detalle_asalto_listaPuntsRojo"
+        android:layout_width="193dp"
+        android:layout_height="338dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginLeft="44dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_titulo1"/>
+
+    <ListView
+        android:id="@+id/detalle_asalto_listaPuntsAzul"
+        android:layout_width="193dp"
+        android:layout_height="338dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/detalle_asalto_listaPuntsRojo"
         app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_titulo1" />
 
     <TextView
@@ -243,7 +262,7 @@
         app:layout_constraintStart_toEndOf="@+id/detalle_asalto_titulo1"
         app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_duracion" />
 
-    <ExpandableListView
+    <!--<ExpandableListView
         android:id="@+id/detalle_asalto_listaIncs"
         android:layout_width="386dp"
         android:layout_height="338dp"
@@ -251,7 +270,17 @@
         android:layout_marginEnd="44dp"
         android:layout_marginRight="44dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_titulo2" />
+        app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_titulo2" />-->
+
+    <ListView
+        android:id="@+id/detalle_asalto_listaIncs"
+        android:layout_width="386dp"
+        android:layout_height="338dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginRight="44dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detalle_asalto_titulo2"/>
 
     <Button
         android:id="@+id/detalle_asalto_iniciarBtn"

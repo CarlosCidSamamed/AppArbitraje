@@ -52,11 +52,12 @@ public class IncidenciasExpandableListAdapter extends BaseExpandableListAdapter 
 
     @Override
     public int getChildrenCount(int listPosition) {
-        if(this.expandableListDetail.size() > 0) {
+        /*if(this.expandableListDetail.size() > 0) {
             return this.expandableListDetail.size();
         } else {
             return 0;
-        }
+        }*/
+        return 1;
     }
 
     @Override

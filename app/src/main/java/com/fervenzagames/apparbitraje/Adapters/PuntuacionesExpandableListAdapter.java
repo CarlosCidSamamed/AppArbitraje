@@ -17,9 +17,9 @@ public class PuntuacionesExpandableListAdapter extends BaseExpandableListAdapter
 
     private Context context;
     private List<String> expandableListTitle;
-    private List<String> expandableListDetail;
+    private HashMap<String, List<String>> expandableListDetail;
 
-    public PuntuacionesExpandableListAdapter(Context context, List<String> expandableListTitle, List<String> expandableListDetail){
+    public PuntuacionesExpandableListAdapter(Context context, List<String> expandableListTitle, HashMap<String, List<String>> expandableListDetail){
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
@@ -27,7 +27,8 @@ public class PuntuacionesExpandableListAdapter extends BaseExpandableListAdapter
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return this.expandableListDetail.get(expandedListPosition);
+        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition))
+                .get(expandedListPosition);
     }
 
     @Override
@@ -52,11 +53,8 @@ public class PuntuacionesExpandableListAdapter extends BaseExpandableListAdapter
 
     @Override
     public int getChildrenCount(int listPosition) {
-        if(this.expandableListDetail.size() > 0) {
-            return this.expandableListDetail.size();
-        } else {
-            return 0;
-        }
+        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition))
+                .size();
     }
 
     @Override
@@ -68,7 +66,6 @@ public class PuntuacionesExpandableListAdapter extends BaseExpandableListAdapter
     public int getGroupCount() {
         return this.expandableListTitle.size();
     }
-
 
     @Override
     public long getGroupId(int listPosition) {
@@ -100,5 +97,4 @@ public class PuntuacionesExpandableListAdapter extends BaseExpandableListAdapter
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
     }
-
 }

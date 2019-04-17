@@ -178,7 +178,7 @@ public class DetallePuntuacionDialog extends AppCompatDialogFragment {
                 mTipoAtaque.setImageResource(R.drawable.kick);
                 break;
             }
-            case "Proyeccion":{
+            case "Proyección":{
                 mTipoAtaque.setImageResource(R.drawable.proyeccion);
                 break;
             }
