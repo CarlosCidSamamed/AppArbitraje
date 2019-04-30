@@ -300,5 +300,6 @@
     <string name="MensajeConfirmacionDisponibilidad">Ha confirmado su Disponibilidad para Arbitrar.
         \n Espere a que los demás Árbitros de su Zona de Combate hagan lo mismo.</string>
     <string name="denegar">Denegar</string>
+    <string name="detalle">Detalle</string>
 
 </resources>

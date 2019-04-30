@@ -26,13 +26,15 @@ public class Combates {
     private EstadoCombate estadoCombate;
     private int numArbisConfirmados;
 
+    private List<String> listaIDsArbis; // Lista de los IDs de los Árbitros asignados al Combate.
+
     public Combates() {
     }
 
     public Combates(String id, String numCombate, String ganador, String perdedor,String motivo, String enlaceVideo,
                     String idRojo, String idAzul, List<Asaltos> listaAsaltos, String campeonato, String idZonaCombate,
                     String modalidad, String categoria, EstadoCombate estadoCombate,
-                    int numArbisConfirmados) {
+                    int numArbisConfirmados, List<String> listaIDsArbis) {
         this.id = id;
         this.numCombate = numCombate;
         this.ganador = ganador;
@@ -48,6 +50,7 @@ public class Combates {
         this.idZonaCombate = idZonaCombate;
         this.estadoCombate = estadoCombate;
         this.numArbisConfirmados = numArbisConfirmados;
+        this.listaIDsArbis = listaIDsArbis;
     }
 
     public String getId() {
@@ -222,6 +225,14 @@ public class Combates {
         return hashMapDetalle;
     }
 
+    public List<String> getListaIDsArbis() {
+        return listaIDsArbis;
+    }
+
+    public void setListaIDsArbis(List<String> listaIDsArbis) {
+        this.listaIDsArbis = listaIDsArbis;
+    }
+
     // Para actualizar un Combate
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
@@ -240,6 +251,7 @@ public class Combates {
         result.put("idZonaCombate", idZonaCombate);
         result.put("estadoCombate", estadoCombate);
         result.put("numArbisConfirmados", numArbisConfirmados);
+        result.put("listaIDsArbis", listaIDsArbis);
 
         return result;
     }

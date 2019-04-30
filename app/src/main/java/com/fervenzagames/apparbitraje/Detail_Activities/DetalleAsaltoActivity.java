@@ -8,19 +8,25 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fervenzagames.apparbitraje.Adapters.DatosSumaAdapter;
 import com.fervenzagames.apparbitraje.Adapters.PuntuacionesAdapter;
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.LobbyArbitraje;
 import com.fervenzagames.apparbitraje.Dialogs.DetalleIncidenciaDialog;
 import com.fervenzagames.apparbitraje.Dialogs.DetallePuntuacionDialog;
+import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Asaltos;
+import com.fervenzagames.apparbitraje.Models.Combates;
 import com.fervenzagames.apparbitraje.Models.Competidores;
+import com.fervenzagames.apparbitraje.Models.DatosSuma;
 import com.fervenzagames.apparbitraje.Models.Incidencias;
 import com.fervenzagames.apparbitraje.Models.Puntuaciones;
 import com.fervenzagames.apparbitraje.R;
@@ -76,7 +82,12 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private List<String> listaIDsPunts;
     private List<String> listaIDsIncs;
 
+    private DatabaseReference mCombateDB;
+    private List<String> mListaIDsArbis;
+
     private HashMap<String, List<String>> mDetallesHashMap;
+
+    private List<String> listaSumasPuntos;
 
     private DatabaseReference mAsaltoDB;
     private DatabaseReference mGanadorDB;
@@ -93,6 +104,13 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
     private DatabaseReference mPuntsDB;
     private DatabaseReference mIncsDB;
+
+    private DatabaseReference mArbiDB;
+    private String mFotoArbi;
+    private String mDNI;
+
+    private DatosSuma mDatosRojo;
+    private DatosSuma mDatosAzul;
 
 
     @Override
@@ -138,6 +156,12 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
         mDetallesHashMap = new HashMap<>();
 
+        mFotoArbi = null;
+        mDNI = null;
+
+        mDatosRojo = new DatosSuma();
+        mDatosAzul = new DatosSuma();
+
         Bundle extras = getIntent().getExtras();
         try {
             mIdCat = extras.getString("idCat");
@@ -157,6 +181,8 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
             mIdCamp = extras.getString("idCamp");
 
             mNombreMod = extras.getString("nombreMod");
+
+            getArbis(); // Obtener la lista de Arbitros asignados a este combate.
 
             Query consulta = mAsaltoDB;
             consulta.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -257,7 +283,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                             //PuntuacionesExpandableListAdapter adapterPunts = new PuntuacionesExpandableListAdapter(DetalleAsaltoActivity.this,
                             //        listaTitulosPunts, mDetallesHashMap);
 
-                            // Obtener lista Puntuaciones Rojo y Azul
+                            /*// Obtener lista Puntuaciones Rojo y Azul
                             listaPuntsRojo = getListaPuntsRojoAzul(mIdRojo, listaPunts);
                             listaPuntsAzul = getListaPuntsRojoAzul(mIdAzul, listaPunts);
 
@@ -269,7 +295,41 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
                             PuntuacionesAdapter adapterPuntsAzul = new PuntuacionesAdapter(DetalleAsaltoActivity.this, listaPuntsAzul, "Azul");
                             mListaPuntsAzulView.setAdapter(adapterPuntsAzul);
-                            adapterPuntsAzul.notifyDataSetChanged();
+                            adapterPuntsAzul.notifyDataSetChanged();*/
+
+                            // Mostrar la lista de arbitros con la suma de sus puntuaciones para cada competidor
+                            final List<DatosSuma> listaDatosRojo = new ArrayList<>();
+                            final List<DatosSuma> listaDatosAzul = new ArrayList<>();
+                            // Recorrer la lista de los árbitros asignados al combate para poder calcular sus sumas correspondientes.
+                            // Para cada árbitro deberemos obtener su dni y posteriormente calcular la suma de sus puntuaciones.
+                            for(int i = 0; i < mListaIDsArbis.size(); i++){
+                                String id = mListaIDsArbis.get(i);
+                                obtenerDNIyPuntuaciones(id);
+
+                                getFotoArbi("44491302X");
+
+                                //DatosSuma sumaRojo = new DatosSuma("", 0, "", mIdRojo, mIdAsalto, mIdCombate);
+                                listaDatosRojo.add(mDatosRojo);
+                                Log.v("DetalleAsalto", "mDatosRojo -->  DNI : " + mDatosRojo.getDniJuez() + " // Suma Puntos : " + mDatosRojo.getSumaPuntos());
+
+                                //DatosSuma sumaAzul = new DatosSuma("", 0,"", mIdAzul, mIdAsalto, mIdCombate);
+                                listaDatosAzul.add(mDatosAzul);
+                            }
+
+                            // Comprobación de que los datos se recuperan correctamente desde la BD.
+                            Log.v("DetalleAsalto", "Lista de Datos Rojo tiene " + listaDatosRojo.size() + " elementos.");
+                            Log.v("DetalleAsalto", "Lista de Datos Azul tiene " + listaDatosAzul.size() + " elementos.");
+                            // Mostrar dichas sumas en pantalla
+                            // Crear adapters
+                            DatosSumaAdapter datosRojo = new DatosSumaAdapter(DetalleAsaltoActivity.this, listaDatosRojo, "Rojo");
+                            DatosSumaAdapter datosAzul = new DatosSumaAdapter(DetalleAsaltoActivity.this, listaDatosAzul, "Azul");
+
+                            mListaPuntsRojoView.setAdapter(datosRojo);
+                            mListaPuntsAzulView.setAdapter(datosAzul);
+
+                            datosRojo.notifyDataSetChanged();
+                            datosAzul.notifyDataSetChanged();
+
                         }
                         //endregion
                         //region Lista Incs
@@ -302,22 +362,22 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                                 return false;
                             }
                         });*/
-                        mListaPuntsRojoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        /*mListaPuntsRojoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 Puntuaciones p = listaPuntsRojo.get(i);
                                 String idPunt = p.getId();
                                 abrirDialogPunt(idPunt, mIdAsalto);
                             }
-                        });
-                        mListaPuntsAzulView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        });*/
+                        /*mListaPuntsAzulView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 Puntuaciones p = listaPuntsAzul.get(i);
                                 String idPunt = p.getId();
                                 abrirDialogPunt(idPunt, mIdAsalto);
                             }
-                        });
+                        });*/
                         //endregion
                         //region Click en una Incidencia
                         /*mListaIncsView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -370,6 +430,67 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         }
     }
 
+    public void getArbis (){
+        mCombateDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Combates").child(mIdCat).child(mIdCombate);
+        Query consulta = mCombateDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Log.v("DetalleAsalto", "Error al obtener los IDs de los Jueces del Combate");
+                } else {
+                    Combates combate = dataSnapshot.getValue(Combates.class);
+                    try {
+                        mListaIDsArbis = combate.getListaIDsArbis();
+                    } catch (NullPointerException e) {
+                        Log.v("DetalleAsalto", "Excepción IDs Arbis : " + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void obtenerDNIyPuntuaciones(final String idArbi){
+        mArbiDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(idArbi);
+        Query consulta = mArbiDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Log.v("DetalleAsalto", "Error al localizar al Arbitro cuyo ID es " + idArbi);
+                } else {
+                    Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                    try {
+                        mDNI = arbi.getDni();
+                        Log.v("DetalleAsalto", "obtenerDNI --- Dni Juez ---> " + mDNI);
+                        // Una vez que tengo el DNI del Juez debo usarlo para localizar las puntuaciones de ese juez en el asalto correspondiente.
+                        mDatosRojo = new DatosSuma("", 0, mDNI, mIdRojo, mIdAsalto, mIdCombate);
+                        mDatosRojo.getmListaPunts(mIdAsalto, mIdCombate, mIdRojo);
+                        Log.v("DetalleAsalto", "Tamaño de la lista de Puntuaciones de mDatosRojo --> " + mDatosRojo.getmListaPunts().size());
+/*                        int sumaRojo = mDatosRojo.getSumaPuntos();
+                        Log.v("DetalleAsalto", "mDatosRojo Suma Puntos ---> " + sumaRojo);*/
+                        mDatosAzul = new DatosSuma("", 0, mDNI, mIdAzul, mIdAsalto, mIdCombate);
+                        mDatosAzul.getmListaPunts(mIdAsalto, mIdCombate, mIdAzul);
+                    } catch (Exception e) {
+                        Log.v("DetalleAsalto", "Excepcion al obtener el DNI del Arbitro : " + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private List<Puntuaciones> getListaPuntsRojoAzul(String idComp, List<Puntuaciones> listaPunt){
         List<Puntuaciones> nuevaLista = new ArrayList<>();
         for(int i = 0; i < listaPunt.size(); i++){
@@ -379,6 +500,76 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
             }
         }
         return nuevaLista;
+    }
+
+    /*private int getSumaPuntsPorArbiyCompetidor(String dniArbi, String idComp, List<Puntuaciones> listaPunts){
+        int suma = 0;
+        // Recorrer la lista de Puntuaciones y añadir las puntuaciones del Competidor y del Árbitro correctos a otra List<Puntuaciones>
+        // Esa nueva lista se recorrerá para obtener la SUMA de sus valores y se devolverá dicha SUMA.
+        List<Puntuaciones> listaFiltrada = new ArrayList<>();
+        for(int i = 0; i < listaPunts.size(); i++){
+            Puntuaciones p = listaPunts.get(i);
+            if(p.getIdCompetidor().equals(idComp) && (p.getDniJuez().equals(dniArbi))){
+                listaFiltrada.add(p);
+            }
+        }
+        // Recorrer la nueva lista y obtener la suma.
+        for(int i = 0; i < listaFiltrada.size(); i++){
+            Puntuaciones p = listaFiltrada.get(i);
+            suma += p.getValor();
+        }
+        return suma;
+    }
+
+    // El HashMap contiene el uri de la foto del arbitro y la suma de sus puntuaciones.
+    private HashMap<String, String> getListaDatosArbi(String dniArbi, String idComp, List<Puntuaciones> listaPunts){
+        HashMap<String, String> map = new HashMap<>();
+        // Calcular la suma de las puntuaciones para
+        int suma = getSumaPuntsPorArbiyCompetidor(dniArbi, idComp, listaPunts);
+        String s = String.valueOf(suma);
+        // Buscar la foto del Arbi
+        getFotoArbi(dniArbi);
+        if(mFotoArbi == null){
+            map.put(s, "");
+        } else {
+            map.put(s, mFotoArbi);
+        }
+        return map;
+    }*/
+
+    private void cargarDatosArbisListView (){
+
+    }
+
+    private String getFotoArbi (final String dniArbi) {
+        mArbiDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros");
+        Query consulta = mArbiDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Log.v("DetalleAsaltoActivity", "Error al localizar los Arbitros en la BD");
+                } else {
+                    for(DataSnapshot arbiSnap: dataSnapshot.getChildren()){
+                        Arbitros arbi = arbiSnap.getValue(Arbitros.class);
+                        try {
+                            if(arbi.getDni().equals(dniArbi)){
+                                mFotoArbi = arbi.getFoto();
+                            }
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Log.v("DetalleAsalto", "URL a la foto del Juez : " + mFotoArbi);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return mFotoArbi;
     }
 
     private void procesarListaPuntuaciones(List<Puntuaciones> lista){
