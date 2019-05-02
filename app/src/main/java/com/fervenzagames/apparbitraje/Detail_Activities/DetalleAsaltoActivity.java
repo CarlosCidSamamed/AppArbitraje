@@ -30,6 +30,7 @@ import com.fervenzagames.apparbitraje.Models.DatosSuma;
 import com.fervenzagames.apparbitraje.Models.Incidencias;
 import com.fervenzagames.apparbitraje.Models.Puntuaciones;
 import com.fervenzagames.apparbitraje.R;
+import com.fervenzagames.apparbitraje.Utils.FirebaseRTDB;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -112,6 +113,12 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
     private DatosSuma mDatosRojo;
     private DatosSuma mDatosAzul;
 
+    private List<DatosSuma> mListaSumasRojo;
+    private List<DatosSuma> mListaSumasAzul;
+
+    private List<String> mListaDNIsArbis;
+    private List<String> mListaFotosArbis;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +169,12 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         mDatosRojo = new DatosSuma();
         mDatosAzul = new DatosSuma();
 
+        mListaSumasRojo = new ArrayList<>();
+        mListaSumasAzul = new ArrayList<>();
+
+        mListaDNIsArbis = new ArrayList<>();
+        mListaFotosArbis = new ArrayList<>();
+
         Bundle extras = getIntent().getExtras();
         try {
             mIdCat = extras.getString("idCat");
@@ -174,6 +187,14 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
             urlFotoRojo = extras.getString("urlFotoRojo");
             urlFotoAzul = extras.getString("urlFotoAzul");
 
+            if(!urlFotoRojo.equals("default")){
+                Picasso.get().load(urlFotoRojo).into(mFotoRojo);
+            }
+
+            if(!urlFotoAzul.equals("default")){
+                Picasso.get().load(urlFotoAzul).into(mFotoAzul);
+            }
+
             mIdRojo = extras.getString("idRojo");
             mIdAzul = extras.getString("idAzul");
 
@@ -181,250 +202,12 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
             mIdCamp = extras.getString("idCamp");
 
             mNombreMod = extras.getString("nombreMod");
+            mListaIDsArbis = new ArrayList<>();
 
             getArbis(); // Obtener la lista de Arbitros asignados a este combate.
 
-            Query consulta = mAsaltoDB;
-            consulta.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(!dataSnapshot.exists()){
-                        Toast.makeText(DetalleAsaltoActivity.this, "No existe un Asalto con ese ID", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Asaltos asalto = dataSnapshot.getValue(Asaltos.class);
-                        //region Número
-                        String num = String.valueOf(asalto.getNumAsalto());
-                        num = "Número : " + num;
-                        mNumero.setText(num);
-                        //endregion
-                        //region Estado
-                        String estado = dataSnapshot.child("estado").getValue().toString();
-                        Resources res = getResources();
-                        switch(estado){
-                            case "Pendiente":{
-                                mEstado.setTextColor(res.getColor(R.color.colorAccent2));
-                                // Mostrar el botón de Iniciar el Asalto
-                                mIniciarBtn.setVisibility(View.VISIBLE);
-                                break;
-                            }
-                            case "Finalizado":{
-                                mEstado.setTextColor(res.getColor(R.color.colorVerde));
-                                break;
-                            }
-                            case "Cancelado":{
-                                mEstado.setTextColor(res.getColor(R.color.colorRojo));
-                                break;
-                            }
-                            default:{
-                                break;
-                            }
-                        }
-                        mEstado.setText(estado);
-                        //endregion
-                        //region Ganador
-                        if(!asalto.getGanador().equals("")){ // Si existe información sobre el ganador
-                            Query consulta = mGanadorDB.child(asalto.getGanador());
-                            consulta.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if(!dataSnapshot.exists()){
-                                        Toast.makeText(DetalleAsaltoActivity.this, "No se encuentran los datos del Ganador del Asalto...", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Competidores ganador = dataSnapshot.getValue(Competidores.class);
-                                        String nombreCompleto = ganador.getNombreCompleto();
-                                        String foto = ganador.getFoto();
-                                        mNombreGanador.setText(nombreCompleto);
-                                        Picasso.get().load(foto).into(mFotoGanador);
-                                    }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
-                        }
-                        //endregion
-                        //region Motivo y Descripción
-                        if(!asalto.getMotivo().equals("")){
-                            mMotivo.setText(asalto.getMotivo());
-                            if(!asalto.getDescripcion().equals("")) {
-                                mDesc.setText(asalto.getDescripcion());
-                            }
-                        }
-                        //endregion
-                        //region Puntuación y Foto ROJO
-                        String puntRojo = String.valueOf(asalto.getPuntuacionRojo());
-                        mPuntRojo.setText(puntRojo);
-                        Picasso.get().load(urlFotoRojo).into(mFotoRojo);
-                        //endregion
-                        //region Puntuación y Foto AZUL
-                        String puntAzul = String.valueOf(asalto.getPuntuacionAzul());
-                        mPuntAzul.setText(puntAzul);
-                        Picasso.get().load(urlFotoAzul).into(mFotoAzul);
-                        //endregion
-                        //region Duración
-                        if(!asalto.getDuracion().equals("")){
-                            mDuracion.setText(asalto.getDuracion());
-                        }
-                        //endregion
-                        //region Lista Punts
-                        // Obtener la lista de Puntuaciones para este Asalto
-                        listaPunts.clear();
-                        listaPunts = asalto.getListaPuntuaciones();
-                        if(listaPunts == null){
-                            Toast.makeText(DetalleAsaltoActivity.this, "No existen Puntuaciones para este Asalto", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Procesar lista para obtener Headers y Children para el ExpandableListView
-                            //procesarListaPuntuaciones(listaPunts);
-                            //procesarListasPuntuaciones2(listaPunts);
-                            // Crear Adapter
-                            //PuntuacionesExpandableListAdapter adapterPunts = new PuntuacionesExpandableListAdapter(DetalleAsaltoActivity.this, listaTitulosPunts, listaDetallesPunts);
-                            //PuntuacionesExpandableListAdapter adapterPunts = new PuntuacionesExpandableListAdapter(DetalleAsaltoActivity.this,
-                            //        listaTitulosPunts, mDetallesHashMap);
-
-                            /*// Obtener lista Puntuaciones Rojo y Azul
-                            listaPuntsRojo = getListaPuntsRojoAzul(mIdRojo, listaPunts);
-                            listaPuntsAzul = getListaPuntsRojoAzul(mIdAzul, listaPunts);
-
-                            PuntuacionesAdapter adapterPuntsRojo = new PuntuacionesAdapter(DetalleAsaltoActivity.this, listaPuntsRojo, "Rojo");
-                            // Asignar el adapter al View
-                            //mListaPuntsRojoView.setAdapter(adapterPunts);
-                            mListaPuntsRojoView.setAdapter(adapterPuntsRojo);
-                            adapterPuntsRojo.notifyDataSetChanged();
-
-                            PuntuacionesAdapter adapterPuntsAzul = new PuntuacionesAdapter(DetalleAsaltoActivity.this, listaPuntsAzul, "Azul");
-                            mListaPuntsAzulView.setAdapter(adapterPuntsAzul);
-                            adapterPuntsAzul.notifyDataSetChanged();*/
-
-                            // Mostrar la lista de arbitros con la suma de sus puntuaciones para cada competidor
-                            final List<DatosSuma> listaDatosRojo = new ArrayList<>();
-                            final List<DatosSuma> listaDatosAzul = new ArrayList<>();
-                            // Recorrer la lista de los árbitros asignados al combate para poder calcular sus sumas correspondientes.
-                            // Para cada árbitro deberemos obtener su dni y posteriormente calcular la suma de sus puntuaciones.
-                            for(int i = 0; i < mListaIDsArbis.size(); i++){
-                                String id = mListaIDsArbis.get(i);
-                                obtenerDNIyPuntuaciones(id);
-
-                                getFotoArbi("44491302X");
-
-                                //DatosSuma sumaRojo = new DatosSuma("", 0, "", mIdRojo, mIdAsalto, mIdCombate);
-                                listaDatosRojo.add(mDatosRojo);
-                                Log.v("DetalleAsalto", "mDatosRojo -->  DNI : " + mDatosRojo.getDniJuez() + " // Suma Puntos : " + mDatosRojo.getSumaPuntos());
-
-                                //DatosSuma sumaAzul = new DatosSuma("", 0,"", mIdAzul, mIdAsalto, mIdCombate);
-                                listaDatosAzul.add(mDatosAzul);
-                            }
-
-                            // Comprobación de que los datos se recuperan correctamente desde la BD.
-                            Log.v("DetalleAsalto", "Lista de Datos Rojo tiene " + listaDatosRojo.size() + " elementos.");
-                            Log.v("DetalleAsalto", "Lista de Datos Azul tiene " + listaDatosAzul.size() + " elementos.");
-                            // Mostrar dichas sumas en pantalla
-                            // Crear adapters
-                            DatosSumaAdapter datosRojo = new DatosSumaAdapter(DetalleAsaltoActivity.this, listaDatosRojo, "Rojo");
-                            DatosSumaAdapter datosAzul = new DatosSumaAdapter(DetalleAsaltoActivity.this, listaDatosAzul, "Azul");
-
-                            mListaPuntsRojoView.setAdapter(datosRojo);
-                            mListaPuntsAzulView.setAdapter(datosAzul);
-
-                            datosRojo.notifyDataSetChanged();
-                            datosAzul.notifyDataSetChanged();
-
-                        }
-                        //endregion
-                        //region Lista Incs
-                        // Obtener la lista de Incidencias para este Asalto
-                        listaIncs.clear();
-                        listaIncs = asalto.getListaIncidencias();
-                        if(listaIncs == null)
-                        {
-                            Toast.makeText(DetalleAsaltoActivity.this, "No existen Incidencias para este Asalto", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Procesar lista para obtener Headers y Children para el ExpandableListView
-                            //procesarListaIncidencias(listaIncs);
-                            // Crear Adapter
-                            //IncidenciasExpandableListAdapter adapterIncs = new IncidenciasExpandableListAdapter(DetalleAsaltoActivity.this,
-                            //        listaTitulosIncs, listaDetallesIncs);
-                            // Asignar el adapter al View
-                            //mListaIncsView.setAdapter(adapterIncs);
-                            //adapterIncs.notifyDataSetChanged();
-                        }
-                        //endregion
-                        //region Click en una Puntuación
-                        /*mListaPuntsRojoView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                            @Override
-                            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                                listaPunts.clear();
-                                if(listaTitulosPunts.size() > 0){
-                                    String idPunt = listaIDsPunts.get(groupPosition);
-                                    abrirDialogPunt(idPunt, mIdAsalto);
-                                }
-                                return false;
-                            }
-                        });*/
-                        /*mListaPuntsRojoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                Puntuaciones p = listaPuntsRojo.get(i);
-                                String idPunt = p.getId();
-                                abrirDialogPunt(idPunt, mIdAsalto);
-                            }
-                        });*/
-                        /*mListaPuntsAzulView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                Puntuaciones p = listaPuntsAzul.get(i);
-                                String idPunt = p.getId();
-                                abrirDialogPunt(idPunt, mIdAsalto);
-                            }
-                        });*/
-                        //endregion
-                        //region Click en una Incidencia
-                        /*mListaIncsView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                            @Override
-                            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                                listaIncs.clear();
-                                if(listaTitulosIncs.size() > 0){
-                                    String idInc = listaIDsIncs.get(groupPosition);
-                                    abrirDialogInc(idInc, mIdAsalto);
-                                }
-                                return false;
-                            }
-                        });*/
-                        //endregion
-                        //region Click en mIniciarBtn
-                        mIniciarBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // Abrir Dialog de Confirmación
-                                AlertDialog.Builder builder = new AlertDialog.Builder(DetalleAsaltoActivity.this);
-                                builder.setMessage("¿Desea comenzar el arbitraje de este Asalto?")
-                                        .setPositiveButton("aceptar", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Toast.makeText(DetalleAsaltoActivity.this, "Se ha confirmado el Inicio del Asalto ", Toast.LENGTH_SHORT).show();
-                                                cargarDatosArbitrajeAsalto(mIdAsalto);
-                                            }
-                                        })
-                                        .setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Toast.makeText(DetalleAsaltoActivity.this, "Se ha cancelado el Inicio del Asalto", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                AlertDialog dialog = builder.create();
-                                dialog.show();
-                            }
-                        });
-                        //endregion
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -442,8 +225,114 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                     Combates combate = dataSnapshot.getValue(Combates.class);
                     try {
                         mListaIDsArbis = combate.getListaIDsArbis();
+                        Log.v("DetalleAsalto", "Lista de IDs Arbis tiene " + mListaIDsArbis.size() + " elementos");
+                        getDnisyFotos(mListaIDsArbis);
+
+                        /*Log.v("getArbis", "Lista de DNIs Arbis tiene " + mListaDNIsArbis.size() + " elementos");
+
+                        if(mListaDNIsArbis.size() > 0) {
+                            for (int i = 0; i < mListaDNIsArbis.size(); i++) {
+                                FirebaseRTDB.getDatosSumaArbiComp(mListaDNIsArbis.get(i),
+                                        mIdRojo, mIdAzul, mIdAsalto, mIdCombate,
+                                        mListaFotosArbis.get(i), DetalleAsaltoActivity.this,
+                                        mListaPuntsRojoView, mListaPuntsAzulView, mListaSumasRojo, mListaSumasAzul);
+                                Log.v("DetalleAsaltoActivity", "Bucle For --> i : " + i);
+                                Log.v("DetalleAsaltoActivity", "Dni Juez --> " + mListaDNIsArbis.get(i));
+                            }
+                        } else {
+                            Log.v("getArbis", "La lista de DNIs está vacía.");
+                        }*/
+
+                        /*if(mListaIDsArbis.size() > 0){
+                            Log.v("DetalleAsalto", "Lista de IDs Arbis tiene " + mListaIDsArbis.size() + " elementos");
+                            for(int i = 0; i < mListaIDsArbis.size(); i++){
+                                getDniyFoto(mListaIDsArbis.get(i));
+                                FirebaseRTDB.getDatosSumaArbiComp(mDNI, mIdRojo, mIdAzul, mIdAsalto, mIdCombate, mFotoArbi,
+                                        DetalleAsaltoActivity.this, mListaPuntsRojoView, mListaPuntsAzulView,
+                                        mListaSumasRojo, mListaSumasAzul);
+                                Log.v("DetalleAsaltoActivity", "Bucle For --> i : " + i);
+                                Log.v("DetalleAsaltoActivity", "Dni Juez --> " + mDNI);
+                            }
+                        } else {
+                            Log.v("DetalleAsaltoActivity", "Error al obtener los IDs de los Jueces asignados a este Asalto");
+                        }*/
                     } catch (NullPointerException e) {
                         Log.v("DetalleAsalto", "Excepción IDs Arbis : " + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void getDnisyFotos(List<String> listaIDsArbis){
+        for(int i = 0; i < listaIDsArbis.size(); i++){
+            String idArbi = mListaIDsArbis.get(i);
+            Log.v("getDnisyFotos", "idArbi para i = " + i + " es --> " + idArbi);
+            mArbiDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(idArbi);
+            Query consulta = mArbiDB;
+            consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.exists()){
+                        Log.v("getDnisyFotos", "Error al localizar al Juez");
+                    } else {
+                        Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                        try {
+                            mListaDNIsArbis.add(arbi.getDni());
+                            Log.v("DetalleAsaltoActivity", "Dni Juez --> " + arbi.getDni());
+                            mListaFotosArbis.add(arbi.getFoto());
+
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    Log.v("getArbis", "Lista de DNIs Arbis tiene " + mListaDNIsArbis.size() + " elementos");
+
+                    if((mListaDNIsArbis.size() > 0) && (mListaDNIsArbis.size() == mListaIDsArbis.size())){
+                        for (int i = 0; i < mListaDNIsArbis.size(); i++) {
+                            FirebaseRTDB.getDatosSumaArbiComp(mListaDNIsArbis.get(i),
+                                    mIdRojo, mIdAzul, mIdAsalto, mIdCombate,
+                                    mListaFotosArbis.get(i), DetalleAsaltoActivity.this,
+                                    mListaPuntsRojoView, mListaPuntsAzulView, mListaSumasRojo, mListaSumasAzul);
+                            Log.v("DetalleAsaltoActivity", "Bucle For --> i : " + i);
+                            Log.v("DetalleAsaltoActivity", "Dni Juez --> " + mListaDNIsArbis.get(i));
+                        }
+                    } else {
+                        Log.v("getArbis", "La lista de DNIs está vacía.");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void getDniyFoto(String idJuez){
+        mArbiDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Arbitros").child(idJuez);
+        Query consulta = mArbiDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Log.v("DetalleAsaltoActivity", "getDniyFoto --- Error al localizar el Juez");
+                } else {
+                    Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
+                    try {
+                        mDNI = arbi.getDni();
+                        Log.v("getDniyFoto", "Dni Juez --> " + mDNI);
+                        mFotoArbi = arbi.getFoto();
+                        Log.v("DetalleAsaltoActivity", "Foto del Juez --> " + mFotoArbi);
+                    } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
                 }

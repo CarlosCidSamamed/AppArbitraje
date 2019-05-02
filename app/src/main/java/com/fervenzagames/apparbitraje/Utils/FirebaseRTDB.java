@@ -24,17 +24,18 @@ import java.util.List;
 
 public class FirebaseRTDB {
 
-    private DatabaseReference mAsaltoDB;
-    private DatabaseReference mCombateDB;
-    private DatabaseReference mJuezDB;
+    private static DatabaseReference mAsaltoDB;
+    private static DatabaseReference mCombateDB;
+    private static DatabaseReference mJuezDB;
 
-    private List<Puntuaciones> mListaPunt;
+    private static List<Puntuaciones> mListaPunt;
 
-    private HashMap<String, List<DatosSuma>> datosMap;
+    private static HashMap<String, List<DatosSuma>> datosMap;
 
-    public void getDatosSumaArbiComp(final String dniJuez, final String idRojo, final String idAzul,
+    public static void getDatosSumaArbiComp(final String dniJuez, final String idRojo, final String idAzul,
                                      final String idAsalto, final String idCombate, final String urlFotoJuez,
-                                     final Activity context, final ListView listViewRojo, final ListView listViewAzul){
+                                     final Activity context, final ListView listViewRojo, final ListView listViewAzul,
+                                     final List<DatosSuma> listaSumasRojo, final List<DatosSuma> listaSumasAzul){
         datosMap = new HashMap<>();
         mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos").child(idCombate).child(idAsalto);
         Query consulta = mAsaltoDB;
@@ -71,15 +72,15 @@ public class FirebaseRTDB {
                         // Añadir ambas sumas al HashMap
                         DatosSuma datosRojo = new DatosSuma(urlFotoJuez, sumaRojo, dniJuez, idRojo, idAsalto, idCombate, false);
                         DatosSuma datosAzul = new DatosSuma(urlFotoJuez, sumaAzul, dniJuez, idAzul, idAsalto, idCombate, false);
-                        List<DatosSuma> listaSumasRojo = new ArrayList<>();
+
                         listaSumasRojo.add(datosRojo);
-                        List<DatosSuma> listaSumasAzul = new ArrayList<>();
+
                         listaSumasAzul.add(datosAzul);
 
                         //datosMap.put(dniJuez, listaSumas);
 
-                        mostrarSumasParciales(context, listaSumasRojo, listViewRojo);
-                        mostrarSumasParciales(context, listaSumasAzul, listViewAzul);
+                        mostrarSumasParciales(context, listaSumasRojo, listViewRojo, "Rojo");
+                        mostrarSumasParciales(context, listaSumasAzul, listViewAzul, "Azul");
 
 
                     } catch (NullPointerException e) {
@@ -99,9 +100,9 @@ public class FirebaseRTDB {
         });
     }
 
-    private void mostrarSumasParciales(Activity context, List<DatosSuma> listaSumas, ListView listView) {
+    public static void mostrarSumasParciales(Activity context, List<DatosSuma> listaSumas, ListView listView, String lado) {
         // Crear el adapter
-        DatosSumaAdapter datos = new DatosSumaAdapter(context, listaSumas, "Rojo");
+        DatosSumaAdapter datos = new DatosSumaAdapter(context, listaSumas, lado);
 
         // Asignarlo al ListView correspondiente
         listView.setAdapter(datos);
