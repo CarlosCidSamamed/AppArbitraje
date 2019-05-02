@@ -295,12 +295,13 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
                     Log.v("getArbis", "Lista de DNIs Arbis tiene " + mListaDNIsArbis.size() + " elementos");
 
-                    if((mListaDNIsArbis.size() > 0) && (mListaDNIsArbis.size() == mListaIDsArbis.size())){
+                    if((mListaDNIsArbis.size() > 0) && (mListaDNIsArbis.size() == mListaIDsArbis.size())){ // Solo se mostrarán los datos cuando se haya leído toda la lista de datos.
                         for (int i = 0; i < mListaDNIsArbis.size(); i++) {
                             FirebaseRTDB.getDatosSumaArbiComp(mListaDNIsArbis.get(i),
                                     mIdRojo, mIdAzul, mIdAsalto, mIdCombate,
                                     mListaFotosArbis.get(i), DetalleAsaltoActivity.this,
-                                    mListaPuntsRojoView, mListaPuntsAzulView, mListaSumasRojo, mListaSumasAzul);
+                                    mListaPuntsRojoView, mListaPuntsAzulView, mListaSumasRojo, mListaSumasAzul,
+                                    mPuntRojo, mPuntAzul);
                             Log.v("DetalleAsaltoActivity", "Bucle For --> i : " + i);
                             Log.v("DetalleAsaltoActivity", "Dni Juez --> " + mListaDNIsArbis.get(i));
                         }

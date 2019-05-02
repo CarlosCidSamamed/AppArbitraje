@@ -3,14 +3,17 @@
 package com.fervenzagames.apparbitraje.Utils;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.fervenzagames.apparbitraje.Adapters.DatosSumaAdapter;
 import com.fervenzagames.apparbitraje.Models.Asaltos;
 import com.fervenzagames.apparbitraje.Models.DatosSuma;
 import com.fervenzagames.apparbitraje.Models.Puntuaciones;
+import com.fervenzagames.apparbitraje.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,22 +24,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FirebaseRTDB {
 
     private static DatabaseReference mAsaltoDB;
     private static DatabaseReference mCombateDB;
     private static DatabaseReference mJuezDB;
+    private static DatabaseReference mRootDB;
 
     private static List<Puntuaciones> mListaPunt;
 
-    private static HashMap<String, List<DatosSuma>> datosMap;
+    //private static HashMap<String, List<DatosSuma>> datosMap;
 
     public static void getDatosSumaArbiComp(final String dniJuez, final String idRojo, final String idAzul,
-                                     final String idAsalto, final String idCombate, final String urlFotoJuez,
-                                     final Activity context, final ListView listViewRojo, final ListView listViewAzul,
-                                     final List<DatosSuma> listaSumasRojo, final List<DatosSuma> listaSumasAzul){
-        datosMap = new HashMap<>();
+                                            final String idAsalto, final String idCombate, final String urlFotoJuez,
+                                            final Activity context, final ListView listViewRojo, final ListView listViewAzul,
+                                            final List<DatosSuma> listaSumasRojo, final List<DatosSuma> listaSumasAzul,
+                                            final TextView mediaRojoText, final TextView mediaAzulText){
+        //datosMap = new HashMap<>();
         mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos").child(idCombate).child(idAsalto);
         Query consulta = mAsaltoDB;
         consulta.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -82,6 +88,15 @@ public class FirebaseRTDB {
                         mostrarSumasParciales(context, listaSumasRojo, listViewRojo, "Rojo");
                         mostrarSumasParciales(context, listaSumasAzul, listViewAzul, "Azul");
 
+                        int mediaRojo = calcularMediaCompetidor(listaSumasRojo);
+                        int mediaAzul = calcularMediaCompetidor(listaSumasAzul);
+
+                        actualizarPuntuacionCompetidor(mediaRojo,"Rojo", idCombate, idAsalto);
+                        actualizarPuntuacionCompetidor(mediaAzul,"Azul", idCombate, idAsalto);
+
+                        mostrarMedia(mediaRojo, "Rojo", mediaRojoText, context);
+                        mostrarMedia(mediaAzul, "Azul", mediaAzulText, context);
+
 
                     } catch (NullPointerException e) {
                         Log.v("FirebaseRTDB", "Excepción al obtener la lista de Puntuaciones --- " + e.getLocalizedMessage());
@@ -109,7 +124,66 @@ public class FirebaseRTDB {
         datos.notifyDataSetChanged();
     }
 
-    public HashMap<String, List<DatosSuma>> getDatosMap() {
+    /*public HashMap<String, List<DatosSuma>> getDatosMap() {
         return datosMap;
+    }*/
+
+    public static int calcularMediaCompetidor(List<DatosSuma> sumasParciales){
+        int suma = 0;
+        // Recorrer la lista de sumas parciales
+        for(int i = 0; i < sumasParciales.size(); i++){
+            // Suma acumulativa
+            suma += sumasParciales.get(i).getSumaPuntos();
+        }
+        // División entre el tamaño de la lista
+        int res = suma / sumasParciales.size();
+        // Devolver el resultado
+        return res;
+    }
+
+    public static void mostrarMedia(int media, String lado, TextView textView, Activity context){
+        Resources resources = context.getResources();
+        if(lado.equals("Rojo")){
+            textView.setTextColor(resources.getColor(R.color.colorRojo));
+        } else if(lado.equals("Azul")){
+            textView.setTextColor(resources.getColor(R.color.colorAccent2));
+        }
+        String m = String.valueOf(media);
+        textView.setText(m);
+    }
+
+    public static void actualizarPuntuacionCompetidor(final int media, final String lado, final String idCombate, final String idAsalto){
+        mRootDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
+        mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos").child(idCombate).child(idAsalto);
+        Query consulta = mAsaltoDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Log.v("actualizarPunt", "Error al localizar el Asalto");
+                } else {
+                    Asaltos asalto = dataSnapshot.getValue(Asaltos.class);
+                    try {
+                        if(lado.equals("Rojo")){
+                            asalto.setPuntuacionRojo(media);
+                        } else if(lado.equals("Azul")){
+                            asalto.setPuntuacionAzul(media);
+                        }
+                        Map<String, Object> asaltoMap = asalto.toMap();
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("/Asaltos/" + idCombate + "/" + idAsalto, asaltoMap);
+                        mRootDB.updateChildren(updates);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
