@@ -42,7 +42,7 @@ public class DatosSumaAdapter extends ArrayAdapter {
 
         ImageView foto = convertView.findViewById(R.id.total_punt_arbi_foto);
         TextView suma = convertView.findViewById(R.id.total_punt_arbi_num);
-        Button btn = convertView.findViewById(R.id.total_punt_arbi_detalleBtn);
+        //Button btn = convertView.findViewById(R.id.total_punt_arbi_detalleBtn);
 
         TextView dniText = convertView.findViewById(R.id.total_punt_arbi_dni);
 

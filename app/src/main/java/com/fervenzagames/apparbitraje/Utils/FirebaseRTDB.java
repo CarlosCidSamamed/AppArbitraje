@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fervenzagames.apparbitraje.Adapters.DatosSumaAdapter;
+import com.fervenzagames.apparbitraje.Adapters.PuntuacionesAdapter;
 import com.fervenzagames.apparbitraje.Models.Asaltos;
 import com.fervenzagames.apparbitraje.Models.DatosSuma;
 import com.fervenzagames.apparbitraje.Models.Puntuaciones;
@@ -34,6 +35,7 @@ public class FirebaseRTDB {
     private static DatabaseReference mRootDB;
 
     private static List<Puntuaciones> mListaPunt;
+    private static List<Puntuaciones> mListaFiltrada;
 
     //private static HashMap<String, List<DatosSuma>> datosMap;
 
@@ -115,7 +117,7 @@ public class FirebaseRTDB {
         });
     }
 
-    public static void mostrarSumasParciales(Activity context, List<DatosSuma> listaSumas, ListView listView, String lado) {
+    private static void mostrarSumasParciales(Activity context, List<DatosSuma> listaSumas, ListView listView, String lado) {
         // Crear el adapter
         DatosSumaAdapter datos = new DatosSumaAdapter(context, listaSumas, lado);
 
@@ -128,7 +130,7 @@ public class FirebaseRTDB {
         return datosMap;
     }*/
 
-    public static int calcularMediaCompetidor(List<DatosSuma> sumasParciales){
+    private static int calcularMediaCompetidor(List<DatosSuma> sumasParciales){
         int suma = 0;
         // Recorrer la lista de sumas parciales
         for(int i = 0; i < sumasParciales.size(); i++){
@@ -141,7 +143,7 @@ public class FirebaseRTDB {
         return res;
     }
 
-    public static void mostrarMedia(int media, String lado, TextView textView, Activity context){
+    private static void mostrarMedia(int media, String lado, TextView textView, Activity context){
         Resources resources = context.getResources();
         if(lado.equals("Rojo")){
             textView.setTextColor(resources.getColor(R.color.colorRojo));
@@ -152,7 +154,7 @@ public class FirebaseRTDB {
         textView.setText(m);
     }
 
-    public static void actualizarPuntuacionCompetidor(final int media, final String lado, final String idCombate, final String idAsalto){
+    private static void actualizarPuntuacionCompetidor(final int media, final String lado, final String idCombate, final String idAsalto){
         mRootDB = FirebaseDatabase.getInstance().getReference("Arbitraje");
         mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos").child(idCombate).child(idAsalto);
         Query consulta = mAsaltoDB;
@@ -176,7 +178,6 @@ public class FirebaseRTDB {
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
 
@@ -186,4 +187,46 @@ public class FirebaseRTDB {
             }
         });
     }
+
+    // Para poder mostrar dicha lista en un dialog al pulsar el botón + de cada suma parcial de un juez en DetalleAsaltoActivity
+    public static void getListaFiltradaPunts(final String dniJuez, final String idCompetidor,
+                                             String idCombate, String idAsalto, final Activity context,
+                                             final ListView listView, final String lado){
+        mListaFiltrada = new ArrayList<>();
+        mAsaltoDB = FirebaseDatabase.getInstance().getReference("Arbitraje/Asaltos").child(idCombate).child(idAsalto);
+        Query consulta = mAsaltoDB;
+        consulta.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    Log.v("getListaFiltradaPunts", "Error al localizar el Asalto");
+                } else {
+                    Asaltos asalto = dataSnapshot.getValue(Asaltos.class);
+                    try {
+                        List<Puntuaciones> lista = asalto.getListaPuntuaciones();
+                        for(int i = 0; i < lista.size(); i++){
+                            Puntuaciones p = lista.get(i);
+                            if(p.getDniJuez().equals(dniJuez)){
+                                if(p.getIdCompetidor().equals(idCompetidor)) {
+                                    mListaFiltrada.add(p);
+                                }
+                            }
+                        }
+                        PuntuacionesAdapter adapter = new PuntuacionesAdapter(context, mListaFiltrada, lado);
+                        listView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //TODO : Decisión Ganador Asalto por puntos y tiempo o por condiciones especiales(KO, TKO, numMaxPenalizaciones...)
 }

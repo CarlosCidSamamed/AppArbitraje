@@ -22,6 +22,7 @@ import com.fervenzagames.apparbitraje.Adapters.PuntuacionesAdapter;
 import com.fervenzagames.apparbitraje.Arbitraje_Activities.LobbyArbitraje;
 import com.fervenzagames.apparbitraje.Dialogs.DetalleIncidenciaDialog;
 import com.fervenzagames.apparbitraje.Dialogs.DetallePuntuacionDialog;
+import com.fervenzagames.apparbitraje.Dialogs.ListaPuntuacionesDialog;
 import com.fervenzagames.apparbitraje.Models.Arbitros;
 import com.fervenzagames.apparbitraje.Models.Asaltos;
 import com.fervenzagames.apparbitraje.Models.Combates;
@@ -206,7 +207,28 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
 
             getArbis(); // Obtener la lista de Arbitros asignados a este combate.
 
+            mListaPuntsRojoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    DatosSuma datos = mListaSumasRojo.get(i);
+                    /*Bundle extras = new Bundle();
+                    extras.putString("dniJuez", datos.getDniJuez());
+                    extras.putString("idCombate", datos.getIdCombate());
+                    extras.putString("idAsalto", datos.getIdAsalto());
+                    extras.putString("idCompetidor", mIdRojo);
+                    extras.putString("lado", "Rojo");*/
 
+                    abrirDialogListaPunts(datos.getDniJuez(),datos.getIdComp(), datos.getIdCombate(), datos.getIdAsalto(), "Rojo");
+                }
+            });
+
+            mListaPuntsAzulView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    DatosSuma datos = mListaSumasAzul.get(i);
+                    abrirDialogListaPunts(datos.getDniJuez(), datos.getIdComp(), datos.getIdCombate(), datos.getIdAsalto(), "Azul");
+                }
+            });
 
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -516,6 +538,18 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
         listaDetallesIncs = detalles;
         listaIDsIncs = listaIDs;
         Toast.makeText(this, "Tamaño de la lista de Incidencias para este Asalto : " + lista.size(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void abrirDialogListaPunts(String dniJuez, String idCompetidor, String idCombate, String idAsalto, String lado){
+        ListaPuntuacionesDialog dialog = new ListaPuntuacionesDialog();
+        Bundle extras = new Bundle();
+        extras.putString("dniJuez", dniJuez);
+        extras.putString("idCombate", idCombate);
+        extras.putString("idCompetidor", idCompetidor);
+        extras.putString("idAsalto", idAsalto);
+        extras.putString("lado", lado);
+        dialog.setArguments(extras);
+        dialog.show(getSupportFragmentManager(), "lista puntuaciones dialog");
     }
 
     private void abrirDialogPunt(String idPunt, String idAsalto){

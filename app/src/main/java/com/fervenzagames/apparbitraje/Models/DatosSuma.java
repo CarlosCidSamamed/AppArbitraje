@@ -190,4 +190,28 @@ public class DatosSuma {
     public List<Puntuaciones> getmListaPunts(){
         return mListaPunts;
     }
+
+    public String getIdComp() {
+        return idComp;
+    }
+
+    public void setIdComp(String idComp) {
+        this.idComp = idComp;
+    }
+
+    public String getIdAsalto() {
+        return idAsalto;
+    }
+
+    public void setIdAsalto(String idAsalto) {
+        this.idAsalto = idAsalto;
+    }
+
+    public String getIdCombate() {
+        return idCombate;
+    }
+
+    public void setIdCombate(String idCombate) {
+        this.idCombate = idCombate;
+    }
 }

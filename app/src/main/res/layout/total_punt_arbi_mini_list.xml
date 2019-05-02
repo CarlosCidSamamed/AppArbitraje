@@ -36,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <!--<Button
         android:id="@+id/total_punt_arbi_detalleBtn"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.915"
         app:layout_constraintStart_toEndOf="@+id/total_punt_arbi_num"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />-->
 
     <TextView
         android:id="@+id/total_punt_arbi_dni"
