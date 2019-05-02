@@ -35,6 +35,15 @@ public class FirebaseRTDB {
     private static DatabaseReference mRootDB;
 
     private static List<Puntuaciones> mListaPunt;
+
+    public static List<Puntuaciones> getmListaFiltrada() {
+        return mListaFiltrada;
+    }
+
+    public static void setmListaFiltrada(List<Puntuaciones> mListaFiltrada) {
+        FirebaseRTDB.mListaFiltrada = mListaFiltrada;
+    }
+
     private static List<Puntuaciones> mListaFiltrada;
 
     //private static HashMap<String, List<DatosSuma>> datosMap;

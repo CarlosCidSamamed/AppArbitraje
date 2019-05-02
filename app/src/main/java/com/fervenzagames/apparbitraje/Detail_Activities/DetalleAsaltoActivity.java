@@ -219,6 +219,7 @@ public class DetalleAsaltoActivity extends AppCompatActivity {
                     extras.putString("lado", "Rojo");*/
 
                     abrirDialogListaPunts(datos.getDniJuez(),datos.getIdComp(), datos.getIdCombate(), datos.getIdAsalto(), "Rojo");
+                    Log.v("Abrir Dialog Lista Punt", "dniJuez --> " + datos.getDniJuez());
                 }
             });
 
