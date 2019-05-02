@@ -132,8 +132,10 @@ public class ListaPuntuacionesDialog extends AppCompatDialogFragment {
 
                             if(datosArbi.size() > 0) {
 
-                                if (!datosArbi.get(0).equals("")) {
+                                if (!datosArbi.get(0).equals("default")) {
                                     Picasso.get().load(datosArbi.get(0)).into(fotoArbi);
+                                } else {
+                                    Picasso.get().load(R.drawable.default_avatar).into(fotoArbi);
                                 }
 
                                 if (!datosArbi.get(1).equals("")) {

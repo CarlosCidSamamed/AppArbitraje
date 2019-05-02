@@ -130,7 +130,12 @@ public class DetallePuntuacionDialog extends AppCompatDialogFragment {
                     Arbitros arbi = dataSnapshot.getValue(Arbitros.class);
                     try {
                         mFotoJuez = arbi.getFoto();
-                        Picasso.get().load(mFotoJuez).into(mFotoJuezView);
+                        if(mFotoJuez.equals("default"))
+                        {
+                            Picasso.get().load(R.drawable.default_avatar).into(mFotoJuezView);
+                        } else {
+                            Picasso.get().load(mFotoJuez).into(mFotoJuezView);
+                        }
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
